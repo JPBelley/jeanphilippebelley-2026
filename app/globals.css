@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+/* ─── THEME ──────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Portfolio palette */
+  --color-bg:         #0F1115;
+  --color-bg2:        #1A1D24;
+  --color-ui:         #2A2F3A;
+  --color-violet:     #7C5CFF;
+  --color-mint:       #2EE6A6;
+  --color-foreground: #E8EAF0;
+  --color-muted:      #6B7280;
+
+  /* Tool UI palette */
+  --color-tool-bg0:    #0d0d0f;
+  --color-tool-bg1:    #141416;
+  --color-tool-bg2:    #1c1c1f;
+  --color-tool-bg3:    #242428;
+  --color-tool-bg4:    #2e2e33;
+  --color-tool-border: #2e2e33;
+  --color-tool-border2:#3a3a40;
+  --color-tool-text:   #e8e8ec;
+  --color-tool-text2:  #9090a0;
+  --color-tool-text3:  #5a5a6a;
+
+  /* Fonts */
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  /* Animations */
+  --animate-fade-up-1:   fadeUp 0.6s ease 0.2s  forwards;
+  --animate-fade-up-2:   fadeUp 0.7s ease 0.35s forwards;
+  --animate-fade-up-3:   fadeUp 0.7s ease 0.5s  forwards;
+  --animate-fade-up-4:   fadeUp 0.7s ease 0.65s forwards;
+  --animate-fade-up-5:   fadeUp 0.7s ease 0.9s  forwards;
+  --animate-fade-left:   fadeLeft 0.7s ease 0.8s forwards;
+  --animate-scroll-down: scrollDown 1.5s ease infinite;
+  --animate-status-pulse:statusPulse 2s ease infinite;
+}
+
+/* ─── KEYFRAMES ──────────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scrollDown {
+  0%   { top: -100%; }
+  100% { top: 200%; }
+}
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(46,230,166,0.4); }
+  50%       { opacity: 0.8; box-shadow: 0 0 0 4px rgba(46,230,166,0); }
+}
+
+/* ─── BASE ───────────────────────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-foreground);
+  font-family: var(--font-head);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.3;
+}
+
+/* ─── CURSOR ─────────────────────────────────────────────────────────────────── */
+#cursor {
+  width: 12px; height: 12px;
+  background: var(--color-violet);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, background 0.2s, width 0.2s, height 0.2s;
+  mix-blend-mode: screen;
+}
+#cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(124,92,255,0.4);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: all 0.15s ease;
+}
+#cursor-ring.hovered { width: 52px; height: 52px; border-color: var(--color-mint); }
+
+/* ─── PORTFOLIO PSEUDO-ELEMENTS & COMPLEX SELECTORS ─────────────────────────── */
+
+/* Hero grid overlay */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(42,47,58,0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42,47,58,0.25) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* Nav link underline */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 1px;
+  background: var(--color-mint);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+
+/* Hero tag leading line */
+.hero-tag::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--color-mint);
+}
+
+/* Section label number */
+.section-label::before {
+  content: attr(data-num);
+  color: var(--color-muted);
+  font-size: 10px;
+}
+
+/* Tech tag // prefix */
+.tech-tag::before {
+  content: '//';
+  margin-right: 6px;
+  color: var(--color-mint);
+  opacity: 0.5;
+}
+
+/* Project card ↗ arrow */
+.project-card::after {
+  content: '↗';
+  position: absolute;
+  top: 32px; right: 32px;
+  font-size: 18px;
+  color: var(--color-muted);
+  transition: color 0.2s, transform 0.2s;
+}
+.project-card:hover::after { color: var(--color-mint); transform: translate(3px,-3px); }
+
+/* Skill group top gradient bar */
+.skill-group::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-violet), var(--color-mint));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+  transform-origin: left;
+}
+.skill-group:hover::before { transform: scaleX(1); }
+
+/* Project visual radial overlay */
+.project-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(124,92,255,0.2), transparent 60%);
+}
+
+/* Scroll line animation */
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--color-violet);
+  animation: scrollDown 1.5s ease infinite;
+}
+
+/* Experiment card top gradient bar */
+.exp-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-violet), var(--color-mint));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+.exp-card:hover::before { transform: scaleX(1); }
+
+/* ─── JS-DRIVEN STATE CLASSES ────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+.skill-bar-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: linear-gradient(90deg, var(--color-violet), var(--color-mint));
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s ease;
+}
+.skill-bar-fill.visible { transform: scaleX(1); }
+
+/* ─── TOOL PAGES: JS-GENERATED DOM ELEMENTS ──────────────────────────────────── */
+/* These classes are added dynamically by buildControls() JS, so Tailwind can't see them */
+
+.tab {
+  padding: 9px 10px;
+  font-size: 12px;
+  color: var(--color-tool-text2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.tab.active { color: var(--tool-accent2, #22d3ee); border-bottom-color: var(--tool-accent2, #22d3ee); }
+.tab:hover:not(.active) { color: var(--color-tool-text); }
+
+.section { margin-bottom: 1px; }
+.sec-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 5px;
+  cursor: pointer;
+  user-select: none;
+}
+.sec-hdr > span:first-child {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--color-tool-text3);
+}
+.chv { color: var(--color-tool-text3); font-size: 9px; transition: transform 0.2s; }
+.sec-body { padding: 3px 14px 8px; }
+
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  gap: 8px;
+}
+.ctrl-label { color: var(--color-tool-text2); font-size: 12px; flex: 1; white-space: nowrap; }
+.ctrl-right  { display: flex; align-items: center; gap: 6px; }
+.ctrl-val {
+  color: var(--color-tool-text);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: right;
+  background: var(--color-tool-bg3);
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--color-tool-border);
+}
+
+.color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  gap: 8px;
+}
+.swatch {
+  width: 24px; height: 24px;
+  border-radius: 5px;
+  border: 1px solid var(--color-tool-border2);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.swatch input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%; height: 100%;
+  border: none; padding: 0;
+}
+
+/* Blob editor shape picker */
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  padding: 4px 0 6px;
+}
+.shape-btn {
+  background: var(--color-tool-bg3);
+  border: 1px solid var(--color-tool-border2);
+  border-radius: 6px;
+  padding: 7px 4px 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s;
+  user-select: none;
+}
+.shape-btn:hover { background: var(--color-tool-bg4); }
+.shape-btn.active { border-color: var(--tool-accent2, #f5a040); background: rgba(245,160,64,0.1); }
+.shape-btn svg   { width: 28px; height: 28px; }
+.shape-btn span  { font-size: 10px; color: var(--color-tool-text2); letter-spacing: 0.2px; }
+.shape-btn.active span { color: var(--tool-accent2, #f5a040); }
+.morph-row { display: flex; align-items: center; gap: 8px; padding: 4px 0 2px; }
+
+/* Range inputs */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100px; height: 3px;
+  background: var(--color-tool-bg4);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--tool-accent2, #22d3ee);
+  cursor: pointer;
+}
+input[type=range]:hover::-webkit-slider-thumb { background: #fff; }
+
+/* Tool panel select (wire-studio / blob-editor side panels) */
+#controls select {
+  background: var(--color-tool-bg3);
+  color: var(--color-tool-text);
+  border: 1px solid var(--color-tool-border2);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  outline: none;
+}
