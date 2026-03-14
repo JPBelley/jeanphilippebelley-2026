@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#0F1115"/>
+
+  <!-- J -->
+  <path d="M 16 8 L 16 42 A 8 8 0 0 1 8 50"
+        fill="none" stroke="#E8EAF0" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- P — vertical -->
+  <path d="M 28 8 L 28 56"
+        fill="none" stroke="#E8EAF0" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- P — bowl -->
+  <path d="M 28 8 Q 50 8 50 22 Q 50 36 28 36"
+        fill="none" stroke="#E8EAF0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- dot -->
+  <circle cx="58" cy="52" r="5" fill="#7C5CFF"/>
+</svg>
