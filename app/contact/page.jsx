@@ -3,6 +3,7 @@
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import Cursor from '../components/Cursor';
+import Button from '../components/Button';
 
 const links = [
   { href: 'mailto:info@jeanphilippebelley.com', label: '📬 info@jeanphilippebelley.com' },
@@ -29,14 +30,9 @@ export default function Contact() {
         </p>
         <div className="flex justify-center gap-4 flex-wrap max-[640px]:flex-col max-[640px]:w-full">
           {links.map(l => (
-            <a
-              key={l.href}
-              href={l.href}
-              {...(l.ext ? { target: '_blank', rel: 'noreferrer' } : {})}
-              className="flex items-center justify-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5"
-            >
+            <Button key={l.href} href={l.href} variant="link" {...(l.ext ? { target: '_blank', rel: 'noreferrer' } : {})}>
               {l.label}
-            </a>
+            </Button>
           ))}
         </div>
       </main>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import Cursor from '../components/Cursor';
+import Button from '../components/Button';
 
 const Section = ({ title, num, children }) => (
   <section className="mb-20">
@@ -171,16 +172,8 @@ export default function DesignSystem() {
         {/* ─── BUTTONS ─────────────────────────────────────────────────────── */}
         <Section title="Buttons & Links" num="04">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-4 items-center">
-            {/* Primary */}
-            <button className="px-6 py-3 bg-violet text-white font-semibold rounded-lg hover:bg-violet/80 transition-colors duration-200">
-              Primary CTA
-            </button>
-
-            {/* Secondary */}
-            <button className="px-6 py-3 border border-ui text-foreground font-semibold rounded-lg hover:border-violet transition-colors duration-200">
-              Secondary
-            </button>
-
+            <Button variant="primary">Primary CTA</Button>
+            <Button variant="secondary">Secondary</Button>
             {/* Ghost */}
             <button className="px-6 py-3 text-mint font-mono text-[13px] hover:text-violet transition-colors duration-200">
               → Ghost link

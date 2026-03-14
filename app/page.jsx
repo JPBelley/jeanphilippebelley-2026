@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Cursor from './components/Cursor'
+import Button from './components/Button'
 
 export default function Home() {
   useEffect(() => {
@@ -52,12 +53,8 @@ export default function Home() {
             React, Vue, WordPress, Drupal, Webflow and whatever it takes.
           </p>
           <div className="flex max-[640px]:flex-col gap-4 mt-11 opacity-0 animate-fade-up-4">
-            <a href="#projects" className="px-8 py-[13px] max-[640px]:text-center bg-violet text-white font-head font-semibold text-[14px] tracking-[0.03em] border-none rounded-md cursor-none no-underline transition-[background,transform,box-shadow] duration-200 hover:bg-[#9070ff] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(124,92,255,0.35)]">
-              View My Work
-            </a>
-            <a href="#contact" className="px-8 py-[13px] max-[640px]:text-center bg-transparent text-foreground font-head font-medium text-[14px] border border-ui rounded-md cursor-none no-underline transition-[border-color,color,transform] duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
-              Get In Touch
-            </a>
+            <Button href="#projects" variant="primary">View My Work</Button>
+            <Button href="#contact" variant="secondary">Get In Touch</Button>
           </div>
 
           {/* Tech tags — inline on mobile */}
@@ -109,7 +106,7 @@ export default function Home() {
             {[
               { num: '10', sup: '+', label: 'Years of experience' },
               { num: 'Many', sup: '+', label: 'Projects shipped' },
-              { num: '6', sup: '',  label: 'Core technologies' },
+              { num: '7', sup: '',  label: 'Core technologies' },
               { num: '∞', sup: '',  label: 'Coffees consumed' },
             ].map(s => (
               <div key={s.label} className="stat-card bg-bg2 p-[28px_24px] border border-ui transition-colors duration-200 hover:border-violet">
@@ -245,10 +242,9 @@ export default function Home() {
             { href:'https://github.com/JPBelley',        label:'⌥ GitHub',    ext:true },
             { href:'https://www.linkedin.com/in/jean-philippe-belley-01558286/',      label:'◈ LinkedIn',  ext:true },
           ].map(l => (
-            <a key={l.href} href={l.href} {...(l.ext ? { target:'_blank', rel:'noreferrer' } : {})}
-              className="flex items-center justify-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
+            <Button key={l.href} href={l.href} variant="link" {...(l.ext ? { target:'_blank', rel:'noreferrer' } : {})}>
               {l.label}
-            </a>
+            </Button>
           ))}
         </div>
       </section>
