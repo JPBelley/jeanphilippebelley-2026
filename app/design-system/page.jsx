@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
+import Nav from '../components/Nav';
 import Footer from '../components/Footer';
+import Cursor from '../components/Cursor';
 
 const Section = ({ title, num, children }) => (
   <section className="mb-20">
@@ -59,57 +60,10 @@ const animations = [
 ];
 
 export default function DesignSystem() {
-  useEffect(() => {
-    const cursor = document.getElementById('cursor')
-    const ring = document.getElementById('cursor-ring')
-    let mx = 0, my = 0, rx = 0, ry = 0
-
-    const onMouseMove = e => {
-      mx = e.clientX; my = e.clientY
-      cursor.style.left = mx + 'px'
-      cursor.style.top  = my + 'px'
-    }
-    document.addEventListener('mousemove', onMouseMove)
-
-    let rafId
-    function animateRing() {
-      rx += (mx - rx) * 0.12
-      ry += (my - ry) * 0.12
-      ring.style.left = rx + 'px'
-      ring.style.top  = ry + 'px'
-      rafId = requestAnimationFrame(animateRing)
-    }
-    animateRing()
-
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('hovered'))
-      el.addEventListener('mouseleave', () => ring.classList.remove('hovered'))
-    })
-
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove)
-      cancelAnimationFrame(rafId)
-    }
-  }, [])
-
   return (
     <div className="min-h-screen bg-bg text-foreground font-head">
-      <div id="cursor" />
-      <div id="cursor-ring" />
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-ui bg-bg/80 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto px-8 h-14 flex items-center justify-between">
-          <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
-            Design System
-          </span>
-          <Link
-            href="/"
-            className="font-mono text-[11px] text-muted hover:text-mint transition-colors duration-200"
-          >
-            ← Back to portfolio
-          </Link>
-        </div>
-      </header>
+      <Cursor />
+      <Nav />
 
       <main className="max-w-5xl mx-auto px-8 py-20">
 
@@ -161,36 +115,56 @@ export default function DesignSystem() {
         {/* ─── TYPOGRAPHY ──────────────────────────────────────────────────── */}
         <Section title="Typography" num="03">
           <div className="space-y-10">
-            {/* Space Grotesk */}
+
+            {/* Headings scale */}
             <div className="p-8 bg-bg2 rounded-xl border border-ui">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-6">
-                Space Grotesk — font-head
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-8">
+                Space Grotesk — Heading Scale
               </p>
-              <p className="text-[clamp(36px,5vw,56px)] font-bold leading-none mb-3">
-                Display Bold
-              </p>
-              <p className="text-[28px] font-semibold mb-2">Heading Semibold</p>
-              <p className="text-[20px] font-medium mb-2">Subheading Medium</p>
-              <p className="text-[16px] leading-relaxed text-muted">
-                Body text — readable and clean. Used for descriptions, paragraphs, and UI copy
-                throughout the portfolio.
-              </p>
+              <div className="space-y-1 divide-y divide-ui">
+                {[
+                  { tag: 'h1', size: 'clamp(48px,7vw,86px)', weight: '700', label: 'Display / Hero',      sample: 'Full Stack Developer' },
+                  { tag: 'h2', size: 'clamp(32px,4vw,52px)', weight: '700', label: 'Section Title',        sample: 'Selected Work' },
+                  { tag: 'h3', size: '32px',                  weight: '600', label: 'Card Heading (large)', sample: 'Design System & Tokens' },
+                  { tag: 'h4', size: '22px',                  weight: '600', label: 'Card Heading (small)', sample: 'Headless WordPress' },
+                  { tag: 'h5', size: '16px',                  weight: '600', label: 'Label / Group Title',  sample: 'Frontend Frameworks' },
+                  { tag: 'h6', size: '13px',                  weight: '600', label: 'Micro Label',          sample: 'Available for work' },
+                ].map(({ tag: Tag, size, weight, label, sample }) => (
+                  <div key={Tag} className="flex items-baseline justify-between gap-8 py-4 first:pt-0 last:pb-0">
+                    <div className="flex items-baseline gap-6 min-w-0">
+                      <span className="font-mono text-[10px] text-muted w-6 shrink-0">{Tag}</span>
+                      <Tag style={{ fontSize: size, fontWeight: weight, lineHeight: 1.1 }} className="truncate">
+                        {sample}
+                      </Tag>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-mono text-[10px] text-muted">{size}</p>
+                      <p className="font-mono text-[10px] text-muted/50">{label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* DM Mono */}
-            <div className="p-8 bg-bg2 rounded-xl border border-ui">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-6">
-                DM Mono — font-mono
-              </p>
-              <p className="font-mono text-[22px] font-medium mb-3">01 — Tag Label</p>
-              <p className="font-mono text-[14px] text-mint mb-2">// tech-tag prefix</p>
-              <p className="font-mono text-[12px] uppercase tracking-widest text-muted mb-2">
-                SECTION LABEL
-              </p>
-              <p className="font-mono text-[11px] text-muted/60">
-                --color-bg: #0F1115; --color-violet: #7C5CFF;
-              </p>
+            {/* Body & mono */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="p-8 bg-bg2 rounded-xl border border-ui">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">Body — Space Grotesk</p>
+                <p className="text-[16px] leading-relaxed mb-3">
+                  Regular body text. Readable and clean, used for descriptions and paragraphs across the portfolio.
+                </p>
+                <p className="text-[14px] leading-relaxed text-muted">
+                  Secondary body — slightly smaller, used for card descriptions and supporting copy.
+                </p>
+              </div>
+              <div className="p-8 bg-bg2 rounded-xl border border-ui">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">Mono — DM Mono</p>
+                <p className="font-mono text-[14px] text-mint mb-2">// tech-tag prefix</p>
+                <p className="font-mono text-[12px] uppercase tracking-widest text-muted mb-2">SECTION LABEL</p>
+                <p className="font-mono text-[11px] text-muted/60">--color-violet: #7C5CFF;</p>
+              </div>
             </div>
+
           </div>
         </Section>
 

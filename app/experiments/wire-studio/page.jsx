@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Nav from '../../components/Nav'
 
 export default function WireStudio() {
   useEffect(() => {
@@ -263,6 +264,7 @@ export default function WireStudio() {
   return (
     <div className="flex h-screen overflow-hidden bg-tool-bg0 text-tool-text text-[13px]"
          style={{'--tool-accent2':'#22d3ee'}}>
+      <Nav />
       {/* PANEL */}
       <div className="w-[280px] min-w-[280px] bg-tool-bg1 border-r border-tool-border flex flex-col overflow-hidden">
         <div className="px-4 py-[14px] border-b border-tool-border flex items-center gap-[10px]">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Nav from '../../components/Nav'
 
 export default function BlobEditor() {
   useEffect(() => {
@@ -421,6 +422,7 @@ void main(){
     // Blob Studio uses orange accent: #e8601a / #f5a040
     <div className="flex h-screen overflow-hidden bg-tool-bg0 text-tool-text text-[13px]"
          style={{'--tool-accent2':'#f5a040'}}>
+      <Nav />
       {/* PANEL */}
       <div className="w-[290px] min-w-[290px] bg-tool-bg1 border-r border-tool-border flex flex-col overflow-hidden">
         <div className="px-4 py-[14px] border-b border-tool-border flex items-center gap-[10px]">

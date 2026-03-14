@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Nav from '../../components/Nav'
 
 export default function MorphingBlob() {
   useEffect(() => {
@@ -223,6 +224,7 @@ export default function MorphingBlob() {
 
   return (
     <div className="relative bg-black overflow-hidden font-sans w-screen h-screen">
+      <Nav />
       <canvas id="c" className="block w-screen h-screen" />
 
       {/* Floating UI panel */}
