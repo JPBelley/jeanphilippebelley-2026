@@ -81,7 +81,7 @@ export default function Home() {
 
         <div className="relative z-[2] max-w-[780px]">
           <div className="hero-tag font-mono text-[12px] text-mint tracking-[0.15em] uppercase mb-7 flex items-center gap-[10px] opacity-0 animate-fade-up-1">
-            Available for new projects
+            Always cooking something
           </div>
           <h1 className="text-[clamp(48px,7vw,86px)] font-bold leading-[1.05] tracking-[-0.03em] opacity-0 animate-fade-up-2">
             Full Stack<br />
@@ -103,7 +103,7 @@ export default function Home() {
         </div>
 
         <div className="absolute right-[60px] top-1/2 -translate-y-1/2 flex flex-col gap-3 opacity-0 animate-fade-left">
-          {['React','Vue.js','WordPress','Drupal','Webflow','Node.js'].map((t, i) => (
+          {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
             <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] transition-all duration-200 relative hover:border-violet hover:text-violet${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
               {t}
             </div>
@@ -253,7 +253,7 @@ export default function Home() {
         </div>
         <p className="font-mono text-[15px] text-muted mb-12 leading-[1.7] reveal reveal-delay-2">
           I&apos;m always open to interesting projects and collaborations.<br />
-          Drop me a line — I usually respond within a day.
+          Drop me a line.
         </p>
         <div className="flex justify-center gap-4 flex-wrap reveal reveal-delay-2">
           {[
