@@ -19,14 +19,24 @@ const Section = ({ title, num, children }) => (
   </section>
 );
 
-const colors = [
-  { name: '--color-bg',          hex: '#0F1115', label: 'Background',   tw: 'bg-bg' },
-  { name: '--color-bg2',         hex: '#1A1D24', label: 'Background 2', tw: 'bg-bg2' },
-  { name: '--color-ui',          hex: '#2A2F3A', label: 'UI',           tw: 'bg-ui' },
-  { name: '--color-violet',      hex: '#7C5CFF', label: 'Violet',       tw: 'bg-violet' },
-  { name: '--color-mint',        hex: '#2EE6A6', label: 'Mint',         tw: 'bg-mint' },
-  { name: '--color-foreground',  hex: '#E8EAF0', label: 'Foreground',   tw: 'bg-foreground' },
-  { name: '--color-muted',       hex: '#6B7280', label: 'Muted',        tw: 'bg-muted' },
+const darkColors = [
+  { name: '--color-bg',         hex: '#0F1115', label: 'Background',   text: '#E8EAF0' },
+  { name: '--color-bg2',        hex: '#1A1D24', label: 'Background 2', text: '#E8EAF0' },
+  { name: '--color-ui',         hex: '#2A2F3A', label: 'UI',           text: '#E8EAF0' },
+  { name: '--color-violet',     hex: '#7C5CFF', label: 'Violet',       text: '#fff' },
+  { name: '--color-mint',       hex: '#2EE6A6', label: 'Mint',         text: '#0F1115' },
+  { name: '--color-foreground', hex: '#E8EAF0', label: 'Foreground',   text: '#0F1115' },
+  { name: '--color-muted',      hex: '#6B7280', label: 'Muted',        text: '#fff' },
+];
+
+const lightColors = [
+  { name: '--color-bg',         hex: '#F8F8FA', label: 'Background',   text: '#0F1115' },
+  { name: '--color-bg2',        hex: '#FFFFFF', label: 'Background 2', text: '#0F1115' },
+  { name: '--color-ui',         hex: '#E0DFF0', label: 'UI',           text: '#0F1115' },
+  { name: '--color-violet',     hex: '#6B4EE6', label: 'Violet',       text: '#fff' },
+  { name: '--color-mint',       hex: '#00A876', label: 'Mint',         text: '#fff' },
+  { name: '--color-foreground', hex: '#0F1115', label: 'Foreground',   text: '#fff' },
+  { name: '--color-muted',      hex: '#5C5C72', label: 'Muted',        text: '#fff' },
 ];
 
 const toolColors = [
@@ -81,24 +91,53 @@ export default function DesignSystem() {
           </p>
         </div>
 
-        {/* ─── COLORS ─────────────────────────────────────────────────────── */}
-        <Section title="Portfolio Colors" num="01">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {colors.map((c) => (
-              <div key={c.name} className="group">
-                <div
-                  className="h-16 rounded-lg mb-2 border border-ui"
-                  style={{ background: c.hex }}
-                />
-                <p className="text-[13px] font-semibold">{c.label}</p>
-                <p className="font-mono text-[11px] text-muted">{c.hex}</p>
-                <p className="font-mono text-[10px] text-muted/60">{c.name}</p>
-              </div>
-            ))}
+        {/* ─── COLORS DARK ─────────────────────────────────────────────────── */}
+        <Section title="Colors — Dark Mode" num="01">
+          <div className="p-6 rounded-xl" style={{ background: '#0F1115' }}>
+            <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#6B7280' }}>
+              Default palette · data-theme="dark"
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+              {darkColors.map((c) => (
+                <div key={c.name}>
+                  <div
+                    className="h-14 rounded-lg mb-2 flex items-end p-2"
+                    style={{ background: c.hex, border: '1px solid rgba(255,255,255,0.06)' }}
+                  >
+                    <span className="font-mono text-[9px] leading-none" style={{ color: c.text, opacity: 0.7 }}>{c.hex}</span>
+                  </div>
+                  <p className="text-[12px] font-semibold" style={{ color: '#E8EAF0' }}>{c.label}</p>
+                  <p className="font-mono text-[10px]" style={{ color: '#6B7280' }}>{c.name}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </Section>
 
-        <Section title="Tool UI Colors" num="02">
+        {/* ─── COLORS LIGHT ────────────────────────────────────────────────── */}
+        <Section title="Colors — Light Mode" num="02">
+          <div className="p-6 rounded-xl" style={{ background: '#F8F8FA' }}>
+            <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#5C5C72' }}>
+              Light palette · data-theme="light"
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+              {lightColors.map((c) => (
+                <div key={c.name}>
+                  <div
+                    className="h-14 rounded-lg mb-2 flex items-end p-2"
+                    style={{ background: c.hex, border: '1px solid rgba(0,0,0,0.08)' }}
+                  >
+                    <span className="font-mono text-[9px] leading-none" style={{ color: c.text, opacity: 0.7 }}>{c.hex}</span>
+                  </div>
+                  <p className="text-[12px] font-semibold" style={{ color: '#0F1115' }}>{c.label}</p>
+                  <p className="font-mono text-[10px]" style={{ color: '#5C5C72' }}>{c.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Tool UI Colors" num="03">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {toolColors.map((c) => (
               <div key={c.name}>
@@ -114,7 +153,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── TYPOGRAPHY ──────────────────────────────────────────────────── */}
-        <Section title="Typography" num="03">
+        <Section title="Typography" num="04">
           <div className="space-y-10">
 
             {/* Headings scale */}
@@ -170,7 +209,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── BUTTONS ─────────────────────────────────────────────────────── */}
-        <Section title="Buttons & Links" num="04">
+        <Section title="Buttons & Links" num="05">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-4 items-center">
             <Button variant="primary">Primary CTA</Button>
             <Button variant="secondary">Secondary</Button>
@@ -192,7 +231,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── TECH TAGS ───────────────────────────────────────────────────── */}
-        <Section title="Tech Tags" num="05">
+        <Section title="Tech Tags" num="06">
           <div className="p-8 bg-bg2 rounded-xl border border-ui">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">
               .tech-tag — adds // prefix via CSS
@@ -211,7 +250,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── CARDS ───────────────────────────────────────────────────────── */}
-        <Section title="Cards" num="06">
+        <Section title="Cards" num="07">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Project Card */}
             <div className="project-card relative p-8 bg-bg2 border border-ui rounded-xl cursor-pointer hover:border-violet/40 transition-colors duration-300 overflow-hidden">
@@ -241,7 +280,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── SKILL BARS ──────────────────────────────────────────────────── */}
-        <Section title="Skill Bars" num="07">
+        <Section title="Skill Bars" num="08">
           <div className="skill-group relative p-8 bg-bg2 border border-ui rounded-xl overflow-hidden">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-6">
               .skill-group + .skill-bar-fill.visible
@@ -266,7 +305,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── SECTION ANATOMY ─────────────────────────────────────────────── */}
-        <Section title="Section Anatomy" num="08">
+        <Section title="Section Anatomy" num="09">
           <div className="p-8 bg-bg2 rounded-xl border border-ui space-y-6">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               .section-label[data-num] + heading pattern
@@ -290,7 +329,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── STATUS & INDICATORS ─────────────────────────────────────────── */}
-        <Section title="Indicators" num="09">
+        <Section title="Indicators" num="10">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-8 items-start">
             {/* Status dot */}
             <div className="flex flex-col gap-2">
@@ -339,7 +378,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── ANIMATIONS ──────────────────────────────────────────────────── */}
-        <Section title="Animations" num="10">
+        <Section title="Animations" num="11">
           <div className="grid sm:grid-cols-2 gap-3">
             {animations.map((a) => (
               <div
@@ -354,7 +393,7 @@ export default function DesignSystem() {
         </Section>
 
         {/* ─── GRADIENTS ───────────────────────────────────────────────────── */}
-        <Section title="Gradients" num="11">
+        <Section title="Gradients" num="12">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="h-20 rounded-xl" style={{ background: 'linear-gradient(90deg, #7C5CFF, #2EE6A6)' }}>
               <div className="h-full flex items-end p-4">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ThemeToggle from './ThemeToggle';
 
 const links = [
   { href: '/',            label: 'Home' },
@@ -25,13 +26,13 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[100] px-[60px] max-[640px]:px-6 py-6 flex justify-between items-center bg-gradient-to-b from-[rgba(15,17,21,0.95)] to-transparent backdrop-blur-[8px]">
+      <nav className="site-nav fixed top-0 left-0 right-0 z-[100] px-[60px] max-[640px]:px-6 py-6 flex justify-between items-center bg-gradient-to-b from-[rgba(15,17,21,0.95)] to-transparent backdrop-blur-[8px]">
         <Link href="/" className="text-[14px] font-semibold tracking-[0.12em] uppercase text-foreground no-underline">
           JP<span className="text-violet">.</span>
         </Link>
 
-        {/* Desktop links */}
-        <div className="flex gap-10 max-[640px]:hidden">
+        {/* Desktop links + toggle */}
+        <div className="flex items-center gap-10 max-[640px]:hidden">
           {links.map(({ href, label }) => (
             <Link
               key={href}
@@ -42,6 +43,7 @@ export default function Nav() {
               {label}
             </Link>
           ))}
+          <ThemeToggle />
         </div>
 
         {/* Burger button */}
@@ -107,7 +109,7 @@ export default function Nav() {
               style={{
                 opacity: open ? 1 : 0,
                 transform: open ? 'translateX(0)' : 'translateX(-40px)',
-                transition: `opacity 0.5s ease ${0.4 + i * 0.12}s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${0.4 + i * 0.12}s`,
+                transition: `opacity 0.5s ease ${0.2 + i * 0.1}s, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${0.2 + i * 0.1}s`,
               }}
             >
               <span
@@ -122,7 +124,7 @@ export default function Nav() {
 
         {/* Footer info */}
         <div
-          className="absolute bottom-10 flex items-center gap-2"
+          className="absolute bottom-10 flex items-center gap-4"
           style={{
             opacity: open ? 1 : 0,
             transition: `opacity 0.5s ease ${0.2 + links.length * 0.1 + 0.1}s`,
@@ -132,6 +134,7 @@ export default function Nav() {
           <span className="font-mono text-[11px] text-muted tracking-widest uppercase">
             Always cooking something
           </span>
+          <ThemeToggle />
         </div>
       </div>
     </>
