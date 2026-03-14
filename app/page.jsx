@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import Nav from './components/Nav'
 
 export default function Home() {
   useEffect(() => {
@@ -70,19 +71,7 @@ export default function Home() {
       <div id="cursor" />
       <div id="cursor-ring" />
 
-      {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] px-[60px] py-6 flex justify-between items-center bg-gradient-to-b from-[rgba(15,17,21,0.95)] to-transparent backdrop-blur-[8px]">
-        <div className="text-[14px] font-semibold tracking-[0.12em] uppercase text-foreground">
-          Dev<span className="text-violet">.</span>
-        </div>
-        <div className="flex gap-10">
-          {['about','skills','projects','experiments','contact'].map(id => (
-            <a key={id} href={`#${id}`} className="nav-link font-mono text-[12px] text-muted no-underline tracking-[0.05em] transition-colors duration-200 relative hover:text-foreground capitalize">
-              {id === 'experiments' ? 'Lab' : id.charAt(0).toUpperCase() + id.slice(1)}
-            </a>
-          ))}
-        </div>
-      </nav>
+      <Nav />
 
       {/* HERO */}
       <section className="min-h-screen flex items-center px-[60px] relative overflow-hidden" id="home">
@@ -100,7 +89,7 @@ export default function Home() {
           </h1>
           <p className="font-mono text-[15px] text-muted leading-[1.7] mt-7 max-w-[500px] opacity-0 animate-fade-up-3">
             I build fast, beautiful interfaces and robust backends.<br />
-            React, Vue, WordPress, Drupal, Webflow — and whatever it takes.
+            React, Vue, WordPress, Drupal, Webflow and whatever it takes.
           </p>
           <div className="flex gap-4 mt-11 opacity-0 animate-fade-up-4">
             <a href="#projects" className="px-8 py-[13px] bg-violet text-white font-head font-semibold text-[14px] tracking-[0.03em] border-none rounded-md cursor-none no-underline transition-[background,transform,box-shadow] duration-200 hover:bg-[#9070ff] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(124,92,255,0.35)]">
@@ -148,8 +137,8 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 gap-[2px] reveal reveal-delay-2">
             {[
-              { num: '5', sup: '+', label: 'Years of experience' },
-              { num: '40', sup: '+', label: 'Projects shipped' },
+              { num: '10', sup: '+', label: 'Years of experience' },
+              { num: 'Many', sup: '+', label: 'Projects shipped' },
               { num: '6', sup: '',  label: 'Core technologies' },
               { num: '∞', sup: '',  label: 'Coffees consumed' },
             ].map(s => (
@@ -267,10 +256,10 @@ export default function Home() {
         </p>
         <div className="flex justify-center gap-4 flex-wrap reveal reveal-delay-2">
           {[
-            { href:'mailto:hello@yoursite.com', label:'📬 hello@yoursite.com' },
-            { href:'https://github.com',        label:'⌥ GitHub',    ext:true },
-            { href:'https://linkedin.com',      label:'◈ LinkedIn',  ext:true },
-            { href:'#',                         label:'↓ Resume' },
+            { href:'mailto:info@jeanphilippebelley.com', label:'📬 info@jeanphilippebelley.com' },
+            { href:'https://github.com/JPBelley',        label:'⌥ GitHub',    ext:true },
+            { href:'https://www.linkedin.com/in/jean-philippe-belley-01558286/',      label:'◈ LinkedIn',  ext:true },
+            // { href:'#',                         label:'↓ Resume' },
           ].map(l => (
             <a key={l.href} href={l.href} {...(l.ext ? { target:'_blank', rel:'noreferrer' } : {})}
               className="flex items-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
