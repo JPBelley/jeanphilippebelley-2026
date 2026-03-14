@@ -65,7 +65,7 @@ export default function DesignSystem() {
       <Cursor />
       <Nav />
 
-      <main className="max-w-5xl mx-auto px-8 py-20">
+      <main className="max-w-5xl mx-auto px-8 max-[640px]:px-10 py-20 max-[640px]:py-10">
 
         {/* Title */}
         <div className="mb-20">
@@ -128,7 +128,7 @@ export default function DesignSystem() {
                   { tag: 'h3', size: '32px',                  weight: '600', label: 'Card Heading (large)', sample: 'Design System & Tokens' },
                   { tag: 'h4', size: '22px',                  weight: '600', label: 'Card Heading (small)', sample: 'Headless WordPress' },
                   { tag: 'h5', size: '16px',                  weight: '600', label: 'Label / Group Title',  sample: 'Frontend Frameworks' },
-                  { tag: 'h6', size: '13px',                  weight: '600', label: 'Micro Label',          sample: 'Available for work' },
+                  { tag: 'h6', size: '13px',                  weight: '600', label: 'Micro Label',          sample: 'Always cooking something' },
                 ].map(({ tag: Tag, size, weight, label, sample }) => (
                   <div key={Tag} className="flex items-baseline justify-between gap-8 py-4 first:pt-0 last:pb-0">
                     <div className="flex items-baseline gap-6 min-w-0">
@@ -308,7 +308,7 @@ export default function DesignSystem() {
                 <span
                   className="inline-block w-2 h-2 rounded-full bg-mint animate-status-pulse"
                 />
-                <span className="font-mono text-[13px]">Available for work</span>
+                <span className="font-mono text-[13px]">Always cooking something</span>
               </div>
             </div>
 

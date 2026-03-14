@@ -35,7 +35,7 @@ export default function Experiments() {
       <Cursor />
       <Nav />
 
-      <main className="max-w-6xl mx-auto px-[60px] pt-40 pb-20">
+      <main className="max-w-6xl mx-auto px-[60px] max-[640px]:px-10 pt-40 max-[640px]:pt-10 pb-20 max-[640px]:pb-10">
         <div className="mb-16">
           <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="01">
             Lab

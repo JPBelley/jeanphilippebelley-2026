@@ -34,15 +34,15 @@ export default function Home() {
       <Nav />
 
       {/* HERO */}
-      <section className="min-h-screen flex items-center px-[60px] relative overflow-hidden" id="home">
+      <section className="min-h-screen flex items-center max-[900px]:flex-col max-[900px]:justify-center px-[60px] max-[640px]:px-10 relative overflow-hidden" id="home">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_50%,rgba(124,92,255,0.08)_0%,transparent_70%),radial-gradient(ellipse_40%_40%_at_20%_80%,rgba(46,230,166,0.05)_0%,transparent_60%)]" />
         <div className="hero-grid" />
 
-        <div className="relative z-[2] max-w-[780px]">
+        <div className="relative z-[2] max-w-[780px] max-[900px]:pt-32 max-[900px]:w-full">
           <div className="hero-tag font-mono text-[12px] text-mint tracking-[0.15em] uppercase mb-7 flex items-center gap-[10px] opacity-0 animate-fade-up-1">
             Always cooking something
           </div>
-          <h1 className="text-[clamp(48px,7vw,86px)] font-bold leading-[1.05] tracking-[-0.03em] opacity-0 animate-fade-up-2">
+          <h1 className="text-[clamp(40px,7vw,86px)] font-bold leading-[1.05] tracking-[-0.03em] opacity-0 animate-fade-up-2">
             Full Stack<br />
             <span className="text-violet">Developer</span><br />
             <span className="text-muted">&amp; UI Craftsman</span>
@@ -51,17 +51,27 @@ export default function Home() {
             I build fast, beautiful interfaces and robust backends.<br />
             React, Vue, WordPress, Drupal, Webflow and whatever it takes.
           </p>
-          <div className="flex gap-4 mt-11 opacity-0 animate-fade-up-4">
-            <a href="#projects" className="px-8 py-[13px] bg-violet text-white font-head font-semibold text-[14px] tracking-[0.03em] border-none rounded-md cursor-none no-underline transition-[background,transform,box-shadow] duration-200 hover:bg-[#9070ff] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(124,92,255,0.35)]">
+          <div className="flex max-[640px]:flex-col gap-4 mt-11 opacity-0 animate-fade-up-4">
+            <a href="#projects" className="px-8 py-[13px] max-[640px]:text-center bg-violet text-white font-head font-semibold text-[14px] tracking-[0.03em] border-none rounded-md cursor-none no-underline transition-[background,transform,box-shadow] duration-200 hover:bg-[#9070ff] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(124,92,255,0.35)]">
               View My Work
             </a>
-            <a href="#contact" className="px-8 py-[13px] bg-transparent text-foreground font-head font-medium text-[14px] border border-ui rounded-md cursor-none no-underline transition-[border-color,color,transform] duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
+            <a href="#contact" className="px-8 py-[13px] max-[640px]:text-center bg-transparent text-foreground font-head font-medium text-[14px] border border-ui rounded-md cursor-none no-underline transition-[border-color,color,transform] duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
               Get In Touch
             </a>
           </div>
+
+          {/* Tech tags — inline on mobile */}
+          <div className="hidden max-[900px]:flex flex-wrap gap-2 mt-10 opacity-0 animate-fade-up-5">
+            {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
+              <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] relative${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
+                {t}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="absolute right-[60px] top-1/2 -translate-y-1/2 flex flex-col gap-3 opacity-0 animate-fade-left">
+        {/* Tech tags — absolute on desktop */}
+        <div className="absolute right-[60px] top-1/2 -translate-y-1/2 flex flex-col gap-3 opacity-0 animate-fade-left max-[900px]:hidden">
           {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
             <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] transition-all duration-200 relative hover:border-violet hover:text-violet${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
               {t}
@@ -69,14 +79,14 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="absolute bottom-10 left-[60px] flex items-center gap-3 opacity-0 animate-fade-up-5">
+        <div className="absolute bottom-10 left-[60px] max-[640px]:left-6 flex items-center gap-3 opacity-0 animate-fade-up-5 max-[900px]:hidden">
           <div className="scroll-line w-px h-12 bg-gradient-to-b from-transparent to-ui relative overflow-hidden" />
           <span className="font-mono text-[11px] text-muted tracking-[0.1em] [writing-mode:vertical-lr]">Scroll</span>
         </div>
       </section>
 
       {/* ABOUT */}
-      <section className="bg-bg py-[100px] px-[60px] relative" id="about">
+      <section className="bg-bg py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="about">
         <div className="w-full h-px bg-gradient-to-r from-transparent via-ui to-transparent" />
         <div className="h-20" />
         <div className="grid grid-cols-2 gap-[80px] items-center max-[900px]:grid-cols-1 max-[900px]:gap-12">
@@ -114,7 +124,7 @@ export default function Home() {
       </section>
 
       {/* SKILLS */}
-      <section className="bg-bg2 py-[100px] px-[60px] relative" id="skills">
+      <section className="bg-bg2 py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="skills">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="02">Skills</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           What I work<br />with <span className="text-mint">every day</span>
@@ -144,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* PROJECTS */}
-      <section className="bg-bg py-[100px] px-[60px] relative" id="projects">
+      <section className="bg-bg py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="projects">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="03">Projects</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           Selected<br /><span className="text-violet">work</span>
@@ -198,7 +208,7 @@ export default function Home() {
       </section>
 
       {/* EXPERIMENTS / LAB */}
-      <section className="bg-bg2 py-[100px] px-[60px] relative" id="experiments">
+      <section className="bg-bg2 py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="experiments">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="04">Lab</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           Experiments &amp;<br /><span className="text-mint">playground</span>
@@ -220,7 +230,7 @@ export default function Home() {
       </section>
 
       {/* CONTACT */}
-      <section className="bg-bg py-[100px] px-[60px] text-center relative" id="contact">
+      <section className="bg-bg py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 text-center relative" id="contact">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center" data-num="05">Contact</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] text-center reveal reveal-delay-1">
           Let&apos;s build<br />something <span className="text-mint">great</span>
@@ -229,15 +239,14 @@ export default function Home() {
           I&apos;m always open to interesting projects and collaborations.<br />
           Drop me a line.
         </p>
-        <div className="flex justify-center gap-4 flex-wrap reveal reveal-delay-2">
+        <div className="flex justify-center gap-4 flex-wrap max-[640px]:flex-col reveal reveal-delay-2">
           {[
             { href:'mailto:info@jeanphilippebelley.com', label:'📬 info@jeanphilippebelley.com' },
             { href:'https://github.com/JPBelley',        label:'⌥ GitHub',    ext:true },
             { href:'https://www.linkedin.com/in/jean-philippe-belley-01558286/',      label:'◈ LinkedIn',  ext:true },
-            // { href:'#',                         label:'↓ Resume' },
           ].map(l => (
             <a key={l.href} href={l.href} {...(l.ext ? { target:'_blank', rel:'noreferrer' } : {})}
-              className="flex items-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
+              className="flex items-center justify-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5">
               {l.label}
             </a>
           ))}

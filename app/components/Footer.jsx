@@ -6,7 +6,7 @@ export default function Footer() {
       </div>
       <div className="font-mono text-[12px] text-muted flex items-center gap-2">
         <div className="w-[7px] h-[7px] rounded-full bg-mint animate-status-pulse" />
-        Available for work
+        Always cooking something
       </div>
     </footer>
   );

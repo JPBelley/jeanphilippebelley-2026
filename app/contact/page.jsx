@@ -16,7 +16,7 @@ export default function Contact() {
       <Cursor />
       <Nav />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-[60px] py-40 text-center">
+      <main className="flex-1 flex flex-col items-center justify-center px-[60px] max-[640px]:px-10 py-40 max-[640px]:py-10 text-center">
         <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center" data-num="01">
           Contact
         </div>
@@ -27,13 +27,13 @@ export default function Contact() {
           I&apos;m always open to interesting projects and collaborations.<br />
           Drop me a line.
         </p>
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-4 flex-wrap max-[640px]:flex-col max-[640px]:w-full">
           {links.map(l => (
             <a
               key={l.href}
               href={l.href}
               {...(l.ext ? { target: '_blank', rel: 'noreferrer' } : {})}
-              className="flex items-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5"
+              className="flex items-center justify-center gap-2 px-7 py-[14px] border border-ui text-muted no-underline font-mono text-[13px] tracking-[0.05em] rounded-md transition-all duration-200 hover:border-mint hover:text-mint hover:-translate-y-0.5"
             >
               {l.label}
             </a>
