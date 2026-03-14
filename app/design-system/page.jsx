@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Footer from '../components/Footer';
 
 const Section = ({ title, num, children }) => (
   <section className="mb-20">
@@ -422,11 +423,7 @@ export default function DesignSystem() {
 
       </main>
 
-      <footer className="border-t border-ui py-10 text-center">
-        <p className="font-mono text-[11px] text-muted">
-          jeanphilippebelley.com — design system
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
