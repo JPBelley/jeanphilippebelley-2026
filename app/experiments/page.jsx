@@ -31,6 +31,14 @@ const experiments = [
     tags:  ['Three.js', 'GLSL', 'Wireframe'],
     accent: '34,211,238',
   },
+  {
+    href:  '/experiments/text-animator',
+    icon:  '✦',
+    title: 'Text Animator',
+    desc:  'Letter-by-letter animation studio. Control opacity, translate, scale, rotate, blur, stagger and easing with a live preview window.',
+    tags:  ['CSS Animations', 'Typography', 'Motion'],
+    accent: '46,230,166',
+  },
 ];
 
 export default function Experiments() {
