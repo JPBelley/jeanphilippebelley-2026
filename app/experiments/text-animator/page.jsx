@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
 import Cursor from '../../components/Cursor';
+import Section from '../../components/Section';
 
 /* ─── Constants ────────────────────────────────────────────────────────────── */
 
@@ -129,7 +130,7 @@ export default function TextAnimator() {
       <Cursor />
       <Nav />
 
-      <main className="max-w-6xl mx-auto px-[60px] max-[640px]:px-10 pt-32 pb-20">
+      <Section size="wide">
 
         {/* Header */}
         <div className="mb-12">
@@ -332,7 +333,7 @@ export default function TextAnimator() {
           </div>
 
         </div>
-      </main>
+      </Section>
 
       <Footer />
     </div>

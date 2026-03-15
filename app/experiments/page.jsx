@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import Cursor from '../components/Cursor';
+import Section from '../components/Section';
 
 const experiments = [
   {
@@ -82,7 +83,7 @@ export default function Experiments() {
       <Cursor />
       <Nav />
 
-      <main className="max-w-6xl mx-auto px-[60px] max-[640px]:px-10 pt-40 max-[640px]:pt-10 pb-20 max-[640px]:pb-10">
+      <Section size="wide">
         <div className="mb-16">
           <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="01">
             Lab
@@ -151,7 +152,7 @@ export default function Experiments() {
             </Link>
           ))}
         </div>
-      </main>
+      </Section>
 
       <Footer />
     </div>

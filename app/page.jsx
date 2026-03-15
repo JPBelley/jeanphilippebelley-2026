@@ -6,6 +6,7 @@ import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Cursor from './components/Cursor'
 import Button from './components/Button'
+import Section from './components/Section'
 
 export default function Home() {
   useEffect(() => {
@@ -35,11 +36,15 @@ export default function Home() {
       <Nav />
 
       {/* HERO */}
-      <section className="min-h-screen flex items-center max-[900px]:flex-col max-[900px]:justify-center px-[60px] max-[640px]:px-10 relative overflow-hidden" id="home">
+      <Section
+        className="relative overflow-hidden"
+        id="home"
+        containerClassName="min-h-screen flex items-center max-[900px]:flex-col max-[900px]:justify-center"
+      >
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_50%,rgba(124,92,255,0.08)_0%,transparent_70%),radial-gradient(ellipse_40%_40%_at_20%_80%,rgba(46,230,166,0.05)_0%,transparent_60%)]" />
         <div className="hero-grid" />
 
-        <div className="relative z-[2] max-w-[780px] max-[900px]:pt-32 max-[900px]:w-full">
+        <div className="relative z-[2] flex-1 max-w-[780px] max-[900px]:pt-32 max-[900px]:w-full">
           <div className="hero-tag font-mono text-[12px] text-mint tracking-[0.15em] uppercase mb-7 flex items-center gap-[10px] opacity-0 animate-fade-up-1">
             Always cooking something
           </div>
@@ -67,8 +72,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tech tags — absolute on desktop */}
-        <div className="absolute right-[60px] top-1/2 -translate-y-1/2 flex flex-col gap-3 opacity-0 animate-fade-left max-[900px]:hidden">
+        {/* Tech tags — flex sibling on desktop */}
+        <div className="relative z-[2] flex flex-col gap-3 opacity-0 animate-fade-left max-[900px]:hidden ml-auto">
           {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
             <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] transition-all duration-200 relative hover:border-violet hover:text-violet${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
               {t}
@@ -80,10 +85,10 @@ export default function Home() {
           <div className="scroll-line w-px h-12 bg-gradient-to-b from-transparent to-ui relative overflow-hidden" />
           <span className="font-mono text-[11px] text-muted tracking-[0.1em] [writing-mode:vertical-lr]">Scroll</span>
         </div>
-      </section>
+      </Section>
 
       {/* ABOUT */}
-      <section className="bg-bg py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="about">
+      <Section className="bg-bg relative" id="about">
         <div className="w-full h-px bg-gradient-to-r from-transparent via-ui to-transparent" />
         <div className="h-20" />
         <div className="grid grid-cols-2 gap-[80px] items-center max-[900px]:grid-cols-1 max-[900px]:gap-12">
@@ -118,10 +123,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </Section>
 
       {/* SKILLS */}
-      <section className="bg-bg2 py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="skills">
+      <Section className="bg-bg2 relative" id="skills">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="02">Skills</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           What I work<br />with <span className="text-mint">every day</span>
@@ -148,10 +153,10 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* PROJECTS */}
-      <section className="bg-bg py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="projects">
+      <Section className="bg-bg relative" id="projects">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="03">Projects</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           Selected<br /><span className="text-violet">work</span>
@@ -202,10 +207,10 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* EXPERIMENTS / LAB */}
-      <section className="bg-bg2 py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 relative" id="experiments">
+      <Section className="bg-bg2 relative" id="experiments">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="04">Lab</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           Experiments &amp;<br /><span className="text-mint">playground</span>
@@ -224,10 +229,10 @@ export default function Home() {
             </Link>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* CONTACT */}
-      <section className="bg-bg py-[100px] max-[640px]:py-10 px-[60px] max-[640px]:px-10 text-center relative" id="contact">
+      <Section className="bg-bg relative" id="contact" containerClassName="text-center">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center" data-num="05">Contact</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] text-center reveal reveal-delay-1">
           Let&apos;s build<br />something <span className="text-mint">great</span>
@@ -247,7 +252,7 @@ export default function Home() {
             </Button>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* FOOTER */}
       <Footer />

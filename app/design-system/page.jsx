@@ -5,8 +5,9 @@ import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import Cursor from '../components/Cursor';
 import Button from '../components/Button';
+import Section from '../components/Section';
 
-const Section = ({ title, num, children }) => (
+const TokenSection = ({ title, num, children }) => (
   <section className="mb-20">
     <div className="flex items-center gap-4 mb-8">
       <span
@@ -76,7 +77,7 @@ export default function DesignSystem() {
       <Cursor />
       <Nav />
 
-      <main className="max-w-5xl mx-auto px-8 max-[640px]:px-10 py-20 max-[640px]:py-10">
+      <Section>
 
         {/* Title */}
         <div className="mb-20">
@@ -92,7 +93,7 @@ export default function DesignSystem() {
         </div>
 
         {/* ─── COLORS DARK ─────────────────────────────────────────────────── */}
-        <Section title="Colors — Dark Mode" num="01">
+        <TokenSection title="Colors — Dark Mode" num="01">
           <div className="p-6 rounded-xl" style={{ background: '#0F1115' }}>
             <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#6B7280' }}>
               Default palette · data-theme="dark"
@@ -112,10 +113,10 @@ export default function DesignSystem() {
               ))}
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── COLORS LIGHT ────────────────────────────────────────────────── */}
-        <Section title="Colors — Light Mode" num="02">
+        <TokenSection title="Colors — Light Mode" num="02">
           <div className="p-6 rounded-xl" style={{ background: '#F8F8FA' }}>
             <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#5C5C72' }}>
               Light palette · data-theme="light"
@@ -135,9 +136,9 @@ export default function DesignSystem() {
               ))}
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
-        <Section title="Tool UI Colors" num="03">
+        <TokenSection title="Tool UI Colors" num="03">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {toolColors.map((c) => (
               <div key={c.name}>
@@ -150,10 +151,10 @@ export default function DesignSystem() {
               </div>
             ))}
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── TYPOGRAPHY ──────────────────────────────────────────────────── */}
-        <Section title="Typography" num="04">
+        <TokenSection title="Typography" num="04">
           <div className="space-y-10">
 
             {/* Headings scale */}
@@ -206,10 +207,10 @@ export default function DesignSystem() {
             </div>
 
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── BUTTONS ─────────────────────────────────────────────────────── */}
-        <Section title="Buttons & Links" num="05">
+        <TokenSection title="Buttons & Links" num="05">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-4 items-center">
             <Button variant="primary">Primary CTA</Button>
             <Button variant="secondary">Secondary</Button>
@@ -228,10 +229,10 @@ export default function DesignSystem() {
               Tag
             </span>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── TECH TAGS ───────────────────────────────────────────────────── */}
-        <Section title="Tech Tags" num="06">
+        <TokenSection title="Tech Tags" num="06">
           <div className="p-8 bg-bg2 rounded-xl border border-ui">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">
               .tech-tag — adds // prefix via CSS
@@ -247,10 +248,10 @@ export default function DesignSystem() {
               ))}
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── CARDS ───────────────────────────────────────────────────────── */}
-        <Section title="Cards" num="07">
+        <TokenSection title="Cards" num="07">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Project Card */}
             <div className="project-card relative p-8 bg-bg2 border border-ui rounded-xl cursor-pointer hover:border-violet/40 transition-colors duration-300 overflow-hidden">
@@ -277,10 +278,10 @@ export default function DesignSystem() {
               </p>
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── SKILL BARS ──────────────────────────────────────────────────── */}
-        <Section title="Skill Bars" num="08">
+        <TokenSection title="Skill Bars" num="08">
           <div className="skill-group relative p-8 bg-bg2 border border-ui rounded-xl overflow-hidden">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-6">
               .skill-group + .skill-bar-fill.visible
@@ -302,10 +303,10 @@ export default function DesignSystem() {
               ))}
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── SECTION ANATOMY ─────────────────────────────────────────────── */}
-        <Section title="Section Anatomy" num="09">
+        <TokenSection title="Section Anatomy" num="09">
           <div className="p-8 bg-bg2 rounded-xl border border-ui space-y-6">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               .section-label[data-num] + heading pattern
@@ -326,10 +327,10 @@ export default function DesignSystem() {
               </p>
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── STATUS & INDICATORS ─────────────────────────────────────────── */}
-        <Section title="Indicators" num="10">
+        <TokenSection title="Indicators" num="10">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-8 items-start">
             {/* Status dot */}
             <div className="flex flex-col gap-2">
@@ -375,10 +376,10 @@ export default function DesignSystem() {
               </div>
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── ANIMATIONS ──────────────────────────────────────────────────── */}
-        <Section title="Animations" num="11">
+        <TokenSection title="Animations" num="11">
           <div className="grid sm:grid-cols-2 gap-3">
             {animations.map((a) => (
               <div
@@ -390,10 +391,10 @@ export default function DesignSystem() {
               </div>
             ))}
           </div>
-        </Section>
+        </TokenSection>
 
         {/* ─── GRADIENTS ───────────────────────────────────────────────────── */}
-        <Section title="Gradients" num="12">
+        <TokenSection title="Gradients" num="12">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="h-20 rounded-xl" style={{ background: 'linear-gradient(90deg, #7C5CFF, #2EE6A6)' }}>
               <div className="h-full flex items-end p-4">
@@ -425,9 +426,9 @@ export default function DesignSystem() {
               <span className="font-mono text-[11px] text-muted">bg fade (sections)</span>
             </div>
           </div>
-        </Section>
+        </TokenSection>
 
-      </main>
+      </Section>
 
       <Footer />
     </div>
