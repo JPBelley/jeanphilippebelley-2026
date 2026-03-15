@@ -2,19 +2,25 @@
 
 import { useEffect } from 'react'
 import Nav from '../../components/Nav'
+import Footer from '../../components/Footer'
+import Cursor from '../../components/Cursor'
+import Section from '../../components/Section'
 
 export default function MorphingBlob() {
   useEffect(() => {
     const script = document.createElement('script')
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
     script.onload = () => {
+      const wrap = document.getElementById('canvas-wrap')
+      const size = wrap.clientWidth
+
       const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('c'), antialias: true})
       renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
-      renderer.setSize(innerWidth, innerHeight)
+      renderer.setSize(size, size)
       renderer.shadowMap.enabled = true
 
       const scene = new THREE.Scene()
-      const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100)
+      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100)
       camera.position.set(0, 0, 7)
 
       const bgGeo = new THREE.SphereGeometry(40, 8, 8)
@@ -157,9 +163,10 @@ export default function MorphingBlob() {
       animate()
 
       const handleResize = () => {
-        camera.aspect = innerWidth/innerHeight
+        const s = wrap.clientWidth
+        camera.aspect = 1
         camera.updateProjectionMatrix()
-        renderer.setSize(innerWidth, innerHeight)
+        renderer.setSize(s, s)
       }
       window.addEventListener('resize', handleResize)
 
@@ -206,7 +213,6 @@ export default function MorphingBlob() {
         })
       })
 
-      // store cleanup refs
       script._cleanup = () => {
         cancelAnimationFrame(animRaf)
         window.removeEventListener('resize', handleResize)
@@ -220,72 +226,110 @@ export default function MorphingBlob() {
     }
   }, [])
 
-  const sliderClass = "w-full h-[3px] appearance-none bg-[rgba(255,255,255,0.18)] rounded-[2px] outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[13px] [&::-webkit-slider-thumb]:h-[13px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:cursor-pointer"
+  const sliderClass = "w-full h-[3px] appearance-none rounded bg-ui outline-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet [&::-webkit-slider-thumb]:cursor-pointer"
+
+  const sliders1 = [
+    { id:'bspeed', label:'Breath Speed', val:'1.0',  min:'0.1', max:'4',   step:'0.1'  },
+    { id:'bdepth', label:'Breath Depth', val:'0.35', min:'0',   max:'1',   step:'0.01' },
+    { id:'freq',   label:'Noise Freq',   val:'1.8',  min:'0.2', max:'5',   step:'0.1'  },
+    { id:'chaos',  label:'Chaos',        val:'0.55', min:'0',   max:'1.5', step:'0.05' },
+    { id:'tent',   label:'Tentacles',    val:'0.3',  min:'0',   max:'1',   step:'0.05' },
+  ]
+  const sliders2 = [
+    { id:'rot',   label:'Rotation Speed', val:'0.4', min:'0', max:'2', step:'0.05' },
+    { id:'spike', label:'Spikes',         val:'0.0', min:'0', max:'1', step:'0.05' },
+  ]
 
   return (
-    <div className="relative bg-black overflow-hidden font-sans w-screen h-screen">
-      <Nav />
-      <canvas id="c" className="block w-screen h-screen" />
-
-      {/* Floating UI panel */}
-      <div className="absolute top-4 right-4 bg-[rgba(255,255,255,0.05)] backdrop-blur-[12px] border border-[rgba(255,255,255,0.12)] rounded-[14px] p-4 w-[230px] text-white text-[13px]">
-        <h3 className="text-[14px] font-medium mb-[14px] tracking-[0.4px]">Morphing Blob</h3>
-
-        {[
-          { id:'bspeed', label:'Breath speed', val:'1.0',  min:'0.1', max:'4',   step:'0.1'  },
-          { id:'bdepth', label:'Breath depth', val:'0.35', min:'0',   max:'1',   step:'0.01' },
-          { id:'freq',   label:'Noise freq',   val:'1.8',  min:'0.2', max:'5',   step:'0.1'  },
-          { id:'chaos',  label:'Noise chaos',  val:'0.55', min:'0',   max:'1.5', step:'0.05' },
-          { id:'tent',   label:'Tentacles',    val:'0.3',  min:'0',   max:'1',   step:'0.05' },
-        ].map(s => (
-          <div key={s.id} className="mb-[13px]">
-            <label className="flex justify-between mb-[5px] text-[rgba(255,255,255,0.6)]">
-              {s.label} <span id={`v-${s.id}`} className="text-white font-medium">{s.val}</span>
-            </label>
-            <input type="range" id={`s-${s.id}`} min={s.min} max={s.max} step={s.step} defaultValue={s.val} className={sliderClass} />
-          </div>
-        ))}
-
-        <hr className="border-none border-t border-[rgba(255,255,255,0.1)] my-[13px]" />
-
-        {[
-          { id:'rot',   label:'Rotation speed', val:'0.4', min:'0', max:'2',   step:'0.05' },
-          { id:'spike', label:'Spikes',          val:'0.0', min:'0', max:'1',   step:'0.05' },
-        ].map(s => (
-          <div key={s.id} className="mb-[13px]">
-            <label className="flex justify-between mb-[5px] text-[rgba(255,255,255,0.6)]">
-              {s.label} <span id={`v-${s.id}`} className="text-white font-medium">{s.val}</span>
-            </label>
-            <input type="range" id={`s-${s.id}`} min={s.min} max={s.max} step={s.step} defaultValue={s.val} className={sliderClass} />
-          </div>
-        ))}
-
-        <hr className="border-none border-t border-[rgba(255,255,255,0.1)] my-[13px]" />
-
-        <div className="mb-[13px]">
-          <label className="flex justify-between mb-[5px] text-[rgba(255,255,255,0.6)]">Palette</label>
-          <select id="s-pal" className="w-full bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.18)] text-white rounded-[7px] px-2 py-[5px] text-[13px] outline-none [&_option]:bg-[#111]">
-            <option value="alien">Alien (cyan/lime)</option>
-            <option value="lava">Lava (red/orange)</option>
-            <option value="void">Void (purple/black)</option>
-            <option value="ocean">Ocean (blue/teal)</option>
-            <option value="toxic">Toxic (green/yellow)</option>
-          </select>
+    <div className="min-h-screen bg-bg text-foreground font-head">
+      <Cursor /><Nav />
+      <Section size="wide">
+        <div className="mb-8">
+          <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// morphing-blob</p>
+          <h1 className="text-3xl font-bold">Morphing Blob</h1>
+          <p className="text-muted mt-1 text-sm">Three.js WebGL organic shape deformer with noise-based vertex displacement.</p>
         </div>
 
-        <hr className="border-none border-t border-[rgba(255,255,255,0.1)] my-[13px]" />
+        <div className="flex gap-6 items-start max-[900px]:flex-col">
+          {/* Controls */}
+          <aside className="w-[260px] max-[900px]:w-full shrink-0 rounded-xl border border-ui bg-bg2 overflow-hidden text-[13px]">
+            <div className="px-4 py-3 border-b border-ui">
+              <h2 className="text-[13px] font-semibold">Controls</h2>
+            </div>
 
-        <button id="btn-panic" className="w-full py-[7px] rounded-[7px] mt-1 bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.18)] text-white text-[13px] cursor-pointer transition-colors hover:bg-[rgba(255,255,255,0.18)]">
-          Panic mode 🫀
-        </button>
-        <button id="btn-calm" className="w-full py-[7px] rounded-[7px] mt-[6px] bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.18)] text-white text-[13px] cursor-pointer transition-colors hover:bg-[rgba(255,255,255,0.18)]">
-          Calm down 🫧
-        </button>
-      </div>
+            <div className="p-4 flex flex-col gap-5">
+              {/* Shape */}
+              <div>
+                <p className="text-[10px] text-muted uppercase tracking-widest mb-3">Shape</p>
+                <div className="flex flex-col gap-3">
+                  {sliders1.map(s => (
+                    <div key={s.id}>
+                      <label className="flex justify-between text-[11px] text-muted mb-1">
+                        {s.label}
+                        <span id={`v-${s.id}`} className="text-foreground font-medium tabular-nums">{s.val}</span>
+                      </label>
+                      <input type="range" id={`s-${s.id}`} min={s.min} max={s.max} step={s.step} defaultValue={s.val} className={sliderClass} />
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-      <div className="absolute bottom-[14px] left-1/2 -translate-x-1/2 text-[rgba(255,255,255,0.25)] text-[12px] pointer-events-none">
-        Drag to orbit · Scroll to zoom
-      </div>
+              <div className="h-px bg-ui" />
+
+              {/* Motion */}
+              <div>
+                <p className="text-[10px] text-muted uppercase tracking-widest mb-3">Motion</p>
+                <div className="flex flex-col gap-3">
+                  {sliders2.map(s => (
+                    <div key={s.id}>
+                      <label className="flex justify-between text-[11px] text-muted mb-1">
+                        {s.label}
+                        <span id={`v-${s.id}`} className="text-foreground font-medium tabular-nums">{s.val}</span>
+                      </label>
+                      <input type="range" id={`s-${s.id}`} min={s.min} max={s.max} step={s.step} defaultValue={s.val} className={sliderClass} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-px bg-ui" />
+
+              {/* Palette */}
+              <div>
+                <p className="text-[10px] text-muted uppercase tracking-widest mb-3">Palette</p>
+                <select id="s-pal" className="w-full bg-bg border border-ui text-foreground rounded-lg px-3 py-2 text-[12px] outline-none cursor-pointer">
+                  <option value="alien">Alien — cyan / lime</option>
+                  <option value="lava">Lava — red / orange</option>
+                  <option value="void">Void — purple / black</option>
+                  <option value="ocean">Ocean — blue / teal</option>
+                  <option value="toxic">Toxic — green / yellow</option>
+                </select>
+              </div>
+
+              <div className="h-px bg-ui" />
+
+              {/* Presets */}
+              <div className="flex flex-col gap-2">
+                <button id="btn-panic" className="w-full py-2 rounded-lg border border-ui bg-bg text-foreground text-[12px] font-medium cursor-pointer hover:bg-ui transition-colors">
+                  Panic mode 🫀
+                </button>
+                <button id="btn-calm" className="w-full py-2 rounded-lg border border-ui bg-bg text-foreground text-[12px] font-medium cursor-pointer hover:bg-ui transition-colors">
+                  Calm down 🫧
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          {/* Preview */}
+          <div className="flex-1 flex flex-col gap-3 min-w-0 sticky top-[100px] self-start">
+            <div id="canvas-wrap" className="w-full rounded-xl overflow-hidden border border-ui" style={{aspectRatio:'1/1'}}>
+              <canvas id="c" className="block w-full" />
+            </div>
+            <p className="text-[11px] text-muted text-center">Drag to orbit · Scroll to zoom</p>
+          </div>
+        </div>
+      </Section>
+      <Footer />
     </div>
   )
 }

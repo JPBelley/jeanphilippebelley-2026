@@ -2,6 +2,9 @@
 
 import { useEffect } from 'react'
 import Nav from '../../components/Nav'
+import Footer from '../../components/Footer'
+import Cursor from '../../components/Cursor'
+import Section from '../../components/Section'
 
 export default function WireStudio() {
   useEffect(() => {
@@ -76,53 +79,53 @@ export default function WireStudio() {
       function buildControls(tab) {
         const con = document.getElementById('controls'); con.innerHTML=''
         ;(TABS[tab]||[]).forEach(sec => {
-          const wrap=document.createElement('div'); wrap.className='section'
-          const hdr=document.createElement('div'); hdr.className='sec-hdr'
+          const wrap=document.createElement('div'); wrap.className='wire-section'
+          const hdr=document.createElement('div'); hdr.className='wire-sec-hdr'
           hdr.innerHTML=`<span>${sec.title}</span><span class="chv">▾</span>`
-          const body=document.createElement('div'); body.className='sec-body'
+          const body=document.createElement('div'); body.className='wire-sec-body'
           hdr.onclick=()=>{const h=body.style.display==='none';body.style.display=h?'':'none';hdr.querySelector('.chv').style.transform=h?'':'rotate(-90deg)';}
           ;(sec.items||[]).forEach(item => {
             const isColor=typeof P[item.k]==='string'
             const row=document.createElement('div')
             if(isColor){
-              row.className='color-row'
-              const sw=document.createElement('div'); sw.className='swatch'; sw.style.background=P[item.k]
+              row.className='wire-color-row'
+              const sw=document.createElement('div'); sw.className='wire-swatch'; sw.style.background=P[item.k]
               const inp=document.createElement('input'); inp.type='color'; inp.value=P[item.k]
               inp.oninput=e=>{P[item.k]=e.target.value;sw.style.background=e.target.value;onParamChange(item.k);}
               sw.appendChild(inp)
-              row.innerHTML=`<span class="ctrl-label">${item.l}</span>`; row.appendChild(sw)
+              row.innerHTML=`<span class="wire-ctrl-label">${item.l}</span>`; row.appendChild(sw)
             } else {
-              row.className='ctrl-row'
+              row.className='wire-ctrl-row'
               const dec=item.step<.01?4:item.step<1?2:0
-              const vEl=document.createElement('span'); vEl.className='ctrl-val'; vEl.id='v_'+item.k; vEl.textContent=P[item.k].toFixed(dec)
+              const vEl=document.createElement('span'); vEl.className='wire-ctrl-val'; vEl.id='v_'+item.k; vEl.textContent=P[item.k].toFixed(dec)
               const sl=document.createElement('input'); sl.type='range'; sl.min=item.min; sl.max=item.max; sl.step=item.step; sl.value=P[item.k]
               sl.oninput=e=>{P[item.k]=parseFloat(e.target.value);vEl.textContent=P[item.k].toFixed(dec);onParamChange(item.k,item.rebuild);}
-              row.innerHTML=`<span class="ctrl-label">${item.l}</span>`
-              const right=document.createElement('div'); right.className='ctrl-right'; right.appendChild(sl); right.appendChild(vEl); row.appendChild(right)
+              row.innerHTML=`<span class="wire-ctrl-label">${item.l}</span>`
+              const right=document.createElement('div'); right.className='wire-ctrl-right'; right.appendChild(sl); right.appendChild(vEl); row.appendChild(right)
             }
             body.appendChild(row)
           })
           wrap.appendChild(hdr); wrap.appendChild(body); con.appendChild(wrap)
         })
       }
-      document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
-        document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'))
+      document.querySelectorAll('.wire-tab').forEach(t=>t.onclick=()=>{
+        document.querySelectorAll('.wire-tab').forEach(x=>x.classList.remove('active'))
         t.classList.add('active'); buildControls(t.dataset.tab)
       })
       buildControls('geo')
 
-      const wrap = document.getElementById('canvas-wrap')
+      const canvasWrap = document.getElementById('canvas-wrap')
       const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, preserveDrawingBuffer:true})
       renderer.setClearColor(0x000000, 0)
       renderer.setPixelRatio(devicePixelRatio||1)
-      wrap.appendChild(renderer.domElement)
+      canvasWrap.appendChild(renderer.domElement)
 
       const scene = new THREE.Scene()
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
       camera.position.z = 6.5
 
       function resizeRenderer() {
-        const size = Math.min(wrap.clientWidth, wrap.clientHeight)
+        const size = canvasWrap.clientWidth
         renderer.setSize(size, size)
         camera.aspect = 1
         camera.updateProjectionMatrix()
@@ -189,8 +192,8 @@ export default function WireStudio() {
       }
 
       let mx=0,my=0,tmx=0,tmy=0
-      wrap.addEventListener('mousemove',e=>{
-        const r=wrap.getBoundingClientRect()
+      canvasWrap.addEventListener('mousemove',e=>{
+        const r=canvasWrap.getBoundingClientRect()
         mx=(e.clientX-r.left)/r.width*2-1; my=-((e.clientY-r.top)/r.height*2-1)
         document.getElementById('s-mouse').textContent=mx.toFixed(2)+', '+my.toFixed(2)
       })
@@ -231,17 +234,17 @@ export default function WireStudio() {
       window._wireSetPreset=name=>{
         const pr=PRESETS[name];if(!pr)return
         Object.assign(P,JSON.parse(JSON.stringify(DEFAULTS)),pr)
-        buildSphere();onParamChange('');buildControls(document.querySelector('.tab.active').dataset.tab)
+        buildSphere();onParamChange('');buildControls(document.querySelector('.wire-tab.active').dataset.tab)
       }
 
-      document.getElementById('btn-reset').onclick=()=>{Object.assign(P,JSON.parse(JSON.stringify(DEFAULTS)));buildSphere();onParamChange('');buildControls(document.querySelector('.tab.active').dataset.tab)}
+      document.getElementById('btn-reset').onclick=()=>{Object.assign(P,JSON.parse(JSON.stringify(DEFAULTS)));buildSphere();onParamChange('');buildControls(document.querySelector('.wire-tab.active').dataset.tab)}
       document.getElementById('btn-random').onclick=()=>{
         const rh=()=>'#'+[0,0,0].map(()=>Math.floor(Math.random()*256).toString(16).padStart(2,'0')).join('')
         const rf=(a,b)=>a+Math.random()*(b-a)
         P.colTop=rh();P.colMid=rh();P.colBot=rh();P.dispAmp=rf(.1,.6);P.dispFreq=rf(2,10)
         P.dispAmp2=rf(0,.3);P.edgeScallop=Math.floor(rf(6,28));P.scallopAmp=rf(.05,.5)
         P.rimStrength=rf(.5,4);P.rimPower=rf(1.5,8)
-        buildSphere();onParamChange('');buildControls(document.querySelector('.tab.active').dataset.tab)
+        buildSphere();onParamChange('');buildControls(document.querySelector('.wire-tab.active').dataset.tab)
       }
       document.getElementById('btn-export').onclick=()=>{
         renderer.render(scene,camera)
@@ -262,49 +265,93 @@ export default function WireStudio() {
   }, [])
 
   return (
-    <div className="flex h-screen overflow-hidden bg-tool-bg0 text-tool-text text-[13px]"
-         style={{'--tool-accent2':'#22d3ee'}}>
-      <Nav />
-      {/* PANEL */}
-      <div className="w-[280px] min-w-[280px] bg-tool-bg1 border-r border-tool-border flex flex-col overflow-hidden">
-        <div className="px-4 py-[14px] border-b border-tool-border flex items-center gap-[10px]">
-          <div className="w-7 h-7 bg-gradient-to-br from-[#7c3aed] to-[#22d3ee] rounded-md flex items-center justify-center text-[13px] font-bold text-white shrink-0">W</div>
-          <h1 className="text-[14px] font-semibold">Wire Studio</h1>
-          <span className="ml-auto text-[11px] text-tool-text3 bg-tool-bg3 px-[7px] py-[2px] rounded-[20px]">v1.0</span>
-        </div>
-        <div id="tabs" className="flex border-b border-tool-border px-[6px]">
-          {[['geo','Geometry'],['color','Color'],['motion','Motion'],['light','Light']].map(([k,l])=>(
-            <div key={k} className="tab" data-tab={k}>{l}</div>
-          ))}
-        </div>
-        <div id="controls" className="flex-1 overflow-y-auto py-[6px] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-tool-bg4 [&::-webkit-scrollbar-thumb]:rounded-sm" />
-        <div className="p-[10px_12px] border-t border-tool-border flex flex-col gap-[6px]">
-          <div className="flex gap-[6px]">
-            <button id="btn-reset"  className="flex-1 py-[7px] px-3 rounded-md text-[12px] font-medium cursor-pointer bg-tool-bg3 text-tool-text2 border border-tool-border2 hover:bg-tool-bg4 hover:text-tool-text transition-colors">Reset</button>
-            <button id="btn-random" className="flex-1 py-[7px] px-3 rounded-md text-[12px] font-medium cursor-pointer bg-tool-bg3 text-tool-text2 border border-tool-border2 hover:bg-tool-bg4 hover:text-tool-text transition-colors">Randomize</button>
-          </div>
-          <button id="btn-export" className="py-[7px] px-3 rounded-md text-[12px] font-medium cursor-pointer bg-[#7c3aed] text-white hover:opacity-85 transition-opacity">Export Frame (PNG)</button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-bg text-foreground font-head">
+      <style>{`
+        #controls .wire-section { border-bottom: 1px solid var(--color-ui); }
+        #controls .wire-sec-hdr { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; font-size:11px; font-weight:600; letter-spacing:.08em; color:var(--color-muted); cursor:pointer; user-select:none; }
+        #controls .wire-sec-hdr:hover { color:var(--color-foreground); }
+        #controls .wire-sec-hdr .chv { transition: transform .15s; }
+        #controls .wire-sec-body { padding:4px 14px 10px; display:flex; flex-direction:column; gap:8px; }
+        #controls .wire-ctrl-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        #controls .wire-ctrl-label { font-size:12px; color:var(--color-muted); white-space:nowrap; min-width:80px; }
+        #controls .wire-ctrl-right { display:flex; align-items:center; gap:6px; flex:1; }
+        #controls .wire-ctrl-right input[type=range] { flex:1; height:3px; appearance:none; background:var(--color-ui); border-radius:2px; outline:none; cursor:pointer; }
+        #controls .wire-ctrl-right input[type=range]::-webkit-slider-thumb { appearance:none; width:12px; height:12px; border-radius:50%; background:var(--color-violet); cursor:pointer; }
+        #controls .wire-ctrl-val { font-size:11px; color:var(--color-foreground); font-weight:600; min-width:32px; text-align:right; tabular-nums; }
+        #controls .wire-color-row { display:flex; align-items:center; justify-content:space-between; }
+        #controls .wire-swatch { width:22px; height:22px; border-radius:6px; cursor:pointer; position:relative; overflow:hidden; border:1px solid var(--color-ui); }
+        #controls .wire-swatch input[type=color] { position:absolute; inset:-4px; width:calc(100%+8px); height:calc(100%+8px); opacity:0; cursor:pointer; }
+      `}</style>
 
-      {/* MAIN */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="h-[42px] bg-tool-bg1 border-b border-tool-border flex items-center px-[14px] gap-[6px]">
-          <button id="play-btn" onClick={()=>window._wireTogglePlay?.()} className="px-2 py-[5px] rounded text-[12px] text-tool-text2 bg-transparent border-none cursor-pointer hover:bg-tool-bg3 hover:text-tool-text transition-colors whitespace-nowrap">⏸ Pause</button>
-          <div className="w-px h-5 bg-tool-border2 mx-[2px] shrink-0" />
-          {[['default','🔵 Default'],['fire','🔥 Fire'],['ghost','👻 Ghost'],['gold','✨ Gold'],['matrix','💚 Matrix']].map(([p,l])=>(
-            <button key={p} onClick={()=>window._wireSetPreset?.(p)} className="px-2 py-[5px] rounded text-[12px] text-tool-text2 bg-transparent border-none cursor-pointer hover:bg-tool-bg3 hover:text-tool-text transition-colors whitespace-nowrap">{l}</button>
-          ))}
-          <span id="fps-badge" className="ml-auto text-[11px] text-tool-text3 bg-tool-bg2 px-2 py-[3px] rounded shrink-0 tabular-nums">— fps</span>
+      <Cursor /><Nav />
+      <Section size="wide">
+        <div className="mb-8">
+          <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// wire-studio</p>
+          <h1 className="text-3xl font-bold">Wire Studio</h1>
+          <p className="text-muted mt-1 text-sm">Interactive wireframe sphere with custom shader materials and real-time displacement.</p>
         </div>
-        <div id="canvas-wrap" className="flex-1 flex items-center justify-center bg-tool-bg0 overflow-hidden [&_canvas]:block" />
-        <div className="h-[26px] bg-tool-bg1 border-t border-tool-border flex items-center px-4 gap-5 text-[11px] text-tool-text3">
-          <span>Segments: <b className="text-tool-text2" id="s-seg">—</b></span>
-          <span>Displacement: <b className="text-tool-text2" id="s-disp">—</b></span>
-          <span>Rotation: <b className="text-tool-text2" id="s-rot">—</b></span>
-          <span>Mouse: <b className="text-tool-text2" id="s-mouse">—</b></span>
+
+        <div className="flex gap-6 items-start max-[900px]:flex-col">
+          {/* Controls */}
+          <aside className="w-[260px] max-[900px]:w-full shrink-0 rounded-xl border border-ui bg-bg2 overflow-hidden text-[13px]">
+            <div className="px-4 py-3 border-b border-ui">
+              <h2 className="text-[13px] font-semibold">Controls</h2>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-ui">
+              {[['geo','Geometry'],['color','Color'],['motion','Motion'],['light','Light']].map(([k,l], i) => (
+                <button key={k} data-tab={k} className={`wire-tab flex-1 py-2 text-[11px] font-medium text-muted hover:text-foreground transition-colors border-none bg-transparent cursor-pointer${i===0?' active text-foreground':''}`}>
+                  {l}
+                </button>
+              ))}
+            </div>
+
+            <div id="controls" className="min-h-[200px]" />
+
+            <div className="p-3 border-t border-ui flex flex-col gap-2">
+              <div className="flex gap-2">
+                <button id="btn-reset"  className="flex-1 py-2 rounded-lg text-[12px] font-medium cursor-pointer bg-bg border border-ui text-muted hover:text-foreground hover:bg-ui transition-colors">Reset</button>
+                <button id="btn-random" className="flex-1 py-2 rounded-lg text-[12px] font-medium cursor-pointer bg-bg border border-ui text-muted hover:text-foreground hover:bg-ui transition-colors">Random</button>
+              </div>
+              <button id="btn-export" className="py-2 rounded-lg text-[12px] font-medium cursor-pointer text-white hover:opacity-85 transition-opacity" style={{background:'linear-gradient(135deg, var(--color-violet), var(--color-mint))'}}>
+                Export PNG
+              </button>
+            </div>
+          </aside>
+
+          {/* Preview */}
+          <div className="flex-1 flex flex-col gap-3 min-w-0 sticky top-[100px] self-start">
+            {/* Toolbar */}
+            <div className="flex items-center gap-2 px-1">
+              <button id="play-btn" onClick={()=>window._wireTogglePlay?.()} className="px-3 py-1.5 rounded-lg text-[12px] font-medium border border-ui bg-bg2 text-muted hover:text-foreground transition-colors cursor-pointer">
+                ⏸ Pause
+              </button>
+              <div className="w-px h-4 bg-ui mx-1 shrink-0" />
+              <div className="flex items-center gap-1 flex-wrap">
+                {[['default','Default'],['fire','🔥 Fire'],['ghost','👻 Ghost'],['gold','✨ Gold'],['matrix','💚 Matrix']].map(([p,l])=>(
+                  <button key={p} onClick={()=>window._wireSetPreset?.(p)} className="px-2 py-1 rounded text-[11px] text-muted bg-transparent border-none cursor-pointer hover:text-foreground transition-colors">
+                    {l}
+                  </button>
+                ))}
+              </div>
+              <span id="fps-badge" className="ml-auto text-[11px] text-muted bg-bg2 border border-ui px-2 py-1 rounded shrink-0 tabular-nums">— fps</span>
+            </div>
+
+            {/* Canvas */}
+            <div id="canvas-wrap" className="w-full rounded-xl overflow-hidden border border-ui [&_canvas]:block" style={{aspectRatio:'1/1'}} />
+
+            {/* Status */}
+            <div className="flex items-center gap-5 text-[11px] text-muted px-1">
+              <span>Segments: <b className="text-foreground font-medium" id="s-seg">—</b></span>
+              <span>Displacement: <b className="text-foreground font-medium" id="s-disp">—</b></span>
+              <span>Rotation: <b className="text-foreground font-medium" id="s-rot">—</b></span>
+              <span>Mouse: <b className="text-foreground font-medium" id="s-mouse">—</b></span>
+            </div>
+          </div>
         </div>
-      </div>
+      </Section>
+      <Footer />
     </div>
   )
 }

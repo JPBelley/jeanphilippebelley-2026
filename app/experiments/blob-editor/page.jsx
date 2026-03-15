@@ -2,6 +2,9 @@
 
 import { useEffect } from 'react'
 import Nav from '../../components/Nav'
+import Footer from '../../components/Footer'
+import Cursor from '../../components/Cursor'
+import Section from '../../components/Section'
 
 export default function BlobEditor() {
   useEffect(() => {
@@ -137,7 +140,7 @@ float sdHex(vec2 p, float r){
 
         if (sec.type === 'shapepicker') {
           const labelA = document.createElement('div')
-          labelA.style.cssText='font-size:11px;color:var(--text3);margin:4px 0 5px;text-transform:uppercase;letter-spacing:.7px'
+          labelA.style.cssText='font-size:11px;color:var(--color-tool-text3);margin:4px 0 5px;text-transform:uppercase;letter-spacing:.7px'
           labelA.textContent='Shape A'
           const gridA = document.createElement('div'); gridA.className='shape-grid'; gridA.id='grid-a'
           SHAPES.forEach((sh,i) => {
@@ -155,7 +158,7 @@ float sdHex(vec2 p, float r){
           morphRow.appendChild(mLabel); morphRow.appendChild(mSl); morphRow.appendChild(mVal)
 
           const labelB = document.createElement('div')
-          labelB.style.cssText='font-size:11px;color:var(--text3);margin:6px 0 5px;text-transform:uppercase;letter-spacing:.7px'
+          labelB.style.cssText='font-size:11px;color:var(--color-tool-text3);margin:6px 0 5px;text-transform:uppercase;letter-spacing:.7px'
           labelB.textContent='Shape B (morph target)'
           const gridB = document.createElement('div'); gridB.className='shape-grid'; gridB.id='grid-b'
           SHAPES.forEach((sh,i) => {
@@ -195,8 +198,8 @@ float sdHex(vec2 p, float r){
       })
     }
 
-    document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'))
+    document.querySelectorAll('.blob-tab').forEach(t=>t.onclick=()=>{
+      document.querySelectorAll('.blob-tab').forEach(x=>x.classList.remove('active'))
       t.classList.add('active'); buildControls(t.dataset.tab)
     })
     buildControls('shape')
@@ -206,8 +209,8 @@ float sdHex(vec2 p, float r){
     const gl=canvas.getContext('webgl',{preserveDrawingBuffer:true})
 
     function resize(){
-      const w=document.getElementById('canvas-wrap')
-      const sz=Math.min(w.clientWidth-40,w.clientHeight-40,600)
+      const wrap=document.getElementById('canvas-wrap')
+      const sz=wrap.clientWidth
       canvas.style.width=canvas.style.height=sz+'px'
       canvas.width=canvas.height=Math.round(sz*(devicePixelRatio||1))
       gl.viewport(0,0,canvas.width,canvas.height)
@@ -391,10 +394,10 @@ void main(){
       const pr=PRESETS[name]; if(!pr) return
       Object.assign(P,JSON.parse(JSON.stringify(DEFAULTS)),pr)
       buildProgram()
-      buildControls(document.querySelector('.tab.active').dataset.tab)
+      buildControls(document.querySelector('.blob-tab.active').dataset.tab)
     }
 
-    document.getElementById('btn-reset').onclick=()=>{Object.assign(P,JSON.parse(JSON.stringify(DEFAULTS)));buildProgram();buildControls(document.querySelector('.tab.active').dataset.tab);}
+    document.getElementById('btn-reset').onclick=()=>{Object.assign(P,JSON.parse(JSON.stringify(DEFAULTS)));buildProgram();buildControls(document.querySelector('.blob-tab.active').dataset.tab);}
     document.getElementById('btn-random').onclick=()=>{
       const rh=()=>'#'+[0,0,0].map(()=>Math.floor(Math.random()*256).toString(16).padStart(2,'0')).join('')
       const rf=(a,b)=>a+Math.random()*(b-a)
@@ -405,7 +408,7 @@ void main(){
       P.shapeA=Math.floor(Math.random()*SHAPES.length)
       P.shapeB=Math.floor(Math.random()*SHAPES.length)
       P.morphBlend=rf(0,1)
-      buildProgram();buildControls(document.querySelector('.tab.active').dataset.tab)
+      buildProgram();buildControls(document.querySelector('.blob-tab.active').dataset.tab)
     }
     document.getElementById('btn-export').onclick=()=>{const a=document.createElement('a');a.download='blob-studio.png';a.href=canvas.toDataURL('image/png');a.click();}
 
@@ -419,53 +422,108 @@ void main(){
   }, [])
 
   return (
-    // Blob Studio uses orange accent: #e8601a / #f5a040
-    <div className="flex h-screen overflow-hidden bg-tool-bg0 text-tool-text text-[13px]"
-         style={{'--tool-accent2':'#f5a040'}}>
+    <div className="min-h-screen bg-bg text-foreground font-head" style={{'--tool-accent2':'#f5a040'}}>
+      <Cursor />
       <Nav />
-      {/* PANEL */}
-      <div className="w-[290px] min-w-[290px] bg-tool-bg1 border-r border-tool-border flex flex-col overflow-hidden">
-        <div className="px-4 py-[14px] border-b border-tool-border flex items-center gap-[10px]">
-          <div className="w-7 h-7 bg-gradient-to-br from-[#e8601a] to-[#f5a040] rounded-md flex items-center justify-center text-[14px] font-bold text-white shrink-0">B</div>
-          <h1 className="text-[14px] font-semibold">Blob Studio</h1>
-          <span className="ml-auto text-[11px] text-tool-text3 bg-tool-bg3 px-[7px] py-[2px] rounded-[20px]">v2.0</span>
-        </div>
-        <div id="tabs" className="flex border-b border-tool-border px-[6px]">
-          {[['shape','Shape'],['color','Color'],['motion','Motion'],['light','Light']].map(([k,l])=>(
-            <div key={k} className="tab" data-tab={k}>{l}</div>
-          ))}
-        </div>
-        <div id="controls" className="flex-1 overflow-y-auto py-[6px] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-tool-bg4 [&::-webkit-scrollbar-thumb]:rounded-sm" />
-        <div className="p-[10px_12px] border-t border-tool-border flex flex-col gap-[6px]">
-          <div className="flex gap-[6px]">
-            <button id="btn-reset"  className="flex-1 py-[7px] px-3 rounded-md text-[12px] font-medium cursor-pointer bg-tool-bg3 text-tool-text2 border border-tool-border2 hover:bg-tool-bg4 hover:text-tool-text transition-colors">Reset</button>
-            <button id="btn-random" className="flex-1 py-[7px] px-3 rounded-md text-[12px] font-medium cursor-pointer bg-tool-bg3 text-tool-text2 border border-tool-border2 hover:bg-tool-bg4 hover:text-tool-text transition-colors">Randomize</button>
-          </div>
-          <button id="btn-export" className="py-[7px] px-3 rounded-md text-[12px] font-medium cursor-pointer bg-[#e8601a] text-white hover:bg-[#f07020] transition-colors">Export Frame (PNG)</button>
-        </div>
-      </div>
 
-      {/* MAIN */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="h-[42px] bg-tool-bg1 border-b border-tool-border flex items-center px-[14px] gap-[6px] overflow-hidden">
-          <button id="play-btn" onClick={()=>window._blobTogglePlay?.()} className="px-2 py-[5px] rounded text-[12px] text-tool-text2 bg-transparent border-none cursor-pointer hover:bg-tool-bg3 hover:text-tool-text transition-colors whitespace-nowrap">⏸ Pause</button>
-          <div className="w-px h-5 bg-tool-border2 mx-[2px] shrink-0" />
-          {[['default','🟠 Default'],['fire','🔥 Fire'],['ghost','👻 Ghost'],['ocean','🌊 Ocean'],['neon','💜 Neon']].map(([p,l])=>(
-            <button key={p} onClick={()=>window._blobSetPreset?.(p)} className="px-2 py-[5px] rounded text-[12px] text-tool-text2 bg-transparent border-none cursor-pointer hover:bg-tool-bg3 hover:text-tool-text transition-colors whitespace-nowrap">{l}</button>
-          ))}
-          <span id="fps-badge" className="ml-auto text-[11px] text-tool-text3 bg-tool-bg2 px-2 py-[3px] rounded shrink-0 tabular-nums">— fps</span>
+      <Section size="wide">
+
+        {/* Header */}
+        <div className="mb-12">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// blob-editor</p>
+          <h1 className="text-[clamp(28px,4vw,52px)] font-bold leading-none mb-3">Blob Studio</h1>
+          <p className="text-muted text-[14px]">
+            2D WebGL blob renderer with real-time SDF morphing, swirl color mixing, halo glow, and PNG export.
+          </p>
         </div>
-        <div id="canvas-wrap" className="flex-1 flex items-center justify-center bg-tool-bg0 [&_canvas]:rounded-xl">
-          <canvas id="c" />
+
+        <div className="flex gap-6 items-start max-[900px]:flex-col">
+
+          {/* ── CONTROLS PANEL ───────────────────────────────────────────────── */}
+          <aside className="w-[260px] max-[900px]:w-full shrink-0 bg-tool-bg1 border border-tool-border rounded-xl overflow-hidden font-mono">
+
+            {/* Panel header */}
+            <div className="px-4 py-[14px] border-b border-tool-border flex items-center gap-[10px]">
+              <div className="w-7 h-7 rounded-md flex items-center justify-center text-[13px] font-bold text-white shrink-0"
+                   style={{ background: 'linear-gradient(135deg,#e8601a,#f5a040)' }}>B</div>
+              <span className="text-[13px] font-semibold text-tool-text">Blob Studio</span>
+              <span className="ml-auto text-[10px] text-tool-text3 bg-tool-bg3 px-[7px] py-[2px] rounded-full">v2.0</span>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-tool-border px-[6px]">
+              {[['shape','Shape'],['color','Color'],['motion','Motion'],['light','Light']].map(([k,l]) => (
+                <div key={k} className={`blob-tab tab${k==='shape'?' active':''}`} data-tab={k}>{l}</div>
+              ))}
+            </div>
+
+            {/* Generated controls */}
+            <div id="controls" className="py-[6px] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-tool-bg4 [&::-webkit-scrollbar-thumb]:rounded-sm" />
+
+            {/* Action buttons */}
+            <div className="p-3 border-t border-tool-border flex flex-col gap-2">
+              <div className="flex gap-2">
+                <button id="btn-reset"
+                  className="flex-1 py-[7px] px-3 rounded-lg text-[12px] font-medium cursor-pointer bg-tool-bg3 text-tool-text2 border border-tool-border2 hover:bg-tool-bg4 hover:text-tool-text transition-colors">
+                  Reset
+                </button>
+                <button id="btn-random"
+                  className="flex-1 py-[7px] px-3 rounded-lg text-[12px] font-medium cursor-pointer bg-tool-bg3 text-tool-text2 border border-tool-border2 hover:bg-tool-bg4 hover:text-tool-text transition-colors">
+                  Random
+                </button>
+              </div>
+              <button id="btn-export"
+                className="w-full py-[7px] px-3 rounded-lg text-[12px] font-semibold cursor-pointer text-white transition-colors"
+                style={{ background: 'linear-gradient(135deg, var(--color-violet), var(--color-mint))' }}>
+                Export PNG
+              </button>
+            </div>
+          </aside>
+
+          {/* ── PREVIEW ──────────────────────────────────────────────────────── */}
+          <div className="flex-1 flex flex-col gap-4 min-w-0 sticky top-[100px] self-start">
+
+            {/* Toolbar */}
+            <div className="bg-tool-bg1 border border-tool-border rounded-xl px-3 py-2 flex items-center gap-2 font-mono flex-wrap">
+              <button id="play-btn"
+                onClick={() => window._blobTogglePlay?.()}
+                className="px-3 py-[5px] rounded-lg text-[12px] text-tool-text2 bg-tool-bg3 border border-tool-border2 cursor-pointer hover:bg-tool-bg4 hover:text-tool-text transition-colors whitespace-nowrap">
+                ⏸ Pause
+              </button>
+              <div className="w-px h-4 bg-tool-border2 mx-1 shrink-0" />
+              {[['default','🟠 Default'],['fire','🔥 Fire'],['ghost','👻 Ghost'],['ocean','🌊 Ocean'],['neon','💜 Neon']].map(([p,l]) => (
+                <button key={p}
+                  onClick={() => window._blobSetPreset?.(p)}
+                  className="px-2 py-[5px] rounded text-[11px] text-tool-text2 cursor-pointer hover:bg-tool-bg3 hover:text-tool-text transition-colors whitespace-nowrap">
+                  {l}
+                </button>
+              ))}
+              <span id="fps-badge" className="ml-auto text-[11px] text-tool-text3 bg-tool-bg2 border border-tool-border px-2 py-[3px] rounded shrink-0 tabular-nums">— fps</span>
+            </div>
+
+            {/* Canvas */}
+            <div
+              id="canvas-wrap"
+              className="w-full rounded-xl border border-ui overflow-hidden relative"
+              style={{ aspectRatio: '1 / 1' }}
+            >
+              <canvas id="c" style={{ display: 'block', width: '100%', height: '100%' }} />
+            </div>
+
+            {/* Status bar */}
+            <div className="flex items-center gap-5 font-mono text-[11px] text-muted px-1 flex-wrap">
+              <span>Res: <b className="text-foreground" id="s-res">—</b></span>
+              <span>Shape: <b className="text-foreground" id="s-shape">Blob</b></span>
+              <span>Blobs: <b className="text-foreground" id="s-blobs">3</b></span>
+              <span>Mouse: <b className="text-foreground" id="s-mouse">0.50, 0.50</b></span>
+              <span id="s-err" className="text-red-400" />
+            </div>
+          </div>
+
         </div>
-        <div className="h-[26px] bg-tool-bg1 border-t border-tool-border flex items-center px-4 gap-5 text-[11px] text-tool-text3">
-          <span>Res: <b className="text-tool-text2" id="s-res">—</b></span>
-          <span>Shape: <b className="text-tool-text2" id="s-shape">Blob</b></span>
-          <span>Blobs: <b className="text-tool-text2" id="s-blobs">3</b></span>
-          <span>Mouse: <b className="text-tool-text2" id="s-mouse">0.50, 0.50</b></span>
-          <span id="s-err" className="text-[#f88]" />
-        </div>
-      </div>
+      </Section>
+
+      <Footer />
     </div>
   )
 }
