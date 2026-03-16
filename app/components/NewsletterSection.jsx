@@ -97,19 +97,22 @@ function applyStyles(container) {
   })
 
   // Success message
-  container.querySelectorAll('.ml-form-successBody').forEach(el => {
+  container.querySelectorAll('.ml-form-successBody, .ml-form-successContent').forEach(el => {
     el.style.setProperty('background', 'transparent', 'important')
     el.style.setProperty('padding', '0', 'important')
+    el.style.setProperty('text-align', 'center', 'important')
   })
   container.querySelectorAll('.ml-form-successBody h4').forEach(el => {
     el.style.setProperty('color', mint, 'important')
     el.style.setProperty('font-family', fontHead, 'important')
     el.style.setProperty('font-size', '18px', 'important')
+    el.style.setProperty('text-align', 'center', 'important')
   })
   container.querySelectorAll('.ml-form-successBody p').forEach(el => {
     el.style.setProperty('color', muted, 'important')
     el.style.setProperty('font-family', fontMono, 'important')
     el.style.setProperty('font-size', '13px', 'important')
+    el.style.setProperty('text-align', 'center', 'important')
   })
 }
 
@@ -124,10 +127,17 @@ export default function NewsletterSection() {
     applyStyles(container)
 
     // Re-apply whenever MailerLite mutates the DOM (form injection, success state, etc.)
-    const observer = new MutationObserver(() => applyStyles(container))
-    observer.observe(container, { childList: true, subtree: true })
+    const formObserver = new MutationObserver(() => applyStyles(container))
+    formObserver.observe(container, { childList: true, subtree: true })
 
-    return () => observer.disconnect()
+    // Re-apply when the theme changes (data-theme on <html>)
+    const themeObserver = new MutationObserver(() => applyStyles(container))
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+
+    return () => {
+      formObserver.disconnect()
+      themeObserver.disconnect()
+    }
   }, [])
 
   return (
