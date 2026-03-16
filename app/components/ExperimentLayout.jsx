@@ -4,6 +4,7 @@ import Nav from './Nav'
 import Footer from './Footer'
 import Cursor from './Cursor'
 import Section from './Section'
+import NewsletterSection from './NewsletterSection'
 
 /**
  * ExperimentLayout
@@ -35,6 +36,7 @@ export default function ExperimentLayout({ label, title, description, accentColo
         {children}
       </Section>
 
+      <NewsletterSection />
       <Footer />
     </div>
   )

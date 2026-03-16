@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import Cursor from '../components/Cursor'
 import Section from '../components/Section'
 import posts from '../data/posts'
+import NewsletterSection from '../components/NewsletterSection'
 
 export default function Blog() {
   return (
@@ -45,6 +46,7 @@ export default function Blog() {
           ))}
         </div>
       </Section>
+      <NewsletterSection />
       <Footer />
     </div>
   )
