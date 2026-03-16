@@ -78,14 +78,17 @@ function Slider({ label, value, min, max, step, onChange, fmt }) {
     </div>
   )
 }
-function PlayBtn({ onClick, label = 'Play ▶' }) {
+function PlayBtn({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="self-start px-5 py-2 rounded-lg text-[12px] font-semibold text-white cursor-pointer hover:opacity-85 transition-opacity"
+      className="self-start inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[12px] font-semibold text-white cursor-pointer hover:opacity-85 transition-opacity"
       style={{ background: 'linear-gradient(135deg, var(--color-violet), var(--color-mint))' }}
     >
-      {label}
+      Play
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+        <polygon points="0,0 10,5 0,10" />
+      </svg>
     </button>
   )
 }
@@ -229,19 +232,24 @@ function StaggerDemo() {
 // ─── Demo 3 — Wave ────────────────────────────────────────────────────────────
 
 function WaveDemo() {
-  const [key, setKey] = useState(0)
+  const [visible, setVisible] = useState(false)
   const [stagger, setStagger] = useState(50)
   const [freq, setFreq] = useState(0.65)
   const [amp, setAmp] = useState(0.05)
   const text = 'Wave motion'
   const chars = text.split('')
-  const kf = `@keyframes wd_${key}{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}`
 
-  const delay = (i) => Math.max(0, i * stagger + Math.sin(i * freq) * amp * 1000)
+  const getDelay = (i) => Math.max(0, i * stagger + Math.sin(i * freq) * amp * 1000)
+
+  const play = useCallback(() => {
+    setVisible(false)
+    requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)))
+  }, [])
+
+  useEffect(() => { play() }, [play])
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: kf }} />
       <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
         <Slider label="Base stagger" value={stagger} min={20} max={100} step={5} onChange={setStagger} fmt={v => `${v}ms`} />
         <Slider label="Wave frequency" value={freq} min={0.1} max={1.5} step={0.05} onChange={setFreq} fmt={v => v.toFixed(2)} />
@@ -252,14 +260,15 @@ function WaveDemo() {
         <p className="text-3xl font-bold" style={{ lineHeight: 1 }}>
           {chars.map((c, i) => (
             <span
-              key={`${key}-${i}`}
+              key={i}
               style={{
                 display: 'inline-block',
                 ...(c === ' ' && { marginRight: '0.35em' }),
-                ...(key > 0 && {
-                  animation: `wd_${key} 0.45s ease forwards both`,
-                  animationDelay: `${delay(i).toFixed(1)}ms`,
-                }),
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateY(0)' : 'translateY(18px)',
+                transition: visible
+                  ? `opacity 450ms ease ${getDelay(i).toFixed(1)}ms, transform 450ms ease ${getDelay(i).toFixed(1)}ms`
+                  : 'none',
               }}
             >
               {c !== ' ' ? c : null}
@@ -268,7 +277,7 @@ function WaveDemo() {
         </p>
       </PreviewArea>
 
-      <PlayBtn onClick={() => setKey(k => k + 1)} />
+      <PlayBtn onClick={play} />
     </>
   )
 }
