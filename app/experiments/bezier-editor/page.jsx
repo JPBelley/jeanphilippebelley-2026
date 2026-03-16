@@ -325,19 +325,22 @@ export default function BezierEditorPage() {
 
             {/* Canvas */}
             <div
-              className="aspect-square max-w-[460px] rounded-xl overflow-hidden"
+              className="w-full flex items-center justify-center rounded-xl"
               style={{
                 background: 'var(--color-tool-bg1)',
                 border: '1px solid var(--color-tool-border)',
                 padding: '20px',
+                minHeight: '420px',
               }}
             >
-              <BezierCanvas p1={p1} p2={p2} onP1={setP1} onP2={setP2} />
+              <div style={{ width: '360px', height: '360px', flexShrink: 0 }}>
+                <BezierCanvas p1={p1} p2={p2} onP1={setP1} onP2={setP2} />
+              </div>
             </div>
 
             {/* Preview */}
             <div
-              className="max-w-[460px] rounded-xl"
+              className="w-full rounded-xl"
               style={{
                 background: 'var(--color-tool-bg1)',
                 border: '1px solid var(--color-tool-border)',
