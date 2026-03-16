@@ -92,7 +92,7 @@ export default function Experiments() {
             Experiments &amp;<br /><span className="text-mint">playground</span>
           </h1>
           <p className="font-mono text-[15px] text-muted max-w-lg leading-[1.7]">
-            Creative coding explorations — WebGL, Three.js, shaders, and interactive graphics.
+            Creative coding explorations: WebGL, Three.js, shaders, and interactive graphics.
             More experiments coming as they get built.
           </p>
         </div>

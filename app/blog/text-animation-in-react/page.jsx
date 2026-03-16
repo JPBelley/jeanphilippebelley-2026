@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
@@ -14,9 +14,6 @@ function P({ children }) {
 }
 function H2({ id, children }) {
   return <h2 id={id} className="text-[22px] font-bold mt-12 mb-4 scroll-mt-24">{children}</h2>
-}
-function H3({ children }) {
-  return <h3 className="text-[17px] font-semibold mt-8 mb-3">{children}</h3>
 }
 function IC({ children }) {
   return (
@@ -167,8 +164,8 @@ function SplitDemo() {
 
       <p className="text-[11px] font-mono text-muted">
         {mode === 'letter'
-          ? `${text.length} spans — spaces become &nbsp; so they don't collapse`
-          : `${text.split(' ').filter(Boolean).length} spans — gap added via marginRight`}
+          ? `${text.length} spans · spaces become &nbsp; so they don't collapse`
+          : `${text.split(' ').filter(Boolean).length} spans · gap added via marginRight`}
       </p>
     </>
   )
@@ -177,17 +174,22 @@ function SplitDemo() {
 // ─── Demo 2 — Stagger ─────────────────────────────────────────────────────────
 
 function StaggerDemo() {
-  const [key, setKey] = useState(0)
+  const [visible, setVisible] = useState(false)
   const [stagger, setStagger] = useState(55)
   const [duration, setDuration] = useState(480)
   const text = 'Motion design'
   const chars = text.split('')
   const total = (chars.length - 1) * stagger + duration
-  const kf = `@keyframes sd_${key}{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}`
+
+  const play = useCallback(() => {
+    setVisible(false)
+    requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)))
+  }, [])
+
+  useEffect(() => { play() }, [play])
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: kf }} />
       <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
         <Slider label="Stagger delay" value={stagger} min={0} max={150} step={5} onChange={setStagger} fmt={v => `${v}ms`} />
         <Slider label="Duration" value={duration} min={150} max={800} step={50} onChange={setDuration} fmt={v => `${v}ms`} />
@@ -197,14 +199,15 @@ function StaggerDemo() {
         <p className="text-3xl font-bold" style={{ lineHeight: 1 }}>
           {chars.map((c, i) => (
             <span
-              key={`${key}-${i}`}
+              key={i}
               style={{
                 display: 'inline-block',
                 ...(c === ' ' && { marginRight: '0.35em' }),
-                ...(key > 0 && {
-                  animation: `sd_${key} ${duration}ms ease forwards both`,
-                  animationDelay: `${i * stagger}ms`,
-                }),
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateY(0)' : 'translateY(14px)',
+                transition: visible
+                  ? `opacity ${duration}ms ease ${i * stagger}ms, transform ${duration}ms ease ${i * stagger}ms`
+                  : 'none',
               }}
             >
               {c !== ' ' ? c : null}
@@ -214,7 +217,7 @@ function StaggerDemo() {
       </PreviewArea>
 
       <div className="flex items-center gap-4 flex-wrap">
-        <PlayBtn onClick={() => setKey(k => k + 1)} />
+        <PlayBtn onClick={play} />
         <span className="text-[11px] font-mono text-muted">
           Total duration: <span className="text-foreground">{(total / 1000).toFixed(2)}s</span>
         </span>
@@ -358,8 +361,8 @@ export default function TextAnimationPost() {
           <P>
             Letter-by-letter text animation is one of those effects that's simultaneously simple
             and deceptively deep. At its core, it's just a CSS animation applied to a bunch of
-            spans with incrementally increasing delays. But the quality of that motion — whether
-            it feels mechanical or organic, instant or graceful — comes down to a few key decisions
+            spans with incrementally increasing delays. But the quality of that motion, whether
+            it feels mechanical or organic, instant or graceful, comes down to a few key decisions
             about math and timing.
           </P>
           <P>
@@ -417,7 +420,7 @@ const parts = words.map((word, i) => (
             rendering context while keeping characters flowing in a line.
           </Callout>
 
-          <DemoBox label="Interactive — The Split">
+          <DemoBox label="Interactive ·The Split">
             <SplitDemo />
           </DemoBox>
 
@@ -441,49 +444,17 @@ const parts = words.map((word, i) => (
 }`}</Code>
 
           <P>
-            You can combine as many properties as you like — opacity, translateY, scale, rotate,
+            You can combine as many properties as you like: opacity, translateY, scale, rotate,
             blur. The keyframe itself only defines the shape of a single element's motion.
             The stagger comes from the <IC>animation-delay</IC>.
           </P>
-
-          <H3>Injecting dynamic keyframes</H3>
-          <P>
-            When you need a different keyframe on each play (to force restart), or when
-            the keyframe parameters come from user input, you can inject them into the
-            document with a <IC>{'<style>'}</IC> tag and <IC>dangerouslySetInnerHTML</IC>.
-            Tying the keyframe name to a <IC>playKey</IC> counter means each click generates
-            a unique animation name, which forces React to re-run the animation from scratch.
-          </P>
-
-          <Code lang="jsx">{`const [playKey, setPlayKey] = useState(0)
-
-const keyframeCSS = \`
-  @keyframes fadeUp_\${playKey} {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-\`
-
-return (
-  <>
-    <style dangerouslySetInnerHTML={{ __html: keyframeCSS }} />
-    {/* ... */}
-    <button onClick={() => setPlayKey(k => k + 1)}>Play</button>
-  </>
-)`}</Code>
-
-          <Callout>
-            Changing the <IC>key</IC> prop on a span also forces React to unmount and remount it,
-            resetting the animation. Use <IC>{`key={\`\${playKey}-\${i}\`}`}</IC> on each span
-            so every play triggers a fresh mount.
-          </Callout>
 
           <Divider />
 
           {/* ── 3. Stagger ── */}
           <H2 id="stagger">3. Stagger: The Heartbeat of Text Animation</H2>
           <P>
-            Without stagger, every letter animates simultaneously — you just see a fade, not
+            Without stagger, every letter animates simultaneously; you just see a fade, not
             a sequence. Stagger is the offset between each character's start time. It's as
             simple as multiplying the index by a delay value:
           </P>
@@ -510,7 +481,7 @@ chars.map((char, i) => (
             they make stagger just work without extra opacity juggling.
           </P>
 
-          <DemoBox label="Interactive — Stagger">
+          <DemoBox label="Interactive ·Stagger">
             <StaggerDemo />
           </DemoBox>
 
@@ -525,8 +496,8 @@ chars.map((char, i) => (
           {/* ── 4. Wave ── */}
           <H2 id="wave">4. Wave Stagger with Math.sin</H2>
           <P>
-            Linear stagger is predictable. For something that feels more organic — characters
-            arriving in a rolling wave — we can modulate each delay using a sine curve.
+            Linear stagger is predictable. For something that feels more organic, characters
+            arriving in a rolling wave, we can modulate each delay using a sine curve.
           </P>
 
           <Code lang="jsx">{`const getDelay = (i, stagger, waveFreq, waveAmp) => {
@@ -539,14 +510,14 @@ chars.map((char, i) => (
 animationDelay: \`\${getDelay(i, 50, 0.65, 0.05)}ms\``}</Code>
 
           <P>
-            The <IC>waveFreq</IC> controls how many oscillations appear across the text — a higher
+            The <IC>waveFreq</IC> controls how many oscillations appear across the text; a higher
             frequency creates shorter, tighter waves. The <IC>waveAmp</IC> scales the offset magnitude.
             We <IC>Math.max(0, ...)</IC> the result because <IC>Math.sin</IC> can go negative,
             which would produce a negative delay (treated as 0 by browsers, but causing characters
             to overlap unexpectedly).
           </P>
 
-          <DemoBox label="Interactive — Wave Stagger">
+          <DemoBox label="Interactive ·Wave Stagger">
             <WaveDemo />
           </DemoBox>
 
@@ -557,8 +528,8 @@ animationDelay: \`\${getDelay(i, 50, 0.65, 0.05)}ms\``}</Code>
           <P>
             The easing function defines the shape of a single element's motion curve.
             Standard easings like <IC>ease-out</IC> decelerate to a stop. For a springy,
-            physical-feeling motion — where the element overshoots its target then snaps
-            back — we need a custom <IC>cubic-bezier</IC>.
+            physical-feeling motion, where the element overshoots its target then snaps
+            back; we need a custom <IC>cubic-bezier</IC>.
           </P>
 
           <Code lang="css">{`/* Standard ease-out */
@@ -573,21 +544,21 @@ animation-timing-function: cubic-bezier(0.34, 1.6, 0.64, 1);
           <P>
             In a cubic-bezier, the four values are the x and y coordinates of two control points.
             When the y coordinate of the second control point exceeds 1 (or goes below 0), the
-            curve passes outside the [0,1] range — producing values above the target, which creates
+            curve passes outside the [0,1] range, producing values above the target, which creates
             the overshoot. In React you can generate this dynamically:
           </P>
 
           <Code lang="jsx">{`const overshoot = 0.6 // tweak this value
 const easing = \`cubic-bezier(0.34, \${(1 + overshoot).toFixed(2)}, 0.64, 1)\``}</Code>
 
-          <DemoBox label="Interactive — Easing Comparison">
+          <DemoBox label="Interactive ·Easing Comparison">
             <EasingDemo />
           </DemoBox>
 
           <P>
             Compare <em>ease-out</em> (clean stop), <em>ease-in-out</em> (symmetric curve),
             and overshoot side by side. The overshoot version feels significantly more alive
-            even at the same duration — that brief moment of overshooting is what tricks your
+            even at the same duration; that brief moment of overshooting is what tricks your
             eye into reading it as physical.
           </P>
 
@@ -663,7 +634,7 @@ export function TextAnimator({
             A few things worth calling out in this component: the <IC>playKey</IC> is included
             in both the keyframe name and the span <IC>key</IC> prop. This double-barrelled
             approach ensures the animation restarts even if React decides to reuse a DOM node.
-            The <IC>wave</IC> prop is optional — when omitted, delays are purely linear.
+            The <IC>wave</IC> prop is optional; when omitted, delays are purely linear.
           </P>
 
           <Divider />
@@ -698,8 +669,8 @@ export function TextAnimator({
             <Link href="/experiments/text-animator" className="text-violet hover:underline">
               Text Animator tool
             </Link>{' '}
-            lets you tweak everything in real time — split mode, stagger, wave, easing,
-            opacity, scale, blur — and preview the result before writing a single line of code.
+            lets you tweak everything in real time: split mode, stagger, wave, easing,
+            opacity, scale, blur. Preview the result before writing a single line of code.
           </P>
         </article>
 

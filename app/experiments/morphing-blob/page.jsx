@@ -298,11 +298,11 @@ export default function MorphingBlob() {
               <div>
                 <p className="text-[10px] text-muted uppercase tracking-widest mb-3">Palette</p>
                 <select id="s-pal" className="w-full bg-bg border border-ui text-foreground rounded-lg px-3 py-2 text-[12px] outline-none cursor-pointer">
-                  <option value="alien">Alien — cyan / lime</option>
-                  <option value="lava">Lava — red / orange</option>
-                  <option value="void">Void — purple / black</option>
-                  <option value="ocean">Ocean — blue / teal</option>
-                  <option value="toxic">Toxic — green / yellow</option>
+                  <option value="alien">Alien ·cyan / lime</option>
+                  <option value="lava">Lava ·red / orange</option>
+                  <option value="void">Void ·purple / black</option>
+                  <option value="ocean">Ocean ·blue / teal</option>
+                  <option value="toxic">Toxic ·green / yellow</option>
                 </select>
               </div>
 

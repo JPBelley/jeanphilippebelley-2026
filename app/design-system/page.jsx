@@ -93,7 +93,7 @@ export default function DesignSystem() {
         </div>
 
         {/* ─── COLORS DARK ─────────────────────────────────────────────────── */}
-        <TokenSection title="Colors — Dark Mode" num="01">
+        <TokenSection title="Colors: Dark Mode" num="01">
           <div className="p-6 rounded-xl" style={{ background: '#0F1115' }}>
             <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#6B7280' }}>
               Default palette · data-theme="dark"
@@ -116,7 +116,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── COLORS LIGHT ────────────────────────────────────────────────── */}
-        <TokenSection title="Colors — Light Mode" num="02">
+        <TokenSection title="Colors: Light Mode" num="02">
           <div className="p-6 rounded-xl" style={{ background: '#F8F8FA' }}>
             <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#5C5C72' }}>
               Light palette · data-theme="light"
@@ -160,7 +160,7 @@ export default function DesignSystem() {
             {/* Headings scale */}
             <div className="p-8 bg-bg2 rounded-xl border border-ui">
               <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-8">
-                Space Grotesk — Heading Scale
+                Space Grotesk / Heading Scale
               </p>
               <div className="space-y-1 divide-y divide-ui">
                 {[
@@ -190,16 +190,16 @@ export default function DesignSystem() {
             {/* Body & mono */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="p-8 bg-bg2 rounded-xl border border-ui">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">Body — Space Grotesk</p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">Body / Space Grotesk</p>
                 <p className="text-[16px] leading-relaxed mb-3">
                   Regular body text. Readable and clean, used for descriptions and paragraphs across the portfolio.
                 </p>
                 <p className="text-[14px] leading-relaxed text-muted">
-                  Secondary body — slightly smaller, used for card descriptions and supporting copy.
+                  Secondary body, slightly smaller, used for card descriptions and supporting copy.
                 </p>
               </div>
               <div className="p-8 bg-bg2 rounded-xl border border-ui">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">Mono — DM Mono</p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">Mono / DM Mono</p>
                 <p className="font-mono text-[14px] text-mint mb-2">// tech-tag prefix</p>
                 <p className="font-mono text-[12px] uppercase tracking-widest text-muted mb-2">SECTION LABEL</p>
                 <p className="font-mono text-[11px] text-muted/60">--color-violet: #7C5CFF;</p>
@@ -235,7 +235,7 @@ export default function DesignSystem() {
         <TokenSection title="Tech Tags" num="06">
           <div className="p-8 bg-bg2 rounded-xl border border-ui">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">
-              .tech-tag — adds // prefix via CSS
+              .tech-tag · adds // prefix via CSS
             </p>
             <div className="flex flex-wrap gap-2">
               {['Next.js', 'React', 'Three.js', 'WebGL', 'TypeScript', 'Python', 'Tailwind CSS', 'GLSL'].map((t) => (

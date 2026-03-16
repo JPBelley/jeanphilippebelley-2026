@@ -98,7 +98,7 @@ export default function Home() {
               Building on the<br /><span className="text-violet">front lines</span> of the web
             </div>
             <p className="font-mono text-[15px] text-muted leading-[1.8] mb-5 reveal reveal-delay-2">
-              I&apos;m a full stack developer with a frontend focus — the kind of engineer who obsesses over render performance just as much as pixel precision.
+              I&apos;m a full stack developer with a frontend focus, the kind of engineer who obsesses over render performance just as much as pixel precision.
             </p>
             <p className="font-mono text-[15px] text-muted leading-[1.8] mb-5 reveal reveal-delay-2">
               My sweet spot is the intersection of <strong className="text-foreground font-normal">design systems, component architecture, and CMS integrations</strong>. Whether that&apos;s a headless WordPress API, a Drupal backend, or a polished Webflow build, I get the job done right.
@@ -166,7 +166,7 @@ export default function Home() {
           {/* 001 — Design System — featured, unchanged */}
           <Link href="/design-system" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
             <div>
-              <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">001 — Featured</div>
+              <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">001 · Featured</div>
               <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Design System &amp; Token Architecture</h3>
               <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">
                 I don't just know design systems, I build with them. This very site runs on a handcrafted token architecture: a unified palette, type scale, motion system, and component set, all documented and explorable.
@@ -188,7 +188,7 @@ export default function Home() {
                   <div key={c} className="w-8 h-8 rounded-full border border-ui/50" style={{ background: c }} />
                 ))}
               </div>
-              <div className="font-mono text-[11px] text-muted tracking-widest uppercase">Aa Bb 01 — tokens</div>
+              <div className="font-mono text-[11px] text-muted tracking-widest uppercase">Aa Bb 01 · tokens</div>
               <div className="h-[2px] w-24 rounded" style={{ background: 'linear-gradient(90deg,#7C5CFF,#2EE6A6)' }} />
             </div>
           </Link>
@@ -197,22 +197,22 @@ export default function Home() {
             {
               num: '002',
               title: 'Complexity is managed, not avoided',
-              desc: "I don't treat technical debt as failure — I treat it as a ledger. Sometimes the right call is to incur it deliberately and move fast. But it gets logged, prioritised, and paid. Refactoring isn't a project you pitch to a product manager; it's a discipline baked into every PR. A codebase should be easier to navigate on day 300 than it was on day 30.",
+              desc: "I don't treat technical debt as failure; I treat it as a ledger. Sometimes the right call is to incur it deliberately and move fast. But it gets logged, prioritised, and paid. Refactoring isn't a project you pitch to a product manager; it's a discipline baked into every PR. A codebase should be easier to navigate on day 300 than it was on day 30.",
               tags: ['Refactoring', 'Architecture', 'Technical Debt'],
               delay: '',
             },
             {
               num: '003',
               hidden: true,
-              title: 'Quality ships — it doesn\'t slow things down',
-              desc: "I test what actually breaks in production. Integration tests over unit tests where behaviour is what matters, e2e for the paths users care about, and just enough coverage to sleep at night. Code review isn't a gate — it's the mechanism that keeps the team's mental model aligned. My definition of done includes 'legible to whoever is next in the file.'",
+              title: "Quality ships, it doesn't slow things down",
+              desc: "I test what actually breaks in production. Integration tests over unit tests where behaviour is what matters, e2e for the paths users care about, and just enough coverage to sleep at night. Code review isn't a gate; it's the mechanism that keeps the team's mental model aligned. My definition of done includes 'legible to whoever is next in the file.'",
               tags: ['Testing Strategy', 'Code Review', 'CI/CD'],
               delay: 'reveal-delay-1',
             },
             {
               num: '003',
               title: 'Tradeoffs, not opinions',
-              desc: "Every architectural decision is a set of tradeoffs with a context. I don't push for the elegant solution when the pragmatic one ships and holds. What I do insist on is naming the tradeoff out loud — 'here's what we gain, here's what we give up, here's when we'd revisit it.' Pragmatism beats purity. Good enough is right more often than engineers admit, as long as everyone knows what good enough means.",
+              desc: "Every architectural decision is a set of tradeoffs with a context. I don't push for the elegant solution when the pragmatic one ships and holds. What I do insist on is naming the tradeoff out loud: 'here's what we gain, here's what we give up, here's when we'd revisit it.' Pragmatism beats purity. Good enough is right more often than engineers admit, as long as everyone knows what good enough means.",
               tags: ['Architecture Decisions', 'Pragmatism', 'Communication'],
               delay: 'reveal-delay-2',
             },
