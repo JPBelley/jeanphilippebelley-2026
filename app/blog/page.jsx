@@ -5,18 +5,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Cursor from '../components/Cursor'
 import Section from '../components/Section'
-
-const posts = [
-  {
-    slug: 'text-animation-in-react',
-    title: 'Building Letter-by-Letter Text Animations in React',
-    date: 'March 15, 2026',
-    description:
-      'A deep dive into the mechanics behind character-level CSS animations: text splitting, stagger delays, wave math, and overshoot easing, with interactive examples you can tweak in the browser.',
-    tags: ['React', 'CSS Animations', 'Motion'],
-    readTime: '8 min read',
-  },
-]
+import posts from '../data/posts'
 
 export default function Blog() {
   return (

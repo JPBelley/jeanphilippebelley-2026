@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import Cursor from './components/Cursor'
 import Button from './components/Button'
 import Section from './components/Section'
+import experiments from './data/experiments'
 
 export default function Home() {
   useEffect(() => {
@@ -237,11 +238,10 @@ export default function Home() {
           Experiments &amp;<br /><span className="text-mint">playground</span>
         </div>
         <div className="grid grid-cols-3 gap-[2px] max-[900px]:grid-cols-1">
-          {[
-            { href:'/experiments/blob-editor',   icon:'🟠', title:'Blob Editor',    desc:'2D WebGL blob renderer with real-time SDF shape morphing, swirl color mixing, halo glow layers, and per-frame PNG export.', delay:'' },
-            { href:'/experiments/morphing-blob', icon:'🫀', title:'Morphing Blob',  desc:'3D Three.js organic blob with layered FBM noise deformation, drag-to-orbit controls, palette switching, and panic mode.', delay:'reveal-delay-1' },
-            { href:'/experiments/wire-studio',   icon:'🔵', title:'Wire Studio',    desc:'Interactive Three.js wireframe sphere editor with custom GLSL rim lighting, real-time displacement, edge scalloping, and presets.', delay:'reveal-delay-2' },
-          ].map(e => (
+          {experiments.slice(0, 3).map((e, i) => ({
+            ...e,
+            delay: ['', 'reveal-delay-1', 'reveal-delay-2'][i],
+          })).map(e => (
             <Link key={e.href} href={e.href} className={`exp-card bg-bg border border-ui p-[36px_32px] no-underline text-inherit flex flex-col gap-4 relative overflow-hidden transition-all duration-[250ms] hover:border-[rgba(124,92,255,0.35)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal ${e.delay}`}>
               <div className="text-[32px] leading-none">{e.icon}</div>
               <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-foreground">{e.title}</h3>

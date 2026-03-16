@@ -1,10 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import Cursor from '../../components/Cursor'
-import Section from '../../components/Section'
+import ExperimentLayout from '../../components/ExperimentLayout'
 
 export default function BlobEditor() {
   useEffect(() => {
@@ -422,21 +419,12 @@ void main(){
   }, [])
 
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head" style={{'--tool-accent2':'#f5a040'}}>
-      <Cursor />
-      <Nav />
-
-      <Section size="wide">
-
-        {/* Header */}
-        <div className="mb-12">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// blob-editor</p>
-          <h1 className="text-[clamp(28px,4vw,52px)] font-bold leading-none mb-3">Blob Studio</h1>
-          <p className="text-muted text-[14px]">
-            2D WebGL blob renderer with real-time SDF morphing, swirl color mixing, halo glow, and PNG export.
-          </p>
-        </div>
-
+    <ExperimentLayout
+      label="blob-editor"
+      title="Blob Studio"
+      description="2D WebGL blob renderer with real-time SDF morphing, swirl color mixing, halo glow, and PNG export."
+      accentColor="#f5a040"
+    >
         <div className="flex gap-6 items-start max-[900px]:flex-col">
 
           {/* ── CONTROLS PANEL ───────────────────────────────────────────────── */}
@@ -521,9 +509,6 @@ void main(){
           </div>
 
         </div>
-      </Section>
-
-      <Footer />
-    </div>
+    </ExperimentLayout>
   )
 }

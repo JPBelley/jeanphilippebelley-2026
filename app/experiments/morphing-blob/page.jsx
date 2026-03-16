@@ -1,10 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import Cursor from '../../components/Cursor'
-import Section from '../../components/Section'
+import ExperimentLayout from '../../components/ExperimentLayout'
 
 export default function MorphingBlob() {
   useEffect(() => {
@@ -241,15 +238,11 @@ export default function MorphingBlob() {
   ]
 
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor /><Nav />
-      <Section size="wide">
-        <div className="mb-8">
-          <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// morphing-blob</p>
-          <h1 className="text-3xl font-bold">Morphing Blob</h1>
-          <p className="text-muted mt-1 text-sm">Three.js WebGL organic shape deformer with noise-based vertex displacement.</p>
-        </div>
-
+    <ExperimentLayout
+      label="morphing-blob"
+      title="Morphing Blob"
+      description="Three.js WebGL organic shape deformer with noise-based vertex displacement."
+    >
         <div className="flex gap-6 items-start max-[900px]:flex-col">
           {/* Controls */}
           <aside className="w-[260px] max-[900px]:w-full shrink-0 rounded-xl border border-ui bg-bg2 overflow-hidden text-[13px]">
@@ -328,8 +321,6 @@ export default function MorphingBlob() {
             <p className="text-[11px] text-muted text-center">Drag to orbit · Scroll to zoom</p>
           </div>
         </div>
-      </Section>
-      <Footer />
-    </div>
+    </ExperimentLayout>
   )
 }

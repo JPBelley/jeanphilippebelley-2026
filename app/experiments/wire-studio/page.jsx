@@ -1,10 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import Cursor from '../../components/Cursor'
-import Section from '../../components/Section'
+import ExperimentLayout from '../../components/ExperimentLayout'
 
 export default function WireStudio() {
   useEffect(() => {
@@ -265,7 +262,11 @@ export default function WireStudio() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
+    <ExperimentLayout
+      label="wire-studio"
+      title="Wire Studio"
+      description="Interactive wireframe sphere with custom shader materials and real-time displacement."
+    >
       <style>{`
         #controls .wire-section { border-bottom: 1px solid var(--color-ui); }
         #controls .wire-sec-hdr { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; font-size:11px; font-weight:600; letter-spacing:.08em; color:var(--color-muted); cursor:pointer; user-select:none; }
@@ -282,14 +283,6 @@ export default function WireStudio() {
         #controls .wire-swatch { width:22px; height:22px; border-radius:6px; cursor:pointer; position:relative; overflow:hidden; border:1px solid var(--color-ui); }
         #controls .wire-swatch input[type=color] { position:absolute; inset:-4px; width:calc(100%+8px); height:calc(100%+8px); opacity:0; cursor:pointer; }
       `}</style>
-
-      <Cursor /><Nav />
-      <Section size="wide">
-        <div className="mb-8">
-          <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// wire-studio</p>
-          <h1 className="text-3xl font-bold">Wire Studio</h1>
-          <p className="text-muted mt-1 text-sm">Interactive wireframe sphere with custom shader materials and real-time displacement.</p>
-        </div>
 
         <div className="flex gap-6 items-start max-[900px]:flex-col">
           {/* Controls */}
@@ -350,8 +343,6 @@ export default function WireStudio() {
             </div>
           </div>
         </div>
-      </Section>
-      <Footer />
-    </div>
+    </ExperimentLayout>
   )
 }

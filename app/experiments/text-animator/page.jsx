@@ -1,10 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Nav from '../../components/Nav';
-import Footer from '../../components/Footer';
-import Cursor from '../../components/Cursor';
-import Section from '../../components/Section';
+import ExperimentLayout from '../../components/ExperimentLayout';
 
 /* ─── Constants ────────────────────────────────────────────────────────────── */
 
@@ -161,19 +158,11 @@ export default function TextAnimator() {
   `;
 
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor />
-      <Nav />
-
-      <Section size="wide">
-
-        {/* Header */}
-        <div className="mb-12">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// text-animator</p>
-          <h1 className="text-[clamp(28px,4vw,52px)] font-bold leading-none mb-3">Text Animation Studio</h1>
-          <p className="text-muted text-[14px]">Compose letter-by-letter animations with live preview.</p>
-        </div>
-
+    <ExperimentLayout
+      label="text-animator"
+      title="Text Animation Studio"
+      description="Compose letter-by-letter animations with live preview."
+    >
         <div className="flex gap-6 items-start max-[900px]:flex-col">
 
           {/* ── CONTROLS PANEL ───────────────────────────────────────────────── */}
@@ -392,9 +381,6 @@ export default function TextAnimator() {
           </div>
 
         </div>
-      </Section>
-
-      <Footer />
-    </div>
+    </ExperimentLayout>
   );
 }

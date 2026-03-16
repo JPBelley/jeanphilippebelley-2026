@@ -1,10 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import Cursor from '../../components/Cursor'
-import Section from '../../components/Section'
+import ExperimentLayout from '../../components/ExperimentLayout'
 
 // ─── Curve geometry ───────────────────────────────────────────────────────────
 const SVG_SIZE = 300
@@ -215,23 +212,11 @@ export default function BezierEditorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor /><Nav />
-
-      <Section size="wide">
-
-        {/* Header */}
-        <div className="mb-12">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// bezier-editor</p>
-          <h1 className="text-[clamp(28px,4vw,52px)] font-bold leading-none mb-3">Bezier Editor</h1>
-          <p className="text-muted text-[14px]">
-            Drag the handles to shape your easing curve.&nbsp;
-            <span className="text-violet">Violet = P1</span>
-            <span className="text-muted mx-1">·</span>
-            <span className="text-mint">Mint = P2</span>
-          </p>
-        </div>
-
+    <ExperimentLayout
+      label="bezier-editor"
+      title="Bezier Editor"
+      description={<>Drag the handles to shape your easing curve.&nbsp;<span className="text-violet">Violet = P1</span><span className="text-muted mx-1">·</span><span className="text-mint">Mint = P2</span></>}
+    >
         <div className="flex gap-5 items-start max-[900px]:flex-col">
 
           {/* ── Left panel ── */}
@@ -410,9 +395,6 @@ export default function BezierEditorPage() {
             </div>
           </div>
         </div>
-      </Section>
-
-      <Footer />
-    </div>
+    </ExperimentLayout>
   )
 }
