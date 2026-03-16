@@ -40,6 +40,14 @@ const experiments = [
     tags:  ['CSS Animations', 'Typography', 'Motion'],
     accent: '46,230,166',
   },
+  {
+    href:  '/experiments/bezier-editor',
+    icon:  '◈',
+    title: 'Bezier Editor',
+    desc:  'Interactive cubic-bezier curve editor. Drag handles, tweak values, pick a preset, preview your easing on a live animation, and copy the CSS.',
+    tags:  ['CSS Easing', 'SVG', 'Motion'],
+    accent: '124,92,255',
+  },
 ];
 
 export default function Experiments() {
