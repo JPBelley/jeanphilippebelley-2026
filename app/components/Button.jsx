@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const variants = {
   primary:
     'px-8 py-[13px] bg-violet text-white font-head font-semibold text-[14px] tracking-[0.03em] rounded-md no-underline transition-[background,transform,box-shadow] duration-200 hover:bg-[#9070ff] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(124,92,255,0.35)] max-[640px]:text-center',
@@ -12,9 +14,9 @@ export default function Button({ href, variant = 'primary', className = '', chil
 
   if (href) {
     return (
-      <a href={href} className={classes} {...props}>
+      <Link href={href} className={classes} {...props}>
         {children}
-      </a>
+      </Link>
     );
   }
 

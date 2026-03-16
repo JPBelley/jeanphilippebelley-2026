@@ -155,14 +155,15 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* PROJECTS */}
+      {/* PHILOSOPHY */}
       <Section className="bg-bg relative" id="projects">
-        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="03">Projects</div>
+        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="03">Philosophy</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
-          Selected<br /><span className="text-violet">work</span>
+          The principles<br />I build <span className="text-violet">with</span>
         </div>
         <div className="grid grid-cols-2 gap-[2px] max-[900px]:grid-cols-1">
-          {/* Featured */}
+
+          {/* 001 — Design System — featured, unchanged */}
           <Link href="/design-system" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
             <div>
               <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">001 — Featured</div>
@@ -193,10 +194,29 @@ export default function Home() {
           </Link>
 
           {[
-            { num:'002', title:'Headless WordPress + Next.js', desc:'Decoupled a large editorial site from its monolithic WP theme into a Next.js frontend with ISR, cutting page loads by 4×.', tags:['Next.js','WordPress API','ISR'], delay:'' },
-            { num:'003', title:'Drupal + Vue SPA', desc:'Custom Drupal 10 backend serving a Vue 3 single-page app, with a JSON:API layer, role-based permissions, and a rich editorial workflow.', tags:['Vue 3','Drupal 10','JSON:API'], delay:'reveal-delay-1' },
-            { num:'004', title:'Webflow Enterprise Site', desc:'Full build of a multi-language marketing site on Webflow, with custom JavaScript interactions, CMS collections, and Figma-to-code fidelity.', tags:['Webflow','GSAP','i18n'], delay:'reveal-delay-2' },
-          ].map(p => (
+            {
+              num: '002',
+              title: 'Complexity is managed, not avoided',
+              desc: "I don't treat technical debt as failure — I treat it as a ledger. Sometimes the right call is to incur it deliberately and move fast. But it gets logged, prioritised, and paid. Refactoring isn't a project you pitch to a product manager; it's a discipline baked into every PR. A codebase should be easier to navigate on day 300 than it was on day 30.",
+              tags: ['Refactoring', 'Architecture', 'Technical Debt'],
+              delay: '',
+            },
+            {
+              num: '003',
+              hidden: true,
+              title: 'Quality ships — it doesn\'t slow things down',
+              desc: "I test what actually breaks in production. Integration tests over unit tests where behaviour is what matters, e2e for the paths users care about, and just enough coverage to sleep at night. Code review isn't a gate — it's the mechanism that keeps the team's mental model aligned. My definition of done includes 'legible to whoever is next in the file.'",
+              tags: ['Testing Strategy', 'Code Review', 'CI/CD'],
+              delay: 'reveal-delay-1',
+            },
+            {
+              num: '003',
+              title: 'Tradeoffs, not opinions',
+              desc: "Every architectural decision is a set of tradeoffs with a context. I don't push for the elegant solution when the pragmatic one ships and holds. What I do insist on is naming the tradeoff out loud — 'here's what we gain, here's what we give up, here's when we'd revisit it.' Pragmatism beats purity. Good enough is right more often than engineers admit, as long as everyone knows what good enough means.",
+              tags: ['Architecture Decisions', 'Pragmatism', 'Communication'],
+              delay: 'reveal-delay-2',
+            },
+          ].filter(p => !p.hidden).map(p => (
             <div key={p.num} className={`project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal ${p.delay}`}>
               <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">{p.num}</div>
               <h3 className="text-[22px] font-semibold tracking-[-0.02em] mb-3">{p.title}</h3>
@@ -206,6 +226,7 @@ export default function Home() {
               </div>
             </div>
           ))}
+
         </div>
       </Section>
 
@@ -228,6 +249,9 @@ export default function Home() {
               <span className="font-mono text-[11px] text-violet tracking-[0.08em] flex items-center gap-[6px] transition-[color,gap] duration-200 group-hover:text-mint group-hover:gap-[10px]">Open tool →</span>
             </Link>
           ))}
+        </div>
+        <div className="mt-12 flex justify-center reveal reveal-delay-2">
+          <Button href="/experiments" variant="link">Explore the full lab →</Button>
         </div>
       </Section>
 
