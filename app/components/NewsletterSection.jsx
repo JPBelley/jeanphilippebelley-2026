@@ -96,6 +96,18 @@ function applyStyles(container) {
     el.addEventListener('mouseleave', () => el.style.setProperty('background', violet, 'important'))
   })
 
+  // Validation error messages
+  container.querySelectorAll(
+    '.ml-error, .ml-form-error, .ml-field-error, .label-description.ml-error, .primary-error'
+  ).forEach(el => {
+    el.style.setProperty('display', 'block', 'important')
+    el.style.setProperty('color', '#f87171', 'important')
+    el.style.setProperty('font-family', fontMono, 'important')
+    el.style.setProperty('font-size', '12px', 'important')
+    el.style.setProperty('margin-top', '4px', 'important')
+    el.style.setProperty('text-align', 'left', 'important')
+  })
+
   // Success message
   container.querySelectorAll('.ml-form-successBody, .ml-form-successContent').forEach(el => {
     el.style.setProperty('background', 'transparent', 'important')
