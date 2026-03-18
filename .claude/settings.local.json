@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/jpbelley/projets/jeanphilippebelley/*.js)",
+      "Bash(ls /Users/jpbelley/projets/jeanphilippebelley/codepen*)"
+    ]
+  }
+}
