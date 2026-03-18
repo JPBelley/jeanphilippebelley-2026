@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
+import NewsletterSection from '../../components/NewsletterSection'
 import Cursor from '../../components/Cursor'
 import Section from '../../components/Section'
 
@@ -684,6 +685,7 @@ export function TextAnimator({
         </article>
 
       </Section>
+      <NewsletterSection />
       <Footer />
     </div>
   )
