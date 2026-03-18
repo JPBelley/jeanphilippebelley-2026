@@ -9,8 +9,8 @@ function applyStyles(container) {
 
   const violet     = get('--color-violet')     || '#7C5CFF'
   const mint       = get('--color-mint')       || '#2EE6A6'
-  const bg2        = get('--color-bg2')        || '#1A1D24'
   const ui         = get('--color-ui')         || '#2A2F3A'
+  const white      = get('--color-bg2-light')  || '#FFFFFF'
   const foreground = get('--color-foreground') || '#E8EAF0'
   const muted      = get('--color-muted')      || '#6B7280'
   const fontHead   = get('--font-head')        || 'sans-serif'
@@ -34,7 +34,7 @@ function applyStyles(container) {
 
   // Inputs
   container.querySelectorAll('input[type="email"], input[type="text"]').forEach(el => {
-    el.style.setProperty('background', bg2, 'important')
+    el.style.setProperty('background', white, 'important')
     el.style.setProperty('border', `1px solid ${ui}`, 'important')
     el.style.setProperty('border-radius', '6px', 'important')
     el.style.setProperty('color', foreground, 'important')
