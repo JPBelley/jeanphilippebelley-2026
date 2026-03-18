@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import ExperimentLayout from '../../components/ExperimentLayout';
+import ExperimentLayout from '../../components/layouts/ExperimentLayout';
 
 /* ─── Constants ────────────────────────────────────────────────────────────── */
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import ExperimentLayout from '../../components/ExperimentLayout'
+import ExperimentLayout from '../../components/layouts/ExperimentLayout'
 
 // ─── Curve geometry ───────────────────────────────────────────────────────────
 const SVG_SIZE = 300

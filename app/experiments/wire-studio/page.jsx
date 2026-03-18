@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import ExperimentLayout from '../../components/ExperimentLayout'
+import ExperimentLayout from '../../components/layouts/ExperimentLayout'
 
 export default function WireStudio() {
   useEffect(() => {

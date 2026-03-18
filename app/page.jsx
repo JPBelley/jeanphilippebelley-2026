@@ -228,6 +228,46 @@ export default function Home() {
             </div>
           ))}
 
+          {/* 004 — Architecture — featured link */}
+          <Link href="/architecture" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal reveal-delay-1 max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
+            <div>
+              <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">004</div>
+              <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Structure is not an afterthought</h3>
+              <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">
+                Every component is written once and reused everywhere. Data lives in a single source of truth. Pages follow predictable patterns. The folder structure mirrors the mental model, so any new contributor can navigate the codebase in minutes, not days. Scalability is built in from the first commit, not retrofitted when it hurts.
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {['Component Architecture', 'DRY', 'Scalability', 'File Structure'].map(t => (
+                    <span key={t} className="font-mono text-[10px] tracking-[0.08em] px-[10px] py-1 bg-[rgba(124,92,255,0.1)] text-violet rounded-[3px]">{t}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-6 font-mono text-[12px] text-mint flex items-center gap-2">
+                See how this site is built <span className="text-[16px]">→</span>
+              </div>
+            </div>
+            <div className="project-visual bg-gradient-to-br from-[rgba(124,92,255,0.1)] to-[rgba(46,230,166,0.08)] border border-ui rounded-lg h-[220px] flex flex-col justify-center px-8 gap-[6px] font-mono text-[11px] overflow-hidden relative max-[900px]:hidden">
+              {[
+                { indent: 0, text: 'app/',          color: 'text-foreground', bold: true },
+                { indent: 1, text: 'components/',   color: 'text-violet' },
+                { indent: 2, text: 'Button.jsx',    color: 'text-muted' },
+                { indent: 2, text: 'Nav.jsx',       color: 'text-muted' },
+                { indent: 2, text: 'Section.jsx',   color: 'text-muted' },
+                { indent: 1, text: 'data/',         color: 'text-mint' },
+                { indent: 2, text: 'experiments.js',color: 'text-muted' },
+                { indent: 2, text: 'posts.js',      color: 'text-muted' },
+                { indent: 1, text: 'experiments/',  color: 'text-violet' },
+                { indent: 1, text: 'blog/',         color: 'text-violet' },
+              ].map((row, i) => (
+                <div key={i} className={`flex items-center gap-1 ${row.color} ${row.bold ? 'font-bold' : ''}`} style={{ paddingLeft: `${row.indent * 16}px` }}>
+                  {row.indent > 0 && <span className="text-ui select-none">{'─ '}</span>}
+                  {row.text}
+                </div>
+              ))}
+            </div>
+          </Link>
+
         </div>
       </Section>
 
