@@ -1,6 +1,14 @@
 // Ordered newest → oldest. Homepage always shows the first 3.
 const experiments = [
   {
+    href:   '/experiments/rocky-sphere',
+    icon:   '◉',
+    title:  'Rocky Sphere',
+    desc:   'A displaced 3D sphere sculpted with layered FBM noise. Three.js + vertex displacement creating a dark, organic rock-like surface with real-time lighting.',
+    tags:   ['Three.js', 'FBM Noise', '3D'],
+    accent: '124,92,255',
+  },
+  {
     href:   '/experiments/bezier-editor',
     icon:   '◈',
     title:  'Bezier Editor',

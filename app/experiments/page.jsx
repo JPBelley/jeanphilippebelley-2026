@@ -51,7 +51,7 @@ export default function Experiments() {
 
       <Section size="wide">
         <div className="mb-16">
-          <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="01">
+          <div className="font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4">
             Lab
           </div>
           <h1 className="text-[clamp(40px,6vw,72px)] font-bold leading-[1.05] tracking-[-0.03em] mb-6">
