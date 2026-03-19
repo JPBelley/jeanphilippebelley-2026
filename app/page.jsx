@@ -59,7 +59,7 @@ export default function Home() {
             React, Vue, WordPress, Drupal, Webflow and whatever it takes.
           </p>
           <div className="flex max-[640px]:flex-col gap-4 mt-11 opacity-0 animate-fade-up-4">
-            <Button href="#projects" variant="primary">View Hoe I Work</Button>
+            <Button href="#projects" variant="primary">View How I Work</Button>
             <Button href="#contact" variant="secondary">Get In Touch</Button>
           </div>
 

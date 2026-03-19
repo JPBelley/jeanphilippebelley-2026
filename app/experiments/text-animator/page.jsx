@@ -320,7 +320,7 @@ export default function TextAnimator() {
           </aside>
 
           {/* ── PREVIEW ──────────────────────────────────────────────────────── */}
-          <div className="flex-1 flex flex-col gap-4 min-w-0 sticky top-[100px] self-start">
+          <div className="flex-1 flex flex-col gap-4 min-w-0 sticky top-[100px] self-start max-[900px]:w-full">
             <style dangerouslySetInnerHTML={{ __html: keyframeCSS }} />
 
             {/* Square preview window */}
