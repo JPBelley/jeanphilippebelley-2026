@@ -90,12 +90,105 @@ function ToggleGrid({ options, value, onChange }) {
   );
 }
 
+/* ─── Code generator ────────────────────────────────────────────────────────── */
+
+function generateCode(cfg) {
+  const easing = cfg.overshoot > 0
+    ? `cubic-bezier(0.34,${(1 + cfg.overshoot).toFixed(2)},0.64,1)`
+    : cfg.easing
+
+  const splitLine = cfg.splitMode === 'word'
+    ? `const tokens = "${cfg.text}".split(' ').filter(w => w.length > 0)`
+    : `const tokens = \`${cfg.text}\`.split('')`
+
+  let delayFn
+  const s = cfg.stagger
+  if (cfg.wave) {
+    const base = cfg.direction === 'rtl'    ? `(tokens.length - 1 - i) * ${s}` :
+                 cfg.direction === 'center' ? `Math.abs(i - (tokens.length - 1) / 2) * ${s}` :
+                                              `i * ${s}`
+    delayFn =
+`function getDelay(i) {
+  const base = ${base}
+  return Math.max(0, base + Math.sin(i * ${cfg.waveFreq}) * ${cfg.waveAmp})
+}`
+  } else if (cfg.direction === 'rtl') {
+    delayFn = `function getDelay(i) {\n  return (tokens.length - 1 - i) * ${s}\n}`
+  } else if (cfg.direction === 'center') {
+    delayFn = `function getDelay(i) {\n  return Math.abs(i - (tokens.length - 1) / 2) * ${s}\n}`
+  } else if (cfg.direction === 'random') {
+    delayFn =
+`// Shuffle once per play — call shuffle() before rendering
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+// const order = shuffle([...tokens.keys()])
+function getDelay(i) {
+  return i * ${s} // replace i with order[i] for random stagger
+}`
+  } else {
+    delayFn = `function getDelay(i) {\n  return i * ${s}\n}`
+  }
+
+  const wordMargin = cfg.splitMode === 'word'
+    ? `\n              marginRight: i < tokens.length - 1 ? '0.3em' : undefined,` : ''
+
+  return `'use client'
+
+${splitLine}
+
+${delayFn}
+
+export default function TextAnimation() {
+  return (
+    <>
+      <style>{\`
+        @keyframes ta {
+          from {
+            opacity: ${cfg.opacityFrom};
+            transform: translateY(${cfg.yFrom}px) translateX(${cfg.xFrom}px) scale(${cfg.scaleFrom}) rotate(${cfg.rotateFrom}deg);
+            filter: blur(${cfg.blurFrom}px);
+          }
+          to {
+            opacity: ${cfg.opacityTo};
+            transform: translateY(${cfg.yTo}px) translateX(${cfg.xTo}px) scale(${cfg.scaleTo}) rotate(${cfg.rotateTo}deg);
+            filter: blur(${cfg.blurTo}px);
+          }
+        }
+      \`}</style>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {tokens.map((token, i) => (
+          <span
+            key={i}
+            style={{
+              display: 'inline-block',${wordMargin}
+              whiteSpace: token === ' ' ? 'pre' : undefined,
+              animation: \`ta ${cfg.duration}ms ${easing} \${getDelay(i)}ms both\`,
+            }}
+          >
+            {token === ' ' ? '\\u00A0' : token}
+          </span>
+        ))}
+      </div>
+
+    </>
+  )
+}`
+}
+
 /* ─── Page ──────────────────────────────────────────────────────────────────── */
 
 export default function TextAnimator() {
   const [cfg, setCfg]         = useState(DEFAULTS);
   const [playKey, setPlayKey] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [showCode, setShowCode] = useState(false);
+  const [copied, setCopied]   = useState(false);
   const randomOrder           = useRef([]);
 
   const set = (key, val) => setCfg(prev => ({ ...prev, [key]: val }));
@@ -381,6 +474,61 @@ export default function TextAnimator() {
           </div>
 
         </div>
+
+        {/* ── CODE EXPORT ──────────────────────────────────────────────────── */}
+        <div className="mt-8">
+          <button
+            onClick={() => setShowCode(v => !v)}
+            className="font-mono text-[12px] px-4 py-2 rounded-lg border transition-colors duration-150"
+            style={{
+              background:  showCode ? 'rgba(124,92,255,0.12)' : 'var(--color-tool-bg2)',
+              borderColor: showCode ? 'rgba(124,92,255,0.4)'  : 'var(--color-tool-border2)',
+              color:       showCode ? 'var(--color-violet)'   : 'var(--color-tool-text2)',
+            }}
+          >
+            {showCode ? '↑ Hide code' : '↓ Export as React component'}
+          </button>
+
+          {showCode && (
+            <div className="mt-4 rounded-xl overflow-hidden border" style={{ borderColor: 'var(--color-tool-border)' }}>
+              <div
+                className="flex items-center justify-between px-5 py-3 border-b"
+                style={{ background: 'var(--color-tool-bg1)', borderColor: 'var(--color-tool-border)' }}
+              >
+                <span className="font-mono text-[11px] tracking-widest" style={{ color: 'var(--color-tool-text2)' }}>
+                  TextAnimation.jsx
+                </span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(generateCode(cfg))
+                    setCopied(true)
+                    setTimeout(() => setCopied(false), 2000)
+                  }}
+                  className="font-mono text-[11px] px-3 py-1 rounded border transition-colors duration-150"
+                  style={{
+                    background:  copied ? 'rgba(46,230,166,0.12)' : 'var(--color-tool-bg3)',
+                    borderColor: copied ? 'rgba(46,230,166,0.4)'  : 'var(--color-tool-border2)',
+                    color:       copied ? 'var(--color-mint)'     : 'var(--color-tool-text2)',
+                  }}
+                >
+                  {copied ? '✓ Copied' : 'Copy'}
+                </button>
+              </div>
+              <pre
+                className="overflow-x-auto p-6 text-[12px] leading-[1.8]"
+                style={{
+                  background: 'var(--color-tool-bg0)',
+                  color:      'var(--color-tool-text)',
+                  fontFamily: 'var(--font-mono)',
+                  margin: 0,
+                }}
+              >
+                {generateCode(cfg)}
+              </pre>
+            </div>
+          )}
+        </div>
+
     </ExperimentLayout>
   );
 }
