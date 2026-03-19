@@ -61,9 +61,16 @@ const NORMAL_INJECTION = `
   vec3  objectNormal = normalize(cross(_pA - _displaced, _pB - _displaced));
 `
 
-// Replaces #include <begin_vertex>
+// Replaces #include <begin_vertex> (main material — _displaced already computed above)
 const POSITION_INJECTION = `
   vec3 transformed = _displaced;
+`
+
+// Replaces #include <begin_vertex> in the depth material (no prior normal pass, compute inline)
+const DEPTH_POSITION_INJECTION = `
+  vec3 _nrm = normalize(position);
+  float _t  = uTime;
+  vec3 transformed = _nrm * (1.0 + getDisp(_nrm, _t));
 `
 
 // ─── Controls sub-components ─────────────────────────────────────────────────
@@ -140,20 +147,33 @@ export default function RockySphere() {
     // Plain sphere — displacement handled entirely in vertex shader
     const geo = new THREE.SphereGeometry(1, 256, 256)
 
+    // Shared uniforms — both main and depth materials read the same objects
+    const shared = { uTime: { value: 0 }, uDispScale: { value: 1 }, uNoiseFreq: { value: 1 } }
+    uRef.current = shared
+
     const mat = new THREE.MeshStandardMaterial({ color: 0x090909, roughness: 0.85, metalness: 0.12 })
     mat.onBeforeCompile = (shader) => {
-      shader.uniforms.uTime      = { value: 0 }
-      shader.uniforms.uDispScale = { value: 1 }
-      shader.uniforms.uNoiseFreq = { value: 1 }
-      uRef.current = shader.uniforms
-
+      shader.uniforms.uTime      = shared.uTime
+      shader.uniforms.uDispScale = shared.uDispScale
+      shader.uniforms.uNoiseFreq = shared.uNoiseFreq
       shader.vertexShader = UNIFORMS_GLSL + NOISE_GLSL + shader.vertexShader
       shader.vertexShader = shader.vertexShader.replace('#include <beginnormal_vertex>', NORMAL_INJECTION)
       shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>',       POSITION_INJECTION)
     }
     matRef.current = mat
 
+    // Depth material — same displacement so shadow matches the jagged surface
+    const depthMat = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking })
+    depthMat.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime      = shared.uTime
+      shader.uniforms.uDispScale = shared.uDispScale
+      shader.uniforms.uNoiseFreq = shared.uNoiseFreq
+      shader.vertexShader = UNIFORMS_GLSL + NOISE_GLSL + shader.vertexShader
+      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', DEPTH_POSITION_INJECTION)
+    }
+
     const mesh = new THREE.Mesh(geo, mat)
+    mesh.customDepthMaterial = depthMat
     mesh.castShadow = true
     mesh.position.y = 0.1
     scene.add(mesh)
@@ -173,8 +193,8 @@ export default function RockySphere() {
     key.position.set(3, 4, 2.5)
     key.castShadow = true
     key.shadow.mapSize.set(2048, 2048)
-    key.shadow.camera.left   = -3; key.shadow.camera.right  = 3
-    key.shadow.camera.top    =  3; key.shadow.camera.bottom = -3
+    key.shadow.camera.left   = -2; key.shadow.camera.right  = 2
+    key.shadow.camera.top    =  2; key.shadow.camera.bottom = -2
     key.shadow.camera.near   = 0.1; key.shadow.camera.far   = 20
     key.shadow.bias          = -0.0005
     key.shadow.radius        = 3
