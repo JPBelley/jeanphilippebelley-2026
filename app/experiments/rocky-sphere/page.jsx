@@ -73,6 +73,138 @@ const DEPTH_POSITION_INJECTION = `
   vec3 transformed = _nrm * (1.0 + getDisp(_nrm, _t));
 `
 
+// ─── Code generator ───────────────────────────────────────────────────────────
+
+function generateCode(cfg) {
+  const hex = cfg.color.replace('#', '')
+  return `'use client'
+
+import { useEffect, useRef } from 'react'
+import * as THREE from 'three'
+
+const UNIFORMS_GLSL = ${JSON.stringify(UNIFORMS_GLSL)}
+const NOISE_GLSL    = ${JSON.stringify(NOISE_GLSL)}
+const NORMAL_INJECTION       = ${JSON.stringify(NORMAL_INJECTION)}
+const POSITION_INJECTION     = ${JSON.stringify(POSITION_INJECTION)}
+const DEPTH_POSITION_INJECTION = ${JSON.stringify(DEPTH_POSITION_INJECTION)}
+
+export default function RockySphere() {
+  const mountRef = useRef(null)
+
+  useEffect(() => {
+    const mount = mountRef.current
+    if (!mount) return
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type    = THREE.PCFSoftShadowMap
+    renderer.outputColorSpace  = THREE.SRGBColorSpace
+    mount.appendChild(renderer.domElement)
+
+    const scene  = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100)
+    camera.position.set(0, 0.1, 5)
+
+    const shared = {
+      uTime:      { value: 0 },
+      uDispScale: { value: ${cfg.dispScale} },
+      uNoiseFreq: { value: ${cfg.noiseFreq} },
+    }
+
+    const geo = new THREE.SphereGeometry(1, 256, 256)
+    const mat = new THREE.MeshStandardMaterial({
+      color:     0x${hex},
+      roughness: ${cfg.roughness},
+      metalness: ${cfg.metalness},
+    })
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime      = shared.uTime
+      shader.uniforms.uDispScale = shared.uDispScale
+      shader.uniforms.uNoiseFreq = shared.uNoiseFreq
+      shader.vertexShader = UNIFORMS_GLSL + NOISE_GLSL + shader.vertexShader
+      shader.vertexShader = shader.vertexShader.replace('#include <beginnormal_vertex>', NORMAL_INJECTION)
+      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>',       POSITION_INJECTION)
+    }
+
+    const depthMat = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking })
+    depthMat.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime      = shared.uTime
+      shader.uniforms.uDispScale = shared.uDispScale
+      shader.uniforms.uNoiseFreq = shared.uNoiseFreq
+      shader.vertexShader = UNIFORMS_GLSL + NOISE_GLSL + shader.vertexShader
+      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', DEPTH_POSITION_INJECTION)
+    }
+
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.customDepthMaterial = depthMat
+    mesh.castShadow = true
+    mesh.position.y = 0.1
+    scene.add(mesh)
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(12, 12),
+      new THREE.ShadowMaterial({ opacity: 0.18 })
+    )
+    ground.rotation.x    = -Math.PI / 2
+    ground.position.y    = -1.65
+    ground.receiveShadow = true
+    scene.add(ground)
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2))
+
+    const key = new THREE.DirectionalLight(0xffffff, ${cfg.lightInt})
+    key.position.set(3, 4, 2.5)
+    key.castShadow = true
+    key.shadow.mapSize.set(2048, 2048)
+    key.shadow.camera.left = -2; key.shadow.camera.right  = 2
+    key.shadow.camera.top  =  2; key.shadow.camera.bottom = -2
+    key.shadow.camera.near = 0.1; key.shadow.camera.far   = 20
+    key.shadow.bias   = -0.0005
+    key.shadow.radius = 3
+    scene.add(key)
+
+    const fill = new THREE.DirectionalLight(0xffffff, 0.6)
+    fill.position.set(-3, -2, 2)
+    scene.add(fill)
+
+    function resize() {
+      renderer.setSize(mount.clientWidth, mount.clientHeight)
+      camera.aspect = mount.clientWidth / mount.clientHeight
+      camera.updateProjectionMatrix()
+    }
+    const ro = new ResizeObserver(resize)
+    ro.observe(mount)
+    resize()
+
+    let rafId
+    function tick(t) {
+      shared.uTime.value = t * 0.0004 * ${cfg.waveSpeed}
+      mesh.rotation.y    = t * 0.00018 * ${cfg.speed}
+      mesh.rotation.x    = Math.sin(t * 0.00009 * ${cfg.speed}) * 0.12
+      mesh.position.y    = 0.1 + Math.sin(t * 0.00047) * 0.05
+                               + Math.sin(t * 0.00031) * 0.02
+      renderer.render(scene, camera)
+      rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      ro.disconnect()
+      renderer.dispose()
+      geo.dispose()
+      mat.dispose()
+      mount.removeChild(renderer.domElement)
+    }
+  }, [])
+
+  return (
+    <div ref={mountRef} style={{ width: '100%', height: '500px', background: '${cfg.bg}' }} />
+  )
+}`
+}
+
 // ─── Controls sub-components ─────────────────────────────────────────────────
 
 function SliderRow({ label, value, min, max, step = 0.01, unit = '', onChange }) {
@@ -127,6 +259,8 @@ export default function RockySphere() {
   const [lightInt,  setLightInt]  = useState(4.5)
   const [color,     setColor]     = useState('#090909')
   const [bg,        setBg]        = useState('#EDEAE4')
+  const [showCode,  setShowCode]  = useState(false)
+  const [copied,    setCopied]    = useState(false)
 
   // ── Bootstrap Three.js once ─────────────────────────────────────────────
   useEffect(() => {
@@ -344,6 +478,61 @@ export default function RockySphere() {
         />
 
       </div>
+
+      {/* ── CODE EXPORT ─────────────────────────────────────────────────────── */}
+      <div className="mt-8">
+        <button
+          onClick={() => setShowCode(v => !v)}
+          className="font-mono text-[12px] px-4 py-2 rounded-lg border transition-colors duration-150"
+          style={{
+            background:  showCode ? 'rgba(124,92,255,0.12)' : 'var(--color-tool-bg2)',
+            borderColor: showCode ? 'rgba(124,92,255,0.4)'  : 'var(--color-tool-border2)',
+            color:       showCode ? 'var(--color-violet)'   : 'var(--color-tool-text2)',
+          }}
+        >
+          {showCode ? '↑ Hide code' : '↓ Export as React component'}
+        </button>
+
+        {showCode && (
+          <div className="mt-4 rounded-xl overflow-hidden border" style={{ borderColor: 'var(--color-tool-border)' }}>
+            <div
+              className="flex items-center justify-between px-5 py-3 border-b"
+              style={{ background: 'var(--color-tool-bg1)', borderColor: 'var(--color-tool-border)' }}
+            >
+              <span className="font-mono text-[11px] tracking-widest" style={{ color: 'var(--color-tool-text2)' }}>
+                RockySphere.jsx
+              </span>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(generateCode({ dispScale, noiseFreq, waveSpeed, speed, roughness, metalness, lightInt, color, bg }))
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                }}
+                className="font-mono text-[11px] px-3 py-1 rounded border transition-colors duration-150"
+                style={{
+                  background:  copied ? 'rgba(46,230,166,0.12)' : 'var(--color-tool-bg3)',
+                  borderColor: copied ? 'rgba(46,230,166,0.4)'  : 'var(--color-tool-border2)',
+                  color:       copied ? 'var(--color-mint)'     : 'var(--color-tool-text2)',
+                }}
+              >
+                {copied ? '✓ Copied' : 'Copy'}
+              </button>
+            </div>
+            <pre
+              className="overflow-x-auto p-6 text-[12px] leading-[1.8]"
+              style={{
+                background: 'var(--color-tool-bg0)',
+                color:      'var(--color-tool-text)',
+                fontFamily: 'var(--font-mono)',
+                margin: 0,
+              }}
+            >
+              {generateCode({ dispScale, noiseFreq, waveSpeed, speed, roughness, metalness, lightInt, color, bg })}
+            </pre>
+          </div>
+        )}
+      </div>
+
     </ExperimentLayout>
   )
 }
