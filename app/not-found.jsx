@@ -2,8 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Cursor from './components/Cursor'
 import * as THREE from 'three'
-import { STLLoader } from 'three/addons/loaders/STLLoader.js'
+import { GLTFLoader }  from 'three/addons/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 
 export default function NotFound() {
   const mountRef  = useRef(null)
@@ -28,50 +30,38 @@ export default function NotFound() {
     camera.position.set(0, 0, 10)
 
     // ── Cursor tracking ───────────────────────────────────────────────────────
-    const cursor = { x: 0, y: 0 }
-    const target = { rx: 0, ry: 0 }
-    const text3d = { x: 0, y: 0 }
+    const cursor  = { x: 0, y: 0 }
+    const target  = { rx: 0, ry: 0 }
+    // Per-digit parallax — [xFactor, yFactor, rotScale]
+    const DIGIT_FACTORS = [[22, 10, 1.2], [8, 14, 0.7], [18, 8, 1.0]]
+    const digits3d = [{x:0,y:0,rx:0,ry:0}, {x:0,y:0,rx:0,ry:0}, {x:0,y:0,rx:0,ry:0}]
 
     // ── Lights ────────────────────────────────────────────────────────────────
-    scene.add(new THREE.AmbientLight(0xffffff, 1.4))
+    scene.add(new THREE.AmbientLight(0xffffff, 3.0))
 
-    const key = new THREE.DirectionalLight(0xffffff, 3.5)
-    key.position.set(4, 6, 8)
-    key.castShadow = true
-    scene.add(key)
-
-    const rim = new THREE.DirectionalLight(0x7C5CFF, 1.5)
-    rim.position.set(-5, 2, -4)
-    scene.add(rim)
-
-    const fill = new THREE.DirectionalLight(0x2EE6A6, 0.6)
-    fill.position.set(3, -3, 5)
-    scene.add(fill)
-
-    // ── STL face ──────────────────────────────────────────────────────────────
+    // ── OBJ face with texture ─────────────────────────────────────────────────
     const faceGroup = new THREE.Group()
     scene.add(faceGroup)
 
-    const loader = new STLLoader()
-    loader.load('/JPBelley_Memoji.stl', (geometry) => {
-      geometry.computeVertexNormals()
-      geometry.computeBoundingBox()
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
 
-      const box    = geometry.boundingBox
+    const gltfLoader = new GLTFLoader()
+    gltfLoader.setDRACOLoader(dracoLoader)
+    gltfLoader.load('/memoji.glb', (gltf) => {
+      const obj = gltf.scene
+
+      const box = new THREE.Box3().setFromObject(obj)
       const center = new THREE.Vector3()
       box.getCenter(center)
-      geometry.translate(-center.x, -center.y, -center.z)
+      obj.position.sub(center)
 
-      const size   = new THREE.Vector3()
+      const size  = new THREE.Vector3()
       box.getSize(size)
-      const scale  = 4.5 / Math.max(size.x, size.y, size.z)
-
-      const mat  = new THREE.MeshStandardMaterial({ color: 0xE8EAF0, roughness: 0.55, metalness: 0.05 })
-      const mesh = new THREE.Mesh(geometry, mat)
-      mesh.scale.setScalar(scale)
-      mesh.rotation.x = -Math.PI / 2
-      mesh.castShadow = true
-      faceGroup.add(mesh)
+      const scale = 3.2 / Math.max(size.x, size.y, size.z)
+      obj.scale.setScalar(scale)
+      obj.traverse(child => { if (child.isMesh) child.castShadow = true })
+      faceGroup.add(obj)
     })
 
     // ── Resize ────────────────────────────────────────────────────────────────
@@ -96,15 +86,22 @@ export default function NotFound() {
     let rafId
 
     function tick() {
-      target.rx += (cursor.y * 0.45         - target.rx) * LERP
-      target.ry += (cursor.x * Math.PI / 2  - target.ry) * LERP
-      faceGroup.rotation.x = target.rx
+      target.rx += (cursor.y * 0.15         - target.rx) * LERP
+      target.ry += (cursor.x * 0.3          - target.ry) * LERP
+      faceGroup.rotation.x = target.rx + 0.15
       faceGroup.rotation.y = target.ry
 
       // Drift the HTML text subtly with cursor
-      text3d.x += (cursor.x * 18 - text3d.x) * LERP * 0.5
-      text3d.y += (cursor.y * 8  - text3d.y) * LERP * 0.5
-      textEl.style.transform = `translate(calc(-50% + ${text3d.x}px), calc(-50% + ${-text3d.y}px))`
+      const spans = textEl.children
+      digits3d.forEach((d, i) => {
+        const [fx, fy, rs] = DIGIT_FACTORS[i]
+        d.x  += (-cursor.x * fx         - d.x)  * LERP * 0.5
+        d.y  += (-cursor.y * fy         - d.y)  * LERP * 0.5
+        d.rx += ( cursor.y * 12 * rs    - d.rx) * LERP * 0.5
+        d.ry += (-cursor.x * 14 * rs    - d.ry) * LERP * 0.5
+        spans[i].style.transform =
+          `translate(${d.x}px, ${-d.y}px) rotateX(${d.rx}deg) rotateY(${d.ry}deg)`
+      })
 
       renderer.render(scene, camera)
       rafId = requestAnimationFrame(tick)
@@ -122,22 +119,39 @@ export default function NotFound() {
 
   return (
     <div className="relative w-screen h-screen bg-bg overflow-hidden">
+      <Cursor />
 
-      {/* 404 text — HTML so it uses the real font and scales with vw */}
+      {/* 404 text — each digit reacts independently to cursor */}
       <div
         ref={text404Ref}
-        className="absolute font-head font-black text-foreground select-none pointer-events-none will-change-transform"
+        className="absolute font-head font-bold text-foreground select-none pointer-events-none"
         style={{
-          fontSize: 'clamp(100px, 28vw, 480px)',
+          fontSize: 'clamp(140px, 38vw, 640px)',
           lineHeight: 1,
           letterSpacing: '-0.04em',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           opacity: 0.9,
+          display: 'flex',
+          perspective: '800px',
+          perspectiveOrigin: 'center center',
         }}
       >
-        404
+        {['4','0','4'].map((ch, i) => (
+          <span
+            key={i}
+            className="inline-block will-change-transform"
+            style={{
+              textShadow: `
+                1px 2px 0 rgba(0,0,0,0.5),
+                2px 4px 0 rgba(0,0,0,0.35),
+                3px 6px 0 rgba(0,0,0,0.2),
+                0 0 60px rgba(124,92,255,0.15)
+              `,
+            }}
+          >{ch}</span>
+        ))}
       </div>
 
       {/* Three.js canvas — alpha:true so text shows through, head renders on top */}
