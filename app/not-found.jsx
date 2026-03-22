@@ -46,6 +46,9 @@ export default function NotFound() {
     const dracoLoader = new DRACOLoader()
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
 
+    let targetScale = 0
+    let currentScale = 0
+
     const gltfLoader = new GLTFLoader()
     gltfLoader.setDRACOLoader(dracoLoader)
     gltfLoader.load('/memoji.glb', (gltf) => {
@@ -58,8 +61,8 @@ export default function NotFound() {
 
       const size  = new THREE.Vector3()
       box.getSize(size)
-      const scale = 3.2 / Math.max(size.x, size.y, size.z)
-      obj.scale.setScalar(scale)
+      targetScale = 3.2 / Math.max(size.x, size.y, size.z)
+      obj.scale.setScalar(0)
       obj.traverse(child => { if (child.isMesh) child.castShadow = true })
       faceGroup.add(obj)
     })
@@ -90,6 +93,11 @@ export default function NotFound() {
       target.ry += (cursor.x * 0.3          - target.ry) * LERP
       faceGroup.rotation.x = target.rx + 0.15
       faceGroup.rotation.y = target.ry
+
+      if (faceGroup.children.length > 0 && targetScale > 0) {
+        currentScale += (targetScale - currentScale) * 0.06
+        faceGroup.children[0].scale.setScalar(currentScale)
+      }
 
       // Drift the HTML text subtly with cursor
       const spans = textEl.children
