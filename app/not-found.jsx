@@ -118,7 +118,20 @@ export default function NotFound() {
   }, [])
 
   return (
-    <div className="relative w-screen h-screen bg-bg overflow-hidden">
+    <div
+      className="relative w-screen h-screen overflow-hidden"
+      style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, #1c1535 0%, #0e1020 40%, #070809 100%)' }}
+    >
+      {/* Depth orbs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div style={{ position:'absolute', width:600, height:600, borderRadius:'50%', top:'10%', left:'5%',  background:'radial-gradient(circle, rgba(124,92,255,0.12) 0%, transparent 70%)', filter:'blur(40px)' }} />
+        <div style={{ position:'absolute', width:500, height:500, borderRadius:'50%', top:'30%', right:'5%', background:'radial-gradient(circle, rgba(46,230,166,0.08) 0%, transparent 70%)',  filter:'blur(40px)' }} />
+        <div style={{ position:'absolute', width:700, height:700, borderRadius:'50%', bottom:'-10%', left:'20%', background:'radial-gradient(circle, rgba(124,92,255,0.07) 0%, transparent 70%)', filter:'blur(60px)' }} />
+      </div>
+
+      {/* Vignette */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background:'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.65) 100%)' }} />
+
       <Cursor />
 
       {/* 404 text — each digit reacts independently to cursor */}
