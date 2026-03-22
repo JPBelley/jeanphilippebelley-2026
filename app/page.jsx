@@ -1,15 +1,18 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Cursor from './components/Cursor'
 import Button from './components/Button'
 import Section from './components/Section'
+import MemojiHead from './components/MemojiHead'
 import experiments from './data/experiments'
 
 export default function Home() {
+  const headContainerRef = useRef(null)
+
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -26,8 +29,26 @@ export default function Home() {
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
     document.querySelectorAll('.skill-group').forEach(el => observer.observe(el))
 
+    // Big + centered in hero, shrinks to top-right on scroll
+    const CONTAINER = 580
+    const SCALE_MAX  = 1.6
+    const SCALE_MIN  = 0.52
+    function onScroll() {
+      const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
+      const scale = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
+      // Center vertically: offset = 50vh - half of scaled height
+      const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
+      const tx = (1 - progress) * -80
+      if (headContainerRef.current) {
+        headContainerRef.current.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
+      }
+    }
+    onScroll() // set initial state
+    window.addEventListener('scroll', onScroll, { passive: true })
+
     return () => {
       observer.disconnect()
+      window.removeEventListener('scroll', onScroll)
     }
   }, [])
 
@@ -35,6 +56,15 @@ export default function Home() {
     <>
       <Cursor />
       <Nav />
+
+      {/* Fixed memoji head — big in hero, shrinks on scroll */}
+      <div
+        ref={headContainerRef}
+        className="fixed top-0 right-0 z-10"
+        style={{ width: 580, height: 580, pointerEvents: 'none', transformOrigin: 'top right' }}
+      >
+        <MemojiHead size={2.8} className="w-full h-full" />
+      </div>
 
       {/* HERO */}
       <Section
