@@ -1,17 +1,28 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Cursor from './components/Cursor'
 import Button from './components/Button'
 import Section from './components/Section'
-import MemojiHead from './components/MemojiHead'
+import dynamic from 'next/dynamic'
+
+const MemojiHead = dynamic(() => import('./components/MemojiHead'), {
+  ssr: false,
+  loading: () => null,
+})
 import experiments from './data/experiments'
 
 export default function Home() {
   const headContainerRef = useRef(null)
+  const [headVisible, setHeadVisible] = useState(false)
+
+  // Once the head mounts, apply the correct initial transform
+  useEffect(() => {
+    if (headVisible) window.dispatchEvent(new Event('scroll'))
+  }, [headVisible])
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -55,6 +66,7 @@ export default function Home() {
     onScroll() // set initial state
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
+    window.addEventListener('mousemove', () => setHeadVisible(true), { once: true })
 
     return () => {
       observer.disconnect()
@@ -68,14 +80,16 @@ export default function Home() {
       <Cursor />
       <Nav />
 
-      {/* Fixed memoji head — big in hero, shrinks on scroll */}
-      <div
-        ref={headContainerRef}
-        className="fixed top-0 right-0 z-10"
-        style={{ width: 580, height: 580, pointerEvents: 'none', transformOrigin: 'top right' }}
-      >
-        <MemojiHead size={2.8} className="w-full h-full" />
-      </div>
+      {/* Fixed memoji head — deferred until first mousemove */}
+      {headVisible && (
+        <div
+          ref={headContainerRef}
+          className="fixed top-0 right-0 z-10"
+          style={{ width: 580, height: 580, pointerEvents: 'none', transformOrigin: 'top right' }}
+        >
+          <MemojiHead size={2.8} className="w-full h-full" />
+        </div>
+      )}
 
       {/* HERO */}
       <Section

@@ -1,4 +1,20 @@
 import './globals.css'
+import { Space_Grotesk, DM_Mono } from 'next/font/google'
+
+const spaceGrotesk = Space_Grotesk({
+  subsets:  ['latin'],
+  weight:   ['400', '500', '600', '700'],
+  variable: '--font-head',
+  display:  'swap',
+})
+
+const dmMono = DM_Mono({
+  subsets:  ['latin'],
+  weight:   ['300', '400'],
+  style:    ['normal', 'italic'],
+  variable: '--font-mono',
+  display:  'swap',
+})
 
 export const metadata = {
   title: 'Jean-Philippe Belley',
@@ -15,15 +31,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${spaceGrotesk.variable} ${dmMono.variable}`}>
       <body>
         {children}
         {/* 100% privacy-first analytics */}
