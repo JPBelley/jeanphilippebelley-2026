@@ -9,6 +9,8 @@ import Button from './components/Button'
 import Section from './components/Section'
 import dynamic from 'next/dynamic'
 
+import SpeechBubble from './components/SpeechBubble'
+
 const MemojiHead = dynamic(() => import('./components/MemojiHead'), {
   ssr: false,
   loading: () => null,
@@ -73,12 +75,13 @@ export default function Home() {
       <Cursor />
       <Nav />
 
-      {/* Fixed memoji head — deferred until first mousemove */}
+      {/* Fixed memoji head + bubble — bubble is inside so it moves with the head */}
       <div
         ref={headContainerRef}
         className="fixed top-0 right-0 z-10"
         style={{ width: 580, height: 580, pointerEvents: 'none', transformOrigin: 'top right' }}
       >
+        <SpeechBubble />
         <MemojiHead size={2.8} className="w-full h-full" />
       </div>
 
