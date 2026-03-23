@@ -1,4 +1,5 @@
 // Ordered newest → oldest by date.
+// Set published: false to hide from listings without deleting the page.
 const posts = [
   {
     slug:        'easing-curves-explained',
@@ -7,6 +8,7 @@ const posts = [
     description: 'A deep dive into cubic-bezier curves: how the four values map time to progress, why overshoot feels physical, and five curves worth bookmarking — with interactive demos for each concept.',
     tags:        ['CSS', 'Animation', 'Motion'],
     readTime:    '7 min read',
+    published:   true,
   },
   {
     slug:        'text-animation-in-react',
@@ -15,6 +17,7 @@ const posts = [
     description: 'A deep dive into the mechanics behind character-level CSS animations: text splitting, stagger delays, wave math, and overshoot easing, with interactive examples you can tweak in the browser.',
     tags:        ['React', 'CSS Animations', 'Motion'],
     readTime:    '8 min read',
+    published:   true,
   },
 ]
 

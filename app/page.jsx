@@ -54,10 +54,12 @@ export default function Home() {
     }
     onScroll() // set initial state
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
 
     return () => {
       observer.disconnect()
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
     }
   }, [])
 
@@ -317,7 +319,7 @@ export default function Home() {
           Experiments &amp;<br /><span className="text-mint">playground</span>
         </div>
         <div className="grid grid-cols-3 gap-[2px] max-[900px]:grid-cols-1">
-          {experiments.slice(0, 3).map((e, i) => ({
+          {experiments.filter(e => e.published).slice(0, 3).map((e, i) => ({
             ...e,
             delay: ['', 'reveal-delay-1', 'reveal-delay-2'][i],
           })).map(e => (

@@ -20,7 +20,7 @@ export default function Blog() {
         </div>
 
         <div className="flex flex-col gap-5">
-          {posts.map(post => (
+          {posts.filter(p => p.published).map(post => (
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}

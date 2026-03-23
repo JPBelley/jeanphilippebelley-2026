@@ -64,7 +64,7 @@ export default function Experiments() {
         </div>
 
         <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1">
-          {experiments.map(e => (
+          {experiments.filter(e => e.published).map(e => (
             <Link
               key={e.href}
               href={e.href}
