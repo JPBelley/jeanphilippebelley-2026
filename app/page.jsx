@@ -34,14 +34,23 @@ export default function Home() {
     const SCALE_MAX  = 1.6
     const SCALE_MIN  = 0.52
     function onScroll() {
+      if (!headContainerRef.current) return
+      // On mobile: 150×150 below the nav, fixed top-right, no scroll animation
+      if (window.innerWidth < 768) {
+        headContainerRef.current.style.width  = '100px'
+        headContainerRef.current.style.height = '100px'
+        headContainerRef.current.style.top    = '80px'
+        headContainerRef.current.style.transform = 'none'
+        return
+      }
+      headContainerRef.current.style.top    = '0px'
+      headContainerRef.current.style.width  = `${CONTAINER}px`
+      headContainerRef.current.style.height = `${CONTAINER}px`
       const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
       const scale = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
-      // Center vertically: offset = 50vh - half of scaled height
       const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
-      const tx = (1 - progress) * -80
-      if (headContainerRef.current) {
-        headContainerRef.current.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
-      }
+      const tx = (1 - progress) * -140
+      headContainerRef.current.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
     }
     onScroll() // set initial state
     window.addEventListener('scroll', onScroll, { passive: true })

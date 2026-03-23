@@ -46,7 +46,8 @@ export default function MemojiHead({ size = 2.8, className = '', style = {} }) {
       obj.position.sub(center)
       const sz = new THREE.Vector3()
       box.getSize(sz)
-      targetScale = size / Math.max(sz.x, sz.y, sz.z)
+      const effectiveSize = window.innerWidth < 768 ? size * 2.8 : size
+      targetScale = effectiveSize / Math.max(sz.x, sz.y, sz.z)
       obj.scale.setScalar(0)
       faceGroup.add(obj)
     })
@@ -76,8 +77,8 @@ export default function MemojiHead({ size = 2.8, className = '', style = {} }) {
     let rafId
 
     function tick() {
-      target.rx += (cursor.y * 0.15 - target.rx) * LERP
-      target.ry += (cursor.x * 0.3  - target.ry) * LERP
+      target.rx += (cursor.y * 0.3  - target.rx) * LERP
+      target.ry += (cursor.x * 0.55 - target.ry) * LERP
       faceGroup.rotation.x = target.rx + 0.15
       faceGroup.rotation.y = target.ry
 
