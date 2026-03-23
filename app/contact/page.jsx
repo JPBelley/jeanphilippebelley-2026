@@ -20,7 +20,7 @@ export default function Contact() {
 
       <div className="flex-1 flex items-center justify-center">
         <Section size="narrow" containerClassName="text-center">
-          <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center" data-num="01">
+          <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center">
             Contact
           </div>
           <h1 className="text-[clamp(40px,6vw,72px)] font-bold tracking-[-0.03em] leading-[1.05] mb-8">

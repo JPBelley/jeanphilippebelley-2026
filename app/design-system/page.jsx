@@ -7,12 +7,12 @@ import Cursor from '../components/Cursor';
 import Button from '../components/Button';
 import Section from '../components/Section';
 
-const TokenSection = ({ title, num, children }) => (
+const TokenSection = ({ title, children }) => (
   <section className="mb-20">
     <div className="flex items-center gap-4 mb-8">
       <span
         className="section-label text-[10px] font-mono uppercase tracking-widest text-muted flex items-center gap-2"
-        data-num={num}
+
       />
       <h2 className="text-[13px] font-mono uppercase tracking-widest text-muted">{title}</h2>
     </div>
@@ -93,7 +93,7 @@ export default function DesignSystem() {
         </div>
 
         {/* ─── COLORS DARK ─────────────────────────────────────────────────── */}
-        <TokenSection title="Colors: Dark Mode" num="01">
+        <TokenSection title="Colors: Dark Mode">
           <div className="p-6 rounded-xl" style={{ background: '#0F1115' }}>
             <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#6B7280' }}>
               Default palette · data-theme="dark"
@@ -116,7 +116,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── COLORS LIGHT ────────────────────────────────────────────────── */}
-        <TokenSection title="Colors: Light Mode" num="02">
+        <TokenSection title="Colors: Light Mode">
           <div className="p-6 rounded-xl" style={{ background: '#F8F8FA' }}>
             <p className="font-mono text-[10px] uppercase tracking-widest mb-5" style={{ color: '#5C5C72' }}>
               Light palette · data-theme="light"
@@ -138,7 +138,7 @@ export default function DesignSystem() {
           </div>
         </TokenSection>
 
-        <TokenSection title="Tool UI Colors" num="03">
+        <TokenSection title="Tool UI Colors">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {toolColors.map((c) => (
               <div key={c.name}>
@@ -154,7 +154,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── TYPOGRAPHY ──────────────────────────────────────────────────── */}
-        <TokenSection title="Typography" num="04">
+        <TokenSection title="Typography">
           <div className="space-y-10">
 
             {/* Headings scale */}
@@ -210,7 +210,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── BUTTONS ─────────────────────────────────────────────────────── */}
-        <TokenSection title="Buttons & Links" num="05">
+        <TokenSection title="Buttons & Links">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-4 items-center">
             <Button variant="primary">Primary CTA</Button>
             <Button variant="secondary">Secondary</Button>
@@ -232,7 +232,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── TECH TAGS ───────────────────────────────────────────────────── */}
-        <TokenSection title="Tech Tags" num="06">
+        <TokenSection title="Tech Tags">
           <div className="p-8 bg-bg2 rounded-xl border border-ui">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-4">
               .tech-tag · adds // prefix via CSS
@@ -251,7 +251,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── CARDS ───────────────────────────────────────────────────────── */}
-        <TokenSection title="Cards" num="07">
+        <TokenSection title="Cards">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Project Card */}
             <div className="project-card relative p-8 bg-bg2 border border-ui rounded-xl cursor-pointer hover:border-violet/40 transition-colors duration-300 overflow-hidden">
@@ -281,7 +281,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── SKILL BARS ──────────────────────────────────────────────────── */}
-        <TokenSection title="Skill Bars" num="08">
+        <TokenSection title="Skill Bars">
           <div className="skill-group relative p-8 bg-bg2 border border-ui rounded-xl overflow-hidden">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted mb-6">
               .skill-group + .skill-bar-fill.visible
@@ -306,7 +306,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── SECTION ANATOMY ─────────────────────────────────────────────── */}
-        <TokenSection title="Section Anatomy" num="09">
+        <TokenSection title="Section Anatomy">
           <div className="p-8 bg-bg2 rounded-xl border border-ui space-y-6">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               .section-label[data-num] + heading pattern
@@ -330,7 +330,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── STATUS & INDICATORS ─────────────────────────────────────────── */}
-        <TokenSection title="Indicators" num="10">
+        <TokenSection title="Indicators">
           <div className="p-8 bg-bg2 rounded-xl border border-ui flex flex-wrap gap-8 items-start">
             {/* Status dot */}
             <div className="flex flex-col gap-2">
@@ -379,7 +379,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── ANIMATIONS ──────────────────────────────────────────────────── */}
-        <TokenSection title="Animations" num="11">
+        <TokenSection title="Animations">
           <div className="grid sm:grid-cols-2 gap-3">
             {animations.map((a) => (
               <div
@@ -394,7 +394,7 @@ export default function DesignSystem() {
         </TokenSection>
 
         {/* ─── GRADIENTS ───────────────────────────────────────────────────── */}
-        <TokenSection title="Gradients" num="12">
+        <TokenSection title="Gradients">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="h-20 rounded-xl" style={{ background: 'linear-gradient(90deg, #7C5CFF, #2EE6A6)' }}>
               <div className="h-full flex items-end p-4">

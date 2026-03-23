@@ -144,7 +144,7 @@ export default function Home() {
         <div className="h-20" />
         <div className="grid grid-cols-2 gap-[80px] items-center max-[900px]:grid-cols-1 max-[900px]:gap-12">
           <div>
-            <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="01">About</div>
+            <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">About</div>
             <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
               Building on the<br /><span className="text-violet">front lines</span> of the web
             </div>
@@ -178,7 +178,7 @@ export default function Home() {
 
       {/* SKILLS */}
       <Section className="bg-bg2 relative" id="skills">
-        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="02">Skills</div>
+        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Skills</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           What I work<br />with <span className="text-mint">every day</span>
         </div>
@@ -208,7 +208,7 @@ export default function Home() {
 
       {/* PHILOSOPHY */}
       <Section className="bg-bg relative" id="projects">
-        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="03">Philosophy</div>
+        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Philosophy</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           The principles<br />I build <span className="text-violet">with</span>
         </div>
@@ -323,7 +323,7 @@ export default function Home() {
 
       {/* EXPERIMENTS / LAB */}
       <Section className="bg-bg2 relative" id="experiments">
-        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]" data-num="04">Lab</div>
+        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Lab</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
           Experiments &amp;<br /><span className="text-mint">playground</span>
         </div>
@@ -347,7 +347,7 @@ export default function Home() {
 
       {/* CONTACT */}
       <Section className="bg-bg relative" id="contact" containerClassName="text-center">
-        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center" data-num="05">Contact</div>
+        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center">Contact</div>
         <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] text-center reveal reveal-delay-1">
           Let&apos;s build<br />something <span className="text-mint">great</span>
         </div>

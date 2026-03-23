@@ -166,12 +166,6 @@ body::before {
   background: var(--color-mint);
 }
 
-/* Section label number */
-.section-label::before {
-  content: attr(data-num);
-  color: var(--color-muted);
-  font-size: 10px;
-}
 
 /* Tech tag // prefix */
 .tech-tag::before {
