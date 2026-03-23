@@ -8,6 +8,12 @@ export default function SpeechBubble() {
   const [displayed, setDisplayed]   = useState('')
   const [visible,   setVisible]     = useState(true)
   const [fading,    setFading]      = useState(false)
+  const [fadeIn,    setFadeIn]      = useState(false)
+
+  useEffect(() => {
+    const fadeInTimer = setTimeout(() => setFadeIn(true), 30)
+    return () => clearTimeout(fadeInTimer)
+  }, [])
 
   useEffect(() => {
     let i = 0
@@ -22,7 +28,7 @@ export default function SpeechBubble() {
           setTimeout(() => {
             setFading(true)
             setTimeout(() => setVisible(false), 600)
-          }, 4000)
+          }, 2000)
         }
       }, 38)
       return () => clearInterval(interval)
@@ -35,13 +41,13 @@ export default function SpeechBubble() {
 
   return (
     <div
-      className="absolute pointer-events-none"
+      className="absolute pointer-events-none max-[768px]:hidden"
       style={{
         bottom: '44%',
         right: '60%',
         width: 190,
         transition: 'opacity 0.6s ease',
-        opacity: fading ? 0 : 1,
+        opacity: fading ? 0 : fadeIn ? 1 : 0,
       }}
     >
       <div

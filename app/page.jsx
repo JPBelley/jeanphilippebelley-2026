@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
@@ -19,6 +19,7 @@ import experiments from './data/experiments'
 
 export default function Home() {
   const headContainerRef = useRef(null)
+  const [headLoaded, setHeadLoaded] = useState(false)
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -81,8 +82,8 @@ export default function Home() {
         className="fixed top-0 right-0 z-10"
         style={{ width: 580, height: 580, pointerEvents: 'none', transformOrigin: 'top right' }}
       >
-        <SpeechBubble />
-        <MemojiHead size={2.8} className="w-full h-full" />
+        {headLoaded && <SpeechBubble />}
+        <MemojiHead size={2.8} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
       </div>
 
       {/* HERO */}

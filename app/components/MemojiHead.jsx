@@ -5,8 +5,10 @@ import * as THREE from 'three'
 import { GLTFLoader }  from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 
-export default function MemojiHead({ size = 2.8, className = '', style = {} }) {
-  const mountRef = useRef(null)
+export default function MemojiHead({ size = 2.8, className = '', style = {}, onLoad }) {
+  const mountRef  = useRef(null)
+  const onLoadRef = useRef(onLoad)
+  useEffect(() => { onLoadRef.current = onLoad }, [onLoad])
 
   useEffect(() => {
     const mount = mountRef.current
@@ -50,6 +52,7 @@ export default function MemojiHead({ size = 2.8, className = '', style = {} }) {
       targetScale = effectiveSize / Math.max(sz.x, sz.y, sz.z)
       obj.scale.setScalar(0)
       faceGroup.add(obj)
+      onLoadRef.current?.()
     })
 
     // ── Resize ────────────────────────────────────────────────────────────────
