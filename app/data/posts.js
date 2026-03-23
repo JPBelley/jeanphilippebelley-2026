@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const posts = [
   {
+    slug:        'threejs-cube-from-zero',
+    title:       'Your First Three.js Scene: A Cube From Zero',
+    date:        'March 22, 2026',
+    description: 'Build a rotating 3D cube step by step: scene setup, geometry, lighting, and materials, each concept paired with an interactive demo you can poke at directly in the browser.',
+    tags:        ['Three.js', 'WebGL', '3D'],
+    readTime:    '9 min read',
+    published:   true,
+  },
+  {
     slug:        'easing-curves-explained',
     title:       'Easing Curves Explained: The Secret Behind Great Animation',
     date:        'March 18, 2026',
