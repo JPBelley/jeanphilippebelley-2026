@@ -4,7 +4,7 @@ const experiments = [
   {
     href:      '/experiments/flow-field',
     icon:      '〰',
-    title:     'Flow Field',
+    title:     'Flow Field Particles',
     desc:      'Perlin noise drives a grid of line segments into organic, fingerprint-like waves. Move your cursor to disturb the field. Toggle to particle mode to watch them flow.',
     tags:      ['Canvas', 'Perlin Noise', 'Generative'],
     accent:    '242,196,196',

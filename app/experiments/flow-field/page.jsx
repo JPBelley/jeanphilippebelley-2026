@@ -15,7 +15,6 @@ function buildNoise(seed) {
   }
   const pm = new Uint8Array(512)
   for (let i = 0; i < 512; i++) pm[i] = p[i & 255]
-
   const fade = t => t * t * t * (t * (t * 6 - 15) + 10)
   const lerp = (a, b, t) => a + t * (b - a)
   const grad = (h, x, y) => {
@@ -26,7 +25,6 @@ function buildNoise(seed) {
       default: return -x - y
     }
   }
-
   return (x, y) => {
     const X = Math.floor(x) & 255, Y = Math.floor(y) & 255
     const xf = x - Math.floor(x), yf = y - Math.floor(y)
@@ -44,22 +42,24 @@ function buildNoise(seed) {
 // ── Helpers ────────────────────────────────────────────────────────────────────
 const BG     = '#2a2626'
 const BG_RGB = '42,38,38'
-const N_PARTICLES = 900
 
-function hexToRgb(hex) {
-  const n = parseInt(hex.replace('#', ''), 16)
-  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`
+function lerpColor(hex1, hex2, t) {
+  const a = parseInt(hex1.replace('#', ''), 16)
+  const b = parseInt(hex2.replace('#', ''), 16)
+  const r = Math.round(((a >> 16) & 255) * (1 - t) + ((b >> 16) & 255) * t)
+  const g = Math.round(((a >> 8)  & 255) * (1 - t) + ((b >> 8)  & 255) * t)
+  const c = Math.round( (a        & 255) * (1 - t) +  (b        & 255) * t)
+  return `${r},${g},${c}`
 }
 
-function SliderRow({ label, value, min, max, step = 0.01, unit = '', format, onChange }) {
-  const display = format ? format(value) : `${value}${unit}`
+function SliderRow({ label, value, min, max, step = 0.01, format, onChange }) {
   return (
     <div className="ctrl-row">
       <span className="ctrl-label">{label}</span>
       <div className="ctrl-right">
         <input type="range" min={min} max={max} step={step} value={value}
           onChange={e => onChange(parseFloat(e.target.value))} />
-        <span className="ctrl-val">{display}</span>
+        <span className="ctrl-val">{format ? format(value) : value}</span>
       </div>
     </div>
   )
@@ -74,23 +74,46 @@ export default function FlowFieldPage() {
   const mouseRef     = useRef({ x: -9999, y: -9999 })
   const timeRef      = useRef(0)
 
-  // Refs mirror state so the RAF loop always reads latest values
-  const scaleRef   = useRef(0.006)
-  const speedRef   = useRef(1.5)
-  const trailRef   = useRef(0.06)
-  const colorRef   = useRef('#f2c4c4')
+  // Refs mirror state — always current inside the RAF loop
+  const scaleRef         = useRef(0.006)
+  const flowSpeedRef     = useRef(0.003)
+  const speedRef         = useRef(1.5)
+  const trailRef         = useRef(0.06)
+  const countRef         = useRef(900)
+  const lineWidthRef     = useRef(1.2)
+  const colorRef         = useRef('#f2c4c4')
+  const color2Ref        = useRef('#7C5CFF')
+  const cursorStrRef     = useRef(1.8)
+  const cursorRadRef     = useRef(200)
 
-  const [scale,  setScale]  = useState(0.006)
-  const [speed,  setSpeed]  = useState(1.5)
-  const [trail,  setTrail]  = useState(0.06)
-  const [color,  setColor]  = useState('#f2c4c4')
+  const [scale,        setScale]        = useState(0.006)
+  const [flowSpeed,    setFlowSpeed]    = useState(0.003)
+  const [speed,        setSpeed]        = useState(1.5)
+  const [trail,        setTrail]        = useState(0.06)
+  const [count,        setCount]        = useState(900)
+  const [lineWidth,    setLineWidth]    = useState(1.2)
+  const [color,        setColor]        = useState('#f2c4c4')
+  const [color2,       setColor2]       = useState('#7C5CFF')
+  const [cursorStr,    setCursorStr]    = useState(1.8)
+  const [cursorRad,    setCursorRad]    = useState(200)
 
-  useEffect(() => { scaleRef.current = scale }, [scale])
-  useEffect(() => { speedRef.current = speed }, [speed])
-  useEffect(() => { trailRef.current = trail }, [trail])
-  useEffect(() => { colorRef.current = color }, [color])
+  useEffect(() => { scaleRef.current     = scale     }, [scale])
+  useEffect(() => { flowSpeedRef.current = flowSpeed }, [flowSpeed])
+  useEffect(() => { speedRef.current     = speed     }, [speed])
+  useEffect(() => { trailRef.current     = trail     }, [trail])
+  useEffect(() => { lineWidthRef.current = lineWidth }, [lineWidth])
+  useEffect(() => { colorRef.current     = color     }, [color])
+  useEffect(() => { color2Ref.current    = color2    }, [color2])
+  useEffect(() => { cursorStrRef.current = cursorStr }, [cursorStr])
+  useEffect(() => { cursorRadRef.current = cursorRad }, [cursorRad])
 
-  // ── Field angle at a point ────────────────────────────────────────────────
+  // Re-init when count changes
+  useEffect(() => {
+    countRef.current = count
+    initParticles()
+  }, [count])
+
+  // ── Field angle ───────────────────────────────────────────────────────────
   function fieldAngle(x, y) {
     const base = noiseRef.current(
       x * scaleRef.current + timeRef.current * 0.35,
@@ -100,8 +123,9 @@ export default function FlowFieldPage() {
     const dx = x - mouseRef.current.x
     const dy = y - mouseRef.current.y
     const dist = Math.sqrt(dx * dx + dy * dy)
-    if (dist >= 200) return base
-    const t = (1 - dist / 200) ** 2 * 1.8
+    const radius = cursorRadRef.current
+    if (dist >= radius) return base
+    const t = Math.min((1 - dist / radius) ** 2 * cursorStrRef.current, 1)
     return base * (1 - t) + (Math.atan2(dy, dx) + Math.PI * 0.5) * t
   }
 
@@ -112,10 +136,10 @@ export default function FlowFieldPage() {
     const ctx = canvas.getContext('2d')
     ctx.fillStyle = BG
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    particlesRef.current = Array.from({ length: N_PARTICLES }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      age: Math.floor(Math.random() * 80),
+    particlesRef.current = Array.from({ length: countRef.current }, () => ({
+      x:      Math.random() * canvas.width,
+      y:      Math.random() * canvas.height,
+      age:    Math.floor(Math.random() * 80),
       maxAge: 80 + Math.random() * 140,
     }))
   }
@@ -125,24 +149,24 @@ export default function FlowFieldPage() {
   loopRef.current = () => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx    = canvas.getContext('2d')
     const { width, height } = canvas
-    const rgb = hexToRgb(colorRef.current)
 
     ctx.fillStyle = `rgba(${BG_RGB},${trailRef.current})`
     ctx.fillRect(0, 0, width, height)
 
-    ctx.lineWidth = 1.2
-    ctx.lineCap = 'round'
+    ctx.lineWidth = lineWidthRef.current
+    ctx.lineCap   = 'round'
 
     for (const p of particlesRef.current) {
       const angle = fieldAngle(p.x, p.y)
       const spd   = speedRef.current
-      const nx = p.x + Math.cos(angle) * spd
-      const ny = p.y + Math.sin(angle) * spd
+      const nx    = p.x + Math.cos(angle) * spd
+      const ny    = p.y + Math.sin(angle) * spd
+      const life  = p.age / p.maxAge
 
-      ctx.globalAlpha = Math.sin((p.age / p.maxAge) * Math.PI) * 0.65
-      ctx.strokeStyle = `rgb(${rgb})`
+      ctx.globalAlpha  = Math.sin(life * Math.PI) * 0.65
+      ctx.strokeStyle  = `rgb(${lerpColor(colorRef.current, color2Ref.current, life)})`
       ctx.beginPath()
       ctx.moveTo(p.x, p.y)
       ctx.lineTo(nx, ny)
@@ -151,14 +175,15 @@ export default function FlowFieldPage() {
       p.x = nx; p.y = ny; p.age++
 
       if (p.x < 0 || p.x > width || p.y < 0 || p.y > height || p.age >= p.maxAge) {
-        p.x = Math.random() * width
-        p.y = Math.random() * height
-        p.age = 0
+        p.x      = Math.random() * width
+        p.y      = Math.random() * height
+        p.age    = 0
         p.maxAge = 80 + Math.random() * 140
       }
     }
+
     ctx.globalAlpha = 1
-    timeRef.current += 0.003
+    timeRef.current += flowSpeedRef.current
     rafRef.current = requestAnimationFrame(loopRef.current)
   }
 
@@ -177,20 +202,20 @@ export default function FlowFieldPage() {
     ro.observe(canvas.parentElement)
     resize()
 
-    function onMouseMove(e) {
+    const onMouseMove  = e => {
       const rect = canvas.getBoundingClientRect()
       mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
     }
-    function onMouseLeave() { mouseRef.current = { x: -9999, y: -9999 } }
+    const onMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 } }
 
-    canvas.addEventListener('mousemove', onMouseMove)
+    canvas.addEventListener('mousemove',  onMouseMove)
     canvas.addEventListener('mouseleave', onMouseLeave)
     rafRef.current = requestAnimationFrame(loopRef.current)
 
     return () => {
       cancelAnimationFrame(rafRef.current)
       ro.disconnect()
-      canvas.removeEventListener('mousemove', onMouseMove)
+      canvas.removeEventListener('mousemove',  onMouseMove)
       canvas.removeEventListener('mouseleave', onMouseLeave)
     }
   }, [])
@@ -203,8 +228,8 @@ export default function FlowFieldPage() {
   return (
     <ExperimentLayout
       label="experiment"
-      title="Flow Field"
-      description="Perlin noise drives 900 particles through organic, fingerprint-like waves. Move your cursor over the canvas to disturb the field."
+      title="Flow Field Particles"
+      description="Perlin noise drives particles through organic, fingerprint-like waves. Move your cursor over the canvas to disturb the field."
     >
       <div className="flex gap-6 items-start max-[900px]:flex-col">
 
@@ -216,15 +241,18 @@ export default function FlowFieldPage() {
           <div className="section border-b border-tool-border">
             <div className="sec-hdr"><span>Field</span></div>
             <div className="sec-body">
-              <SliderRow label="Noise scale" value={scale} min={0.002} max={0.016} step={0.001} format={v => v.toFixed(3)} onChange={setScale} />
+              <SliderRow label="Noise scale" value={scale}     min={0.002} max={0.016} step={0.001} format={v => v.toFixed(3)} onChange={setScale} />
+              <SliderRow label="Flow speed"  value={flowSpeed} min={0}     max={0.012} step={0.001} format={v => v.toFixed(3)} onChange={setFlowSpeed} />
             </div>
           </div>
 
           <div className="section border-b border-tool-border">
             <div className="sec-hdr"><span>Particles</span></div>
             <div className="sec-body">
-              <SliderRow label="Speed"  value={speed} min={0.3} max={4}    step={0.1}   format={v => v.toFixed(1)} onChange={setSpeed} />
-              <SliderRow label="Trails" value={trail} min={0.02} max={0.2} step={0.01}  format={v => v.toFixed(2)} onChange={setTrail} />
+              <SliderRow label="Count"      value={count}     min={100}  max={2000} step={50}  onChange={setCount} />
+              <SliderRow label="Speed"      value={speed}     min={0.3}  max={4}    step={0.1} format={v => v.toFixed(1)} onChange={setSpeed} />
+              <SliderRow label="Line width" value={lineWidth} min={0.5}  max={4}    step={0.5} format={v => v.toFixed(1)} onChange={setLineWidth} />
+              <SliderRow label="Trails"     value={trail}     min={0.02} max={0.2}  step={0.01} format={v => v.toFixed(2)} onChange={setTrail} />
             </div>
           </div>
 
@@ -232,16 +260,29 @@ export default function FlowFieldPage() {
             <div className="sec-hdr"><span>Color</span></div>
             <div className="sec-body">
               <div className="ctrl-row">
-                <span className="ctrl-label">Stroke</span>
+                <span className="ctrl-label">Young</span>
                 <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
-                  <input
-                    type="color" value={color}
-                    onChange={e => setColor(e.target.value)}
-                    className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent"
-                  />
+                  <input type="color" value={color} onChange={e => setColor(e.target.value)}
+                    className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
                   <span className="ctrl-val">{color}</span>
                 </div>
               </div>
+              <div className="ctrl-row">
+                <span className="ctrl-label">Old</span>
+                <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
+                  <input type="color" value={color2} onChange={e => setColor2(e.target.value)}
+                    className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
+                  <span className="ctrl-val">{color2}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="section border-b border-tool-border">
+            <div className="sec-hdr"><span>Cursor</span></div>
+            <div className="sec-body">
+              <SliderRow label="Strength" value={cursorStr} min={0}   max={3}   step={0.1} format={v => v.toFixed(1)} onChange={setCursorStr} />
+              <SliderRow label="Radius"   value={cursorRad} min={40}  max={400} step={10}  onChange={setCursorRad} />
             </div>
           </div>
 
@@ -250,11 +291,7 @@ export default function FlowFieldPage() {
               <button
                 onClick={reseed}
                 className="w-full font-mono text-[10px] tracking-widest uppercase py-2 rounded-lg transition-colors duration-150"
-                style={{
-                  background:  'var(--color-tool-bg3)',
-                  border:      '1px solid var(--color-tool-border2)',
-                  color:       'var(--color-muted)',
-                }}
+                style={{ background: 'var(--color-tool-bg3)', border: '1px solid var(--color-tool-border2)', color: 'var(--color-muted)' }}
                 onMouseEnter={e => e.currentTarget.style.color = 'var(--color-foreground)'}
                 onMouseLeave={e => e.currentTarget.style.color = 'var(--color-muted)'}
               >
