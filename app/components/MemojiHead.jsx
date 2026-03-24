@@ -71,7 +71,7 @@ export default function MemojiHead({ size = 2.8, className = '', style = {}, onL
 
     function onMouseMove(e) {
       cursor.x =  (e.clientX / window.innerWidth  - 0.5) * 2
-      cursor.y = -(e.clientY / window.innerHeight - 0.5) * 2
+      cursor.y = (e.clientY / window.innerHeight - 0.5) * 2
     }
     window.addEventListener('mousemove', onMouseMove)
 
