@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const experiments = [
   {
+    href:      '/experiments/flow-field',
+    icon:      '〰',
+    title:     'Flow Field',
+    desc:      'Perlin noise drives a grid of line segments into organic, fingerprint-like waves. Move your cursor to disturb the field. Toggle to particle mode to watch them flow.',
+    tags:      ['Canvas', 'Perlin Noise', 'Generative'],
+    accent:    '242,196,196',
+    published: true,
+  },
+  {
     href:      '/experiments/rocky-sphere',
     icon:      '◉',
     title:     'Rocky Sphere',
