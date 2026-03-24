@@ -2,10 +2,8 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import Nav from '../components/Nav';
-import Footer from '../components/Footer';
-import Cursor from '../components/Cursor';
 import Section from '../components/Section';
+import PageLayout from '../components/layouts/PageLayout';
 import experiments from '../data/experiments';
 
 export default function Experiments() {
@@ -45,9 +43,7 @@ export default function Experiments() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor />
-      <Nav />
+    <PageLayout>
 
       <Section size="wide">
         <div className="mb-16">
@@ -119,8 +115,6 @@ export default function Experiments() {
           ))}
         </div>
       </Section>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }

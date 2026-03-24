@@ -88,7 +88,7 @@ export default function SpeechBubble() {
           {displayed}
           {displayed.length < MESSAGE.length && (
             <span
-              className="inline-block w-[2px] h-[13px] bg-violet ml-[2px] align-middle"
+              className="inline-block w-[2px] h-[7px] bg-violet ml-[2px] align-middle"
               style={{ animation: 'blink 0.7s step-end infinite' }}
             />
           )}

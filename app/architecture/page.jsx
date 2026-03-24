@@ -1,9 +1,7 @@
 'use client'
 
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import Cursor from '../components/Cursor'
 import Section from '../components/Section'
+import PageLayout from '../components/layouts/PageLayout'
 
 // ─── Primitives ───────────────────────────────────────────────────────────────
 
@@ -35,29 +33,35 @@ const tree = [
   { indent: 0, name: 'app/',             note: 'Next.js App Router root',   color: 'text-foreground font-semibold' },
   { indent: 1, name: 'components/',      note: 'Shared UI primitives',       color: 'text-violet' },
   { indent: 2, name: 'layouts/',         note: 'Page shell components',      color: 'text-violet' },
-  { indent: 3, name: 'ExperimentLayout.jsx', note: 'Shared shell for all experiment pages' },
+  { indent: 3, name: 'ExperimentLayout.jsx', note: 'Shell for all experiment tool pages' },
+  { indent: 3, name: 'PageLayout.jsx',   note: 'Shell for all standard pages (blog, experiments, contact…)' },
   { indent: 2, name: 'Button.jsx',       note: 'variant prop: primary / secondary / link' },
   { indent: 2, name: 'Cursor.jsx',       note: 'Custom magnetic cursor' },
   { indent: 2, name: 'Footer.jsx',       note: '' },
+  { indent: 2, name: 'MemojiHead.jsx',   note: 'Three.js memoji — cursor tracking, scale-in, scroll shrink' },
   { indent: 2, name: 'Nav.jsx',          note: 'Sticky nav with theme toggle' },
   { indent: 2, name: 'NewsletterSection.jsx', note: 'MailerLite embed, styled to match DS' },
   { indent: 2, name: 'Section.jsx',      note: 'Layout wrapper with size prop' },
+  { indent: 2, name: 'SpeechBubble.jsx', note: 'Typewriter bubble tied to the memoji head' },
   { indent: 2, name: 'ThemeToggle.jsx',  note: 'Light / dark switcher' },
   { indent: 1, name: 'data/',            note: 'Single source of truth',     color: 'text-mint' },
-  { indent: 2, name: 'experiments.js',   note: 'All experiments, newest → oldest' },
-  { indent: 2, name: 'posts.js',         note: 'All blog posts, newest → oldest' },
+  { indent: 2, name: 'experiments.js',   note: 'All experiments, newest → oldest. published flag gates visibility.' },
+  { indent: 2, name: 'posts.js',         note: 'All blog posts, newest → oldest. published flag gates visibility.' },
   { indent: 1, name: 'blog/',            note: 'Blog section',               color: 'text-violet' },
   { indent: 2, name: 'page.jsx',         note: 'Listing page, reads from data/posts.js' },
   { indent: 2, name: '[slug]/',          note: 'One folder per post' },
   { indent: 3, name: 'page.jsx',         note: 'Full post with interactive demos' },
+  { indent: 1, name: 'contact/',         note: 'Contact page',               color: 'text-violet' },
+  { indent: 2, name: 'page.jsx',         note: 'Centered layout via PageLayout center prop' },
   { indent: 1, name: 'experiments/',     note: 'Interactive tools',          color: 'text-violet' },
   { indent: 2, name: 'page.jsx',         note: 'Listing page, reads from data/experiments.js' },
   { indent: 2, name: '[tool]/',          note: 'One folder per experiment, wrapped in ExperimentLayout' },
   { indent: 1, name: 'architecture/',    note: 'This page',                  color: 'text-mint' },
   { indent: 1, name: 'design-system/',   note: 'Token & component explorer' },
+  { indent: 1, name: 'not-found.jsx',    note: '404 page with Three.js memoji and parallax digits' },
   { indent: 1, name: 'globals.css',      note: 'Design tokens + Tailwind v4 theme' },
-  { indent: 1, name: 'layout.jsx',       note: 'Root layout: fonts, metadata, theme' },
-  { indent: 1, name: 'page.jsx',         note: 'Homepage: assembles all sections' },
+  { indent: 1, name: 'layout.jsx',       note: 'Root layout: fonts via next/font, metadata, analytics' },
+  { indent: 1, name: 'page.jsx',         note: 'Homepage: assembles all sections, scroll-driven head animation' },
 ]
 
 // ─── Principles ───────────────────────────────────────────────────────────────
@@ -72,7 +76,7 @@ const principles = [
   {
     icon: '⬡',
     title: 'Shared layout components',
-    body: 'Every experiment page is wrapped in ExperimentLayout, a single component that owns the Cursor, Nav, Section header, NewsletterSection, and Footer. Changing the experiment template means editing one file, not five.',
+    body: 'Every page uses a layout component that owns Cursor, Nav, and Footer. PageLayout wraps all standard pages (blog, experiments, contact) with optional newsletter and center props. ExperimentLayout wraps interactive tool pages with a title/description header. Changing the template means editing one file, not many.',
     tags: ['Component Reuse', 'Templates'],
   },
   {
@@ -105,9 +109,7 @@ const principles = [
 
 export default function Architecture() {
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor />
-      <Nav />
+    <PageLayout>
 
       <Section>
         <div className="pt-12 pb-4 max-w-[780px]">
@@ -248,13 +250,13 @@ export default function Architecture() {
               tier: 'Layouts',
               color: 'text-violet',
               desc: 'Compose primitives into page shells. One layout per page family.',
-              items: ['ExperimentLayout'],
+              items: ['PageLayout', 'ExperimentLayout'],
             },
             {
               tier: 'Features',
               color: 'text-foreground',
               desc: 'Self-contained, stateful components with their own logic.',
-              items: ['NewsletterSection', 'ThemeToggle', 'BezierCanvas', 'BlobEditor'],
+              items: ['MemojiHead', 'SpeechBubble', 'NewsletterSection', 'ThemeToggle'],
             },
           ].map(tier => (
             <div key={tier.tier} className="bg-bg2 border border-ui p-[36px_32px]">
@@ -272,7 +274,6 @@ export default function Architecture() {
         </div>
       </Section>
 
-      <Footer />
-    </div>
+    </PageLayout>
   )
 }

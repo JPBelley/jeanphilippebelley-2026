@@ -1,10 +1,8 @@
 'use client';
 
-import Nav from '../components/Nav';
-import Footer from '../components/Footer';
-import Cursor from '../components/Cursor';
 import Button from '../components/Button';
 import Section from '../components/Section';
+import PageLayout from '../components/layouts/PageLayout';
 
 const links = [
   { href: 'mailto:info@jeanphilippebelley.com', label: '📬 info@jeanphilippebelley.com' },
@@ -14,12 +12,8 @@ const links = [
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head flex flex-col">
-      <Cursor />
-      <Nav />
-
-      <div className="flex-1 flex items-center justify-center">
-        <Section size="narrow" containerClassName="text-center">
+    <PageLayout center>
+      <Section size="narrow" containerClassName="text-center">
           <div className="section-label font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center">
             Contact
           </div>
@@ -37,10 +31,7 @@ export default function Contact() {
               </Button>
             ))}
           </div>
-        </Section>
-      </div>
-
-      <Footer />
-    </div>
+      </Section>
+    </PageLayout>
   );
 }

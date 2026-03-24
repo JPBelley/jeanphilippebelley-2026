@@ -1,17 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import Cursor from '../components/Cursor'
 import Section from '../components/Section'
+import PageLayout from '../components/layouts/PageLayout'
 import posts from '../data/posts'
-import NewsletterSection from '../components/NewsletterSection'
 
 export default function Blog() {
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor /><Nav />
+    <PageLayout newsletter>
       <Section size="narrow">
         <div className="mb-12">
           <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// blog</p>
@@ -46,8 +42,6 @@ export default function Blog() {
           ))}
         </div>
       </Section>
-      <NewsletterSection />
-      <Footer />
-    </div>
+    </PageLayout>
   )
 }

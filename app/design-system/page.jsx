@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Nav from '../components/Nav';
-import Footer from '../components/Footer';
-import Cursor from '../components/Cursor';
 import Button from '../components/Button';
 import Section from '../components/Section';
+import PageLayout from '../components/layouts/PageLayout';
 
 const TokenSection = ({ title, children }) => (
   <section className="mb-20">
@@ -73,9 +71,7 @@ const animations = [
 
 export default function DesignSystem() {
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor />
-      <Nav />
+    <PageLayout>
 
       <Section>
 
@@ -430,7 +426,6 @@ export default function DesignSystem() {
 
       </Section>
 
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }
