@@ -1,15 +1,12 @@
 'use client'
 
-import Nav from '../Nav'
-import Footer from '../Footer'
-import Cursor from '../Cursor'
 import Section from '../Section'
-import NewsletterSection from '../NewsletterSection'
 
 /**
  * ExperimentLayout
  *
- * Shared shell for all experiment pages.
+ * Content shell for experiment pages. Nav, Footer, and NewsletterSection
+ * are provided globally by the root layout.
  *
  * Props:
  *   label       – slug shown as "// label" above the title
@@ -21,11 +18,9 @@ import NewsletterSection from '../NewsletterSection'
 export default function ExperimentLayout({ label, title, description, accentColor, children }) {
   return (
     <div
-      className="min-h-screen bg-bg text-foreground font-head"
+      className="min-h-screen"
       style={accentColor ? { '--tool-accent2': accentColor } : undefined}
     >
-      <Cursor /><Nav />
-
       <Section size="wide">
         <div className="mb-12">
           <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// {label}</p>
@@ -35,9 +30,6 @@ export default function ExperimentLayout({ label, title, description, accentColo
 
         {children}
       </Section>
-
-      <NewsletterSection />
-      <Footer />
     </div>
   )
 }

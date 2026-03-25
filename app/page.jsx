@@ -344,32 +344,6 @@ export default function Home() {
           <Button href="/experiments" variant="link">Explore the full lab →</Button>
         </div>
       </Section>
-
-      {/* CONTACT */}
-      <Section className="bg-bg relative" id="contact" containerClassName="text-center">
-        <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px] justify-center">Contact</div>
-        <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] text-center reveal reveal-delay-1">
-          Let&apos;s build<br />something <span className="text-mint">great</span>
-        </div>
-        <p className="font-mono text-[15px] text-muted mb-12 leading-[1.7] reveal reveal-delay-2">
-          I&apos;m always open to interesting projects and collaborations.<br />
-          Drop me a line.
-        </p>
-        <div className="flex justify-center gap-4 flex-wrap max-[640px]:flex-col reveal reveal-delay-2">
-          {[
-            { href:'mailto:info@jeanphilippebelley.com', label:'📬 info@jeanphilippebelley.com' },
-            { href:'https://github.com/JPBelley',        label:'⌥ GitHub',    ext:true },
-            { href:'https://www.linkedin.com/in/jean-philippe-belley-01558286/',      label:'◈ LinkedIn',  ext:true },
-          ].map(l => (
-            <Button key={l.href} href={l.href} variant="link" {...(l.ext ? { target:'_blank', rel:'noreferrer' } : {})}>
-              {l.label}
-            </Button>
-          ))}
-        </div>
-      </Section>
-
-      {/* FOOTER */}
-      <Footer />
     </>
   )
 }

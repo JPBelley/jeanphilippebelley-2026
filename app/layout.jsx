@@ -1,5 +1,9 @@
 import './globals.css'
 import { Space_Grotesk, DM_Mono } from 'next/font/google'
+import Cursor from './components/Cursor'
+import Nav from './components/Nav'
+import NewsletterSection from './components/NewsletterSection'
+import Footer from './components/Footer'
 
 const spaceGrotesk = Space_Grotesk({
   subsets:  ['latin'],
@@ -33,7 +37,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${dmMono.variable}`}>
       <body>
+        <Cursor />
+        <Nav />
         {children}
+        <NewsletterSection />
+        <Footer />
         {/* 100% privacy-first analytics */}
         <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
         <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerPolicy="no-referrer-when-downgrade" /></noscript>
