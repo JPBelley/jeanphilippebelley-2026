@@ -7,7 +7,7 @@ import posts from '../data/posts'
 
 export default function Blog() {
   return (
-    <PageLayout newsletter>
+    <PageLayout>
       <Section size="narrow">
         <div className="mb-12">
           <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// blog</p>

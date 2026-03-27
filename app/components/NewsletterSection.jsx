@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Script from 'next/script'
 
 function applyStyles(container) {
   const css = getComputedStyle(document.documentElement)
@@ -134,32 +135,16 @@ export default function NewsletterSection() {
     const container = containerRef.current
     if (!container) return
 
-    // Watch for form injection before triggering init so we don't miss mutations
+    // Apply immediately in case form is already rendered
+    applyStyles(container)
+
+    // Re-apply whenever MailerLite mutates the DOM (form injection, success state, etc.)
     const formObserver = new MutationObserver(() => applyStyles(container))
     formObserver.observe(container, { childList: true, subtree: true })
 
+    // Re-apply when the theme changes (data-theme on <html>)
     const themeObserver = new MutationObserver(() => applyStyles(container))
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
-
-    // MailerLite caches form state against a DOM node — on SPA navigation the
-    // old node is gone but its ID is still "claimed". Remove the loaded script
-    // and reset window.ml so the initialization IIFE treats this as a fresh
-    // page load. The browser serves universal.js from cache; no extra network cost.
-    document.querySelectorAll('script[src*="mailerlite.com/js/universal"]').forEach(s => s.remove())
-    delete window.ml
-
-    // Inject the full initialization snippet as an inline script. This sets up
-    // window.ml as a queue, loads universal.js, and queues the account call —
-    // exactly what the original embed code does on a hard page load.
-    const init = document.createElement('script')
-    init.textContent = `
-      (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
-      .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
-      n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})(window,
-      document,'script','https://assets.mailerlite.com/js/universal.js','ml');
-      ml('account', '2197166');
-    `
-    document.head.appendChild(init)
 
     return () => {
       formObserver.disconnect()
@@ -168,7 +153,7 @@ export default function NewsletterSection() {
   }, [])
 
   return (
-    <section className="border-t border-ui">
+    <section className="newsletter-root border-t border-ui">
       <div className="max-w-6xl mx-auto px-[60px] max-[640px]:px-10 py-20 flex flex-col items-center text-center">
 
         <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// newsletter</p>
@@ -184,6 +169,14 @@ export default function NewsletterSection() {
         </div>
 
       </div>
+
+      <Script id="mailerlite-universal" strategy="afterInteractive">{`
+        (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+        .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+        n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+        (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+        ml('account', '2197166');
+      `}</Script>
     </section>
   )
 }

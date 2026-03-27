@@ -3,10 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import * as THREE from 'three'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import NewsletterSection from '../../components/NewsletterSection'
-import Cursor from '../../components/Cursor'
 import Section from '../../components/Section'
 
 // ─── Shared prose components ──────────────────────────────────────────────────
@@ -435,9 +431,7 @@ function MaterialsDemo() {
 
 export default function ThreejsCubePost() {
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor /><Nav />
-      <Section size="narrow">
+    <Section size="narrow">
 
         <Link href="/blog" className="inline-flex items-center gap-2 text-[12px] font-mono text-muted hover:text-foreground transition-colors no-underline mb-10">
           ← All posts
@@ -736,8 +730,5 @@ requestAnimationFrame(tick)`}</Code>
         </article>
 
       </Section>
-      <NewsletterSection />
-      <Footer />
-    </div>
   )
 }

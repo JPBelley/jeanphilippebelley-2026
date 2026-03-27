@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Cursor from './components/Cursor'
 import * as THREE from 'three'
 import { GLTFLoader }  from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
@@ -127,6 +126,7 @@ export default function NotFound() {
 
   return (
     <div
+      data-page="not-found"
       className="relative w-screen h-screen overflow-hidden"
       style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, #1c1535 0%, #0e1020 40%, #070809 100%)' }}
     >
@@ -139,8 +139,6 @@ export default function NotFound() {
 
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none" style={{ background:'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.65) 100%)' }} />
-
-      <Cursor />
 
       {/* 404 text — each digit reacts independently to cursor */}
       <div

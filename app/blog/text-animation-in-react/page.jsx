@@ -2,10 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import NewsletterSection from '../../components/NewsletterSection'
-import Cursor from '../../components/Cursor'
 import Section from '../../components/Section'
 
 // ─── Shared prose components ──────────────────────────────────────────────────
@@ -338,9 +334,7 @@ function EasingDemo() {
 
 export default function TextAnimationPost() {
   return (
-    <div className="min-h-screen bg-bg text-foreground font-head">
-      <Cursor /><Nav />
-      <Section size="narrow">
+    <Section size="narrow">
 
         {/* Back link */}
         <Link href="/blog" className="inline-flex items-center gap-2 text-[12px] font-mono text-muted hover:text-foreground transition-colors no-underline mb-10">
@@ -685,8 +679,5 @@ export function TextAnimator({
         </article>
 
       </Section>
-      <NewsletterSection />
-      <Footer />
-    </div>
   )
 }

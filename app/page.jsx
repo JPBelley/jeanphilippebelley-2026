@@ -2,9 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import Nav from './components/Nav'
-import Footer from './components/Footer'
-import Cursor from './components/Cursor'
 import Button from './components/Button'
 import Section from './components/Section'
 import dynamic from 'next/dynamic'
@@ -73,8 +70,6 @@ export default function Home() {
 
   return (
     <>
-      <Cursor />
-      <Nav />
 
       {/* Fixed memoji head + bubble — bubble is inside so it moves with the head */}
       <div
