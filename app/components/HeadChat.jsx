@@ -14,7 +14,7 @@ const CANNED = {
   'Tell me about your experiments':
     "The Lab is where I scratch creative itches. Right now it has a magnetic dot mesh that reacts to your mouse, a 3D blob editor with morphable WebGL shapes, an interactive easing curve visualiser, 20 character-level text animations, and the pixel cursor grid you may have noticed on this page.",
   "What's your design philosophy?":
-    "Three things I keep coming back to: design systems first (tokens for palette, type, motion — everything composable), complexity managed not avoided (tech debt is a ledger, not a dirty secret), and quality that actually ships (integration tests over unit tests, e2e for critical paths). Pragmatism beats purity every time.",
+    "Three things I keep coming back to: design systems first (tokens for palette, type, motion — everything composable), complexity managed not avoided (tech debt is a ledger, not a dirty secret), and quality that actually ships. Pragmatism beats purity every time.",
 }
 
 const FALLBACK =
