@@ -16,7 +16,54 @@ import experiments from './data/experiments'
 
 export default function Home() {
   const headContainerRef = useRef(null)
+  const expandedRef      = useRef(false)
   const [headLoaded, setHeadLoaded] = useState(false)
+  const [expanded,   setExpanded]   = useState(false)
+
+  const CONTAINER = 580
+  const SCALE_MAX = 1.6
+  const SCALE_MIN = 0.52
+
+  function handleHeadClick() {
+    const el = headContainerRef.current
+    if (!el) return
+    const next = !expandedRef.current
+    expandedRef.current = next
+    setExpanded(next)
+
+    // top/right stay 0 always — all positioning via transform (transformOrigin: top right)
+    // With that origin, to visually centre the element:
+    //   tx = CONTAINER * s / 2 - W / 2
+    //   ty = H / 2 - CONTAINER * s / 2
+    const EXPAND_SCALE = 2.0
+    if (next) {
+      const tx = CONTAINER * EXPAND_SCALE / 2 - window.innerWidth  / 2
+      const ty = window.innerHeight / 2       - CONTAINER * EXPAND_SCALE / 2
+      el.style.transition      = 'transform 0.5s cubic-bezier(0.34,1.2,0.64,1)'
+      el.style.transformOrigin = 'top right'
+      el.style.transform       = `translateX(${tx}px) translateY(${ty}px) scale(${EXPAND_SCALE})`
+      el.style.zIndex          = '50'
+      el.style.cursor          = 'zoom-out'
+      el.style.pointerEvents   = 'auto'
+    } else {
+      const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
+      const scale    = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
+      const ty       = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
+      const tx       = (1 - progress) * -140
+      el.style.transition      = 'transform 0.4s ease'
+      el.style.transformOrigin = 'top right'
+      el.style.transform       = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
+      el.style.zIndex          = '10'
+      el.style.cursor          = 'zoom-in'
+      setTimeout(() => { if (!expandedRef.current) el.style.transition = 'none' }, 400)
+    }
+  }
+
+  useEffect(() => {
+    function onKey(e) { if (e.key === 'Escape' && expandedRef.current) handleHeadClick() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -40,12 +87,15 @@ export default function Home() {
     const SCALE_MIN  = 0.52
     function onScroll() {
       if (!headContainerRef.current) return
+      if (expandedRef.current) return
       // On mobile: 150×150 below the nav, fixed top-right, no scroll animation
       if (window.innerWidth < 768) {
         headContainerRef.current.style.width  = '100px'
         headContainerRef.current.style.height = '100px'
         headContainerRef.current.style.top    = '80px'
         headContainerRef.current.style.transform = 'none'
+        headContainerRef.current.style.pointerEvents = 'auto'
+        headContainerRef.current.style.cursor = 'pointer'
         return
       }
       headContainerRef.current.style.top    = '0px'
@@ -56,6 +106,9 @@ export default function Home() {
       const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
       const tx = (1 - progress) * -140
       headContainerRef.current.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
+      // Always clickable — zoom-in cursor in hero, zoom-out hint when small
+      headContainerRef.current.style.pointerEvents = 'auto'
+      headContainerRef.current.style.cursor = 'pointer'
     }
     onScroll() // set initial state
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -71,11 +124,20 @@ export default function Home() {
   return (
     <>
 
+      {/* Backdrop when head is expanded */}
+      {expanded && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          onClick={handleHeadClick}
+        />
+      )}
+
       {/* Fixed memoji head + bubble — bubble is inside so it moves with the head */}
       <div
         ref={headContainerRef}
         className="fixed top-0 right-0 z-10"
-        style={{ width: 580, height: 580, pointerEvents: 'none', transformOrigin: 'top right' }}
+        style={{ width: 580, height: 580, pointerEvents: 'auto', cursor: 'pointer', transformOrigin: 'top right' }}
+        onClick={handleHeadClick}
       >
         {headLoaded && <SpeechBubble />}
         <MemojiHead size={2.8} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
