@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import styles from './not-found.module.css'
 import * as THREE from 'three'
 import { GLTFLoader }  from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
@@ -124,21 +125,28 @@ export default function NotFound() {
     }
   }, [])
 
+  // Hide global newsletter and footer — they don't belong on a full-screen 404.
+  // Doing this in JS keeps the concern co-located with this component.
+  useEffect(() => {
+    const els = [
+      document.querySelector('.newsletter-root'),
+      document.querySelector('footer'),
+    ]
+    els.forEach(el => { if (el) el.style.display = 'none' })
+    return () => els.forEach(el => { if (el) el.style.display = '' })
+  }, [])
+
   return (
-    <div
-      data-page="not-found"
-      className="relative w-screen h-screen overflow-hidden"
-      style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, #1c1535 0%, #0e1020 40%, #070809 100%)' }}
-    >
+    <div className={`${styles.root} relative w-screen h-screen overflow-hidden`}>
       {/* Depth orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div style={{ position:'absolute', width:600, height:600, borderRadius:'50%', top:'10%', left:'5%',  background:'radial-gradient(circle, rgba(124,92,255,0.12) 0%, transparent 70%)', filter:'blur(40px)' }} />
-        <div style={{ position:'absolute', width:500, height:500, borderRadius:'50%', top:'30%', right:'5%', background:'radial-gradient(circle, rgba(46,230,166,0.08) 0%, transparent 70%)',  filter:'blur(40px)' }} />
-        <div style={{ position:'absolute', width:700, height:700, borderRadius:'50%', bottom:'-10%', left:'20%', background:'radial-gradient(circle, rgba(124,92,255,0.07) 0%, transparent 70%)', filter:'blur(60px)' }} />
+        <div className={styles.orb1} style={{ position:'absolute', width:600, height:600, borderRadius:'50%', top:'10%', left:'5%', filter:'blur(40px)' }} />
+        <div className={styles.orb2} style={{ position:'absolute', width:500, height:500, borderRadius:'50%', top:'30%', right:'5%', filter:'blur(40px)' }} />
+        <div className={styles.orb3} style={{ position:'absolute', width:700, height:700, borderRadius:'50%', bottom:'-10%', left:'20%', filter:'blur(60px)' }} />
       </div>
 
       {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background:'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.65) 100%)' }} />
+      <div className={`${styles.vignette} absolute inset-0 pointer-events-none`} />
 
       {/* 404 text — each digit reacts independently to cursor */}
       <div

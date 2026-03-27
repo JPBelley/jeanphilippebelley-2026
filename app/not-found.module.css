@@ -1,0 +1,15 @@
+/* Dark mode (default) */
+.root {
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, #1c1535 0%, #0e1020 40%, #070809 100%);
+}
+.orb1 { background: radial-gradient(circle, rgba(124,92,255,0.12) 0%, transparent 70%); }
+.orb2 { background: radial-gradient(circle, rgba(46,230,166,0.08) 0%, transparent 70%); }
+.orb3 { background: radial-gradient(circle, rgba(124,92,255,0.07) 0%, transparent 70%); }
+.vignette { background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.65) 100%); }
+
+/* Light mode overrides */
+:global([data-theme="light"]) .root { background: #F8F8FA; }
+:global([data-theme="light"]) .orb1 { background: radial-gradient(circle, rgba(107,78,230,0.10) 0%, transparent 70%); }
+:global([data-theme="light"]) .orb2 { background: radial-gradient(circle, rgba(0,168,118,0.07) 0%, transparent 70%); }
+:global([data-theme="light"]) .orb3 { background: radial-gradient(circle, rgba(107,78,230,0.06) 0%, transparent 70%); }
+:global([data-theme="light"]) .vignette { background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.06) 100%); }
