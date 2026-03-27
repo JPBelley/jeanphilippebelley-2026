@@ -7,6 +7,7 @@ import Section from './components/Section'
 import dynamic from 'next/dynamic'
 
 import SpeechBubble from './components/SpeechBubble'
+import HeadChat from './components/HeadChat'
 
 const MemojiHead = dynamic(() => import('./components/MemojiHead'), {
   ssr: false,
@@ -142,6 +143,9 @@ export default function Home() {
         {headLoaded && <SpeechBubble />}
         <MemojiHead size={2.8} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
       </div>
+
+      {/* Chat prompt — after head in DOM so z-[60] reliably sits on top */}
+      <HeadChat visible={expanded} />
 
       {/* HERO */}
       <Section
