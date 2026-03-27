@@ -84,7 +84,7 @@ export default function SpeechBubble() {
           }}
         />
 
-        <p className="font-mono text-[6px] leading-[1.65] text-foreground">
+        <p className="font-mono text-[6px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
           {displayed}
           {displayed.length < MESSAGE.length && (
             <span
