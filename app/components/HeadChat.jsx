@@ -2,6 +2,21 @@
 
 import { useState, useRef, useEffect } from 'react'
 
+const URL_REGEX = /(https?:\/\/[^\s]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g
+
+function LinkedText({ text }) {
+  const parts = text.split(URL_REGEX)
+  return parts.map((part, i) => {
+    if (/^https?:\/\//.test(part)) {
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(124,92,255,0.9)', textDecoration: 'underline' }}>{part}</a>
+    }
+    if (/@/.test(part) && URL_REGEX.test(part)) {
+      return <a key={i} href={`mailto:${part}`} style={{ color: 'rgba(124,92,255,0.9)', textDecoration: 'underline' }}>{part}</a>
+    }
+    return part
+  })
+}
+
 const SUGGESTIONS = [
   'What do you work with?',
   'Tell me about your experiments',
@@ -159,7 +174,7 @@ export default function HeadChat({ visible }) {
                     }
                 }
               >
-                {m.content}
+                {m.role === 'assistant' ? <LinkedText text={m.content} /> : m.content}
               </p>
             </div>
           ))}
