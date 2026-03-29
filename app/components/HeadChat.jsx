@@ -139,7 +139,7 @@ export default function HeadChat({ visible }) {
           className="flex flex-col gap-2 overflow-y-auto px-1"
           style={{ maxHeight: '28vh' }}
         >
-          {messages.map((m, i) => (
+          {messages.map((m, i) => m.content === '' ? null : (
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <p
                 className="font-mono text-[12px] leading-[1.6] px-4 py-2 rounded-2xl"
