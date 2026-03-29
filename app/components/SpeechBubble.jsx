@@ -1,15 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-const MESSAGE = "Hey there! Welcome to my little corner of the web. Feel free to poke around my experiments or catch up on the blog. Hope you find something cool 👋"
+const MESSAGE = "Hey! Welcome. Click on my face anytime if you have questions about me or the site. I'm around 👋"
 
-export default function SpeechBubble() {
-  const [displayed, setDisplayed]   = useState('')
-  const [visible,   setVisible]     = useState(true)
-  const [fading,    setFading]      = useState(false)
-  const [fadeIn,    setFadeIn]      = useState(false)
+export default function SpeechBubble({ headRef }) {
+  const [displayed, setDisplayed] = useState('')
+  const [visible,   setVisible]   = useState(true)
+  const [fading,    setFading]    = useState(false)
+  const [fadeIn,    setFadeIn]    = useState(false)
+  const wrapRef = useRef(null)
 
+  // Typewriter
   useEffect(() => {
     const fadeInTimer = setTimeout(() => setFadeIn(true), 30)
     return () => clearTimeout(fadeInTimer)
@@ -17,14 +19,12 @@ export default function SpeechBubble() {
 
   useEffect(() => {
     let i = 0
-    // Small delay before starting to type
     const startDelay = setTimeout(() => {
       const interval = setInterval(() => {
         i++
         setDisplayed(MESSAGE.slice(0, i))
         if (i >= MESSAGE.length) {
           clearInterval(interval)
-          // Linger for 4s then fade out
           setTimeout(() => {
             setFading(true)
             setTimeout(() => setVisible(false), 600)
@@ -33,19 +33,38 @@ export default function SpeechBubble() {
       }, 38)
       return () => clearInterval(interval)
     }, 1200)
-
     return () => clearTimeout(startDelay)
   }, [])
+
+  // Track head position via getBoundingClientRect every frame
+  useEffect(() => {
+    if (!headRef) return
+    let raf
+    function track() {
+      raf = requestAnimationFrame(track)
+      const el = wrapRef.current
+      const head = headRef.current
+      if (!el || !head) return
+      const rect = head.getBoundingClientRect()
+      // Mirror the original absolute placement: right: 60%, bottom: 44% of the head rect
+      const right  = window.innerWidth - (rect.right - rect.width * 0.6)
+      const bottom = window.innerHeight - (rect.bottom - rect.height * 0.44)
+      el.style.right  = right  + 'px'
+      el.style.bottom = bottom + 'px'
+    }
+    raf = requestAnimationFrame(track)
+    return () => cancelAnimationFrame(raf)
+  }, [headRef])
 
   if (!visible) return null
 
   return (
     <div
-      className="absolute pointer-events-none max-[768px]:hidden"
+      ref={wrapRef}
+      className="fixed pointer-events-none max-[768px]:hidden"
       style={{
-        bottom: '44%',
-        right: '60%',
         width: 190,
+        zIndex: 11,
         transition: 'opacity 0.6s ease',
         opacity: fading ? 0 : fadeIn ? 1 : 0,
       }}
@@ -84,7 +103,7 @@ export default function SpeechBubble() {
           }}
         />
 
-        <p className="font-mono text-[6px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
+        <p className="font-mono text-[9px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
           {displayed}
           {displayed.length < MESSAGE.length && (
             <span
@@ -93,7 +112,6 @@ export default function SpeechBubble() {
             />
           )}
         </p>
-
       </div>
 
       <style>{`

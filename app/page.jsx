@@ -133,16 +133,18 @@ export default function Home() {
         />
       )}
 
-      {/* Fixed memoji head + bubble — bubble is inside so it moves with the head */}
+      {/* Fixed memoji head */}
       <div
         ref={headContainerRef}
         className="fixed top-0 right-0 z-10"
         style={{ width: 580, height: 580, pointerEvents: 'auto', cursor: 'pointer', transformOrigin: 'top right' }}
         onClick={handleHeadClick}
       >
-        {headLoaded && <SpeechBubble />}
         <MemojiHead size={2.8} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
       </div>
+
+      {/* Speech bubble — outside head container, tracks head via getBoundingClientRect */}
+      {headLoaded && <SpeechBubble headRef={headContainerRef} />}
 
       {/* Chat prompt — after head in DOM so z-[60] reliably sits on top */}
       <HeadChat visible={expanded} />
@@ -245,7 +247,7 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-3 gap-[2px] max-[900px]:grid-cols-1">
           {[
-            { icon: '⚛️', title: 'Frontend Frameworks', skills: [['React',95],['Vue.js',90],['Next.js',85],['Nuxt',80]], delay: '' },
+            { icon: '⚛️', title: 'Frontend Frameworks', skills: [['React',95],['Vue.js',90],['Next.js',85],['TypeScript',88]], delay: '' },
             { icon: '🧱', title: 'CMS Platforms',       skills: [['WordPress',95],['Drupal',85],['Webflow',88],['Headless CMS',80]], delay: 'reveal-delay-1' },
             { icon: '⚙️', title: 'Backend & Tooling',   skills: [['Node.js',82],['REST / GraphQL',85],['PHP',75],['Git / CI/CD',90]], delay: 'reveal-delay-2' },
           ].map(group => (

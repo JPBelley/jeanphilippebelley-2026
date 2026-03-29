@@ -8,83 +8,24 @@ const SUGGESTIONS = [
   'What\'s your design philosophy?',
 ]
 
-const CANNED = {
-  'What do you work with?':
-    "My main stack is React, Next.js and Vue/Nuxt on the frontend, paired with Node.js, PHP, REST and GraphQL on the backend. I also have deep CMS experience — WordPress, Drupal, Webflow, headless setups. For this portfolio specifically: Next.js 15, Tailwind v4 and Three.js.",
-  'Tell me about your experiments':
-    "The Lab is where I scratch creative itches. Right now it has a magnetic dot mesh that reacts to your mouse, a 3D blob editor with morphable WebGL shapes, an interactive easing curve visualiser, 20 character-level text animations, and the pixel cursor grid you may have noticed on this page.",
-  "What's your design philosophy?":
-    "Three things I keep coming back to: design systems first (tokens for palette, type, motion — everything composable), complexity managed not avoided (tech debt is a ledger, not a dirty secret), and quality that actually ships. Pragmatism beats purity every time.",
-}
-
-const FALLBACK =
-  "That's a great question — I'd love to answer it properly. Drop me a line directly and we can dig into the details."
-
-// Simulate a typewriter effect for a canned string
-function useTypewriter(text, active, onDone) {
-  const [displayed, setDisplayed] = useState('')
-  const rafRef = useRef(null)
-
-  useEffect(() => {
-    if (!active || !text) return
-    setDisplayed('')
-    let i = 0
-    const step = () => {
-      i++
-      setDisplayed(text.slice(0, i))
-      if (i < text.length) {
-        rafRef.current = setTimeout(step, 18)
-      } else {
-        onDone?.()
-      }
-    }
-    rafRef.current = setTimeout(step, 18)
-    return () => clearTimeout(rafRef.current)
-  }, [text, active])
-
-  return displayed
-}
-
 export default function HeadChat({ visible }) {
+  // messages follow the Claude API shape: { role: 'user'|'assistant', content: string }
   const [input,     setInput]     = useState('')
   const [messages,  setMessages]  = useState([])
   const [streaming, setStreaming] = useState(false)
-  const [pending,   setPending]   = useState(null) // text being typed
   const inputRef  = useRef(null)
   const bottomRef = useRef(null)
-
-  // Typewriter for the current pending answer
-  const typed = useTypewriter(pending, !!pending, () => {
-    if (pending !== null) {
-      setMessages(prev => {
-        const updated = [...prev]
-        updated[updated.length - 1] = { role: 'assistant', content: pending }
-        return updated
-      })
-      setPending(null)
-      setStreaming(false)
-    }
-  })
-
-  // Keep the streaming assistant slot updated while typing
-  useEffect(() => {
-    if (pending === null) return
-    setMessages(prev => {
-      const updated = [...prev]
-      updated[updated.length - 1] = { role: 'assistant', content: typed }
-      return updated
-    })
-  }, [typed, pending])
+  const abortRef  = useRef(null)
 
   // Focus when chat opens; reset when it closes
   useEffect(() => {
     if (visible) {
       setTimeout(() => inputRef.current?.focus(), 350)
     } else {
+      abortRef.current?.abort()
       setInput('')
       setMessages([])
       setStreaming(false)
-      setPending(null)
     }
   }, [visible])
 
@@ -93,20 +34,87 @@ export default function HeadChat({ visible }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, streaming])
 
-  function submit(text) {
+  async function submit(text) {
     const q = (text ?? input).trim()
     if (!q || streaming) return
     setInput('')
 
-    const answer = CANNED[q] ?? FALLBACK
-    setMessages(prev => [
-      ...prev,
-      { role: 'user', content: q },
-      { role: 'assistant', content: '' },
-    ])
+    // Full history with the new user message appended — sent on every request
+    const next = [...messages, { role: 'user', content: q }]
+    setMessages(next)
     setStreaming(true)
-    // Tiny delay so the empty bubble renders first
-    setTimeout(() => setPending(answer), 80)
+
+    // Add an empty assistant slot we'll stream text into
+    setMessages(prev => [...prev, { role: 'assistant', content: '' }])
+
+    abortRef.current = new AbortController()
+    try {
+      const endpoint = process.env.NEXT_PUBLIC_CHAT_WORKER_URL ?? '/api/chat'
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: next }),
+        signal: abortRef.current.signal,
+      })
+
+      if (!res.ok) throw new Error('API error')
+
+      const reader  = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop()
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          const payload = line.slice(6)
+          if (payload === '[DONE]') break
+          let parsed
+          try { parsed = JSON.parse(payload) } catch { continue }
+          if (parsed.error) throw new Error(parsed.error)
+          if (parsed.text) setMessages(prev => {
+            const updated = [...prev]
+            updated[updated.length - 1] = {
+              role:    'assistant',
+              content: updated[updated.length - 1].content + parsed.text,
+            }
+            return updated
+          })
+        }
+      }
+
+      // If stream closed with empty content (no tokens), show fallback
+      setMessages(prev => {
+        const last = prev[prev.length - 1]
+        if (last?.role === 'assistant' && last.content === '') {
+          const updated = [...prev]
+          updated[updated.length - 1] = {
+            role:    'assistant',
+            content: "Sorry — my visitors have used all my AI tokens and as a dev I have a limited budget for AI APIs. Come back later!",
+          }
+          return updated
+        }
+        return prev
+      })
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        setMessages(prev => {
+          const updated = [...prev]
+          updated[updated.length - 1] = {
+            role:    'assistant',
+            content: "Sorry — my visitors have used all my AI tokens and as a dev I have a limited budget for AI APIs. Come back later!",
+          }
+          return updated
+        })
+      }
+    } finally {
+      setStreaming(false)
+    }
   }
 
   const showSuggestions = messages.length === 0 && !streaming
@@ -156,7 +164,7 @@ export default function HeadChat({ visible }) {
             </div>
           ))}
 
-          {/* Dot indicator while the assistant slot is still empty */}
+          {/* Streaming indicator while assistant slot is empty */}
           {streaming && messages[messages.length - 1]?.content === '' && (
             <div className="flex justify-start">
               <p
