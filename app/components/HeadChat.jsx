@@ -49,7 +49,7 @@ export default function HeadChat({ visible }) {
 
     abortRef.current = new AbortController()
     try {
-      const endpoint = process.env.NEXT_PUBLIC_CHAT_WORKER_URL ?? '/api/chat'
+      const endpoint = 'https://claude-api.belleyjeanphilippe.workers.dev/'
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
