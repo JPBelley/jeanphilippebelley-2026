@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-const MESSAGE = "Hey! Welcome. Click on my face anytime if you have questions about me or the site. I'm around 👋"
+const MESSAGE = "Oh hey! Poke around, break things. Click my face if you want to chat 👋"
 
 export default function SpeechBubble({ headRef }) {
   const [displayed, setDisplayed] = useState('')
@@ -103,7 +103,7 @@ export default function SpeechBubble({ headRef }) {
           }}
         />
 
-        <p className="font-mono text-[9px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
+        <p className="font-mono text-[14px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
           {displayed}
           {displayed.length < MESSAGE.length && (
             <span
