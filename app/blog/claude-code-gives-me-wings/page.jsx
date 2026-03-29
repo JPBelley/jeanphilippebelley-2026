@@ -69,16 +69,16 @@ export default function ClaudeCodeWingsPost() {
       {/* Article */}
       <article>
         <P>
-          For years I had a list. Not a task list — more of a "someday" list. Perlin noise flow
+          For years I had a list. Not a task list, more of a "someday" list. Perlin noise flow
           fields. WebGL shaders. Three.js displacement maps. Generative art experiments. Things
           I genuinely wanted to explore, concepts I found fascinating, ideas I wanted to see
           running in a browser. And for years, that list barely moved.
         </P>
         <P>
           Not because I lacked interest. Because I lacked time. After a full day of production
-          work, the energy required to start something from scratch — the boilerplate, the
+          work, the energy required to start something from scratch (the boilerplate, the
           unfamiliar API surface, the inevitable first two hours of setup before you even touch
-          the interesting part — was just too high. The list stayed a list.
+          the interesting part) was just too high. The list stayed a list.
         </P>
         <P>
           Claude Code changed that. Not in a vague, motivational way. In a very concrete,
@@ -102,7 +102,7 @@ export default function ClaudeCodeWingsPost() {
             'Getting through the first hour before the interesting decisions start',
           ].map(item => (
             <li key={item} className="flex gap-3 text-[14px] leading-relaxed">
-              <span className="text-violet mt-[3px] shrink-0">—</span>
+              <span className="text-violet mt-[3px] shrink-0">·</span>
               <span className="text-muted">{item}</span>
             </li>
           ))}
@@ -126,7 +126,7 @@ export default function ClaudeCodeWingsPost() {
           Here is the insight that took me a few weeks to fully appreciate: Claude Code is not
           equally powerful for everyone. The output quality scales directly with the quality of
           the context you provide. And as a developer, I have something that most users do
-          not — I can build the infrastructure that makes that context excellent.
+          not. I can build the infrastructure that makes that context excellent.
         </P>
         <P>
           On this site, that means three things in practice.
@@ -137,12 +137,12 @@ export default function ClaudeCodeWingsPost() {
             {
               num: '01',
               title: 'A design system with real tokens',
-              body: 'Every color, spacing value, and animation is a CSS custom property. When Claude writes a new component, it reaches for text-violet, bg-bg2, font-mono — not arbitrary hex values. The design language is legible in the codebase, so the output speaks it automatically.',
+              body: 'Every color, spacing value, and animation is a CSS custom property. When Claude writes a new component, it reaches for text-violet, bg-bg2, font-mono, not arbitrary hex values. The design language is legible in the codebase, so the output speaks it automatically.',
             },
             {
               num: '02',
               title: 'Reusable components with consistent APIs',
-              body: 'Section, Button, ExperimentLayout — small, focused, and used everywhere. Claude can infer how new things should work from how existing things work. There is less to specify because the pattern is already the spec.',
+              body: 'Section, Button, ExperimentLayout: small, focused, and used everywhere. Claude can infer how new things should work from how existing things work. There is less to specify because the pattern is already the spec.',
             },
             {
               num: '03',
@@ -165,7 +165,7 @@ export default function ClaudeCodeWingsPost() {
           strong design system is not just good engineering. When working with Claude, it is
           the shared vocabulary that makes every request land on the first pass. You stop
           spending time correcting style decisions and start spending time on what actually
-          matters — the behavior, the feel, the thing that makes it interesting.
+          matters: the behavior, the feel, the thing that makes it interesting.
         </P>
 
         <Divider />
@@ -179,8 +179,8 @@ export default function ClaudeCodeWingsPost() {
         </P>
         <P>
           That is the compounding payoff of building the right foundation first. Every good
-          decision you make in the codebase — consistent naming, clear component boundaries,
-          real design tokens — translates directly into AI output that needs less correction.
+          decision you make in the codebase (consistent naming, clear component boundaries,
+          real design tokens) translates directly into AI output that needs less correction.
           You speed up without loosening up.
         </P>
 
@@ -196,8 +196,8 @@ export default function ClaudeCodeWingsPost() {
         <P>
           The flow field on this site started as a sentence: "help me build a Perlin noise
           particle system with controls on the left." It was running in minutes. The interesting
-          work — tuning the cursor distortion, getting the color fade right, finding the trail
-          opacity that looks good — happened in a tight loop of trying and seeing.
+          work (tuning the cursor distortion, getting the color fade right, finding the trail
+          opacity that looks good) happened in a tight loop of trying and seeing.
         </P>
         <P>
           That loop used to be hours long. Now it is minutes. And that difference is everything.
@@ -207,7 +207,7 @@ export default function ClaudeCodeWingsPost() {
         <P>
           I still write a lot of code by hand. There is thinking that happens at the keyboard
           that I would not want to skip. But the ceiling on what I can explore after work, alone,
-          in an evening — that ceiling moved. And I am still figuring out how high it goes.
+          in an evening: that ceiling moved. And I am still figuring out how high it goes.
         </P>
       </article>
 

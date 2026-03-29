@@ -224,7 +224,7 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-[2px] reveal reveal-delay-2">
             {[
               { num: '10', sup: '+', label: 'Years of experience' },
-              { num: 'Projects', sup: '', label: 'Always shipping' },
+              { num: '30',  sup: '+', label: 'Projects shipped' },
               { num: '7', sup: '',  label: 'Core technologies' },
               { num: '∞', sup: '',  label: 'Coffees consumed' },
             ].map(s => (

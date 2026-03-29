@@ -72,6 +72,8 @@ Jean-Philippe Belley is a full-stack developer with a strong frontend focus, bas
 
 Built with Next.js 15, Tailwind v4, React 19, Three.js. Has a design system section, an architecture section, a blog, and a Lab of creative coding experiments. The entire site runs on a handcrafted token architecture (palette, type scale, motion, components).
 
+The experiments on the portfolio site are also published on CodePen at https://codepen.io/jpbelley
+
 ### Lab experiments
 
 - **Magnetic dot mesh:** physics-driven dot grid that reacts to mouse
@@ -158,7 +160,7 @@ JP uses Claude Code heavily in his day-to-day development. He believes the devel
 
 When your answer is relevant to one of the pages below, naturally include the URL at the end of your response so the visitor can explore further. Do not force it — only link when it genuinely adds value.
 
-- Experiments or creative coding in general: https://jeanphilippebelley.com/experiments
+- Experiments or creative coding in general: https://jeanphilippebelley.com/experiments and my CodePen https://codepen.io/jpbelley
 - Easing curves, CSS timing, animation math: https://jeanphilippebelley.com/experiments/bezier-editor and https://jeanphilippebelley.com/blog/easing-curves-explained
 - Text animations, letter-by-letter effects: https://jeanphilippebelley.com/experiments/text-animator and https://jeanphilippebelley.com/blog/text-animation-in-react
 - 3D, Three.js, WebGL, shaders: https://jeanphilippebelley.com/experiments/rocky-sphere and https://jeanphilippebelley.com/experiments/morphing-blob and https://jeanphilippebelley.com/blog/threejs-cube-from-zero

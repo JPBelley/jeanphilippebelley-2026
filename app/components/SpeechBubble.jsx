@@ -64,7 +64,7 @@ export default function SpeechBubble({ headRef }) {
       className="fixed pointer-events-none max-[768px]:hidden"
       style={{
         width: 190,
-        zIndex: 11,
+        zIndex: 110,
         transition: 'opacity 0.6s ease',
         opacity: fading ? 0 : fadeIn ? 1 : 0,
       }}
@@ -103,7 +103,7 @@ export default function SpeechBubble({ headRef }) {
           }}
         />
 
-        <p className="font-mono text-[14px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
+        <p className="font-mono text-[12px] leading-[1.65]" style={{ color: 'rgba(232,234,240,0.9)' }}>
           {displayed}
           {displayed.length < MESSAGE.length && (
             <span
