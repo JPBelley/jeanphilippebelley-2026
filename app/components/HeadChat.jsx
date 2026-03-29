@@ -95,7 +95,7 @@ export default function HeadChat({ visible }) {
           const updated = [...prev]
           updated[updated.length - 1] = {
             role:    'assistant',
-            content: "Sorry — my visitors have used all my AI tokens and as a dev I have a limited budget for AI APIs. Come back later!",
+            content: "Sorry, looks like I ran out of AI tokens for now. Feel free to reach out directly at info@jeanphilippebelley.com, I'd love to chat!",
           }
           return updated
         }
@@ -107,7 +107,7 @@ export default function HeadChat({ visible }) {
           const updated = [...prev]
           updated[updated.length - 1] = {
             role:    'assistant',
-            content: "Sorry — my visitors have used all my AI tokens and as a dev I have a limited budget for AI APIs. Come back later!",
+            content: "Sorry, looks like I ran out of AI tokens for now. Feel free to reach out directly at info@jeanphilippebelley.com, I'd love to chat!",
           }
           return updated
         })
