@@ -2,6 +2,9 @@
 
 import { useRef, useState, useEffect } from 'react'
 import ExperimentLayout from '../../components/layouts/ExperimentLayout'
+import ExperimentShell from '../../components/layouts/experiment/ExperimentShell'
+import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
+import ExperimentStage from '../../components/layouts/experiment/ExperimentStage'
 
 // ── Perlin Noise ───────────────────────────────────────────────────────────────
 function buildNoise(seed) {
@@ -231,85 +234,65 @@ export default function FlowFieldPage() {
       title="Flow Field Particles"
       description="Perlin noise drives particles through organic, fingerprint-like waves. Move your cursor over the canvas to disturb the field."
     >
-      <div className="flex gap-6 items-start max-[900px]:flex-col">
+      <ExperimentShell>
 
         {/* ── Controls ───────────────────────────────────────────────────── */}
-        <aside
-          className="w-[220px] max-[900px]:w-full shrink-0 rounded-xl overflow-hidden font-mono"
-          style={{ background: 'var(--color-tool-bg1)', border: '1px solid var(--color-tool-border)' }}
-        >
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Field</span></div>
-            <div className="sec-body">
-              <SliderRow label="Noise scale" value={scale}     min={0.002} max={0.016} step={0.001} format={v => v.toFixed(3)} onChange={setScale} />
-              <SliderRow label="Flow speed"  value={flowSpeed} min={0}     max={0.012} step={0.001} format={v => v.toFixed(3)} onChange={setFlowSpeed} />
-            </div>
-          </div>
+        <ExperimentControls>
+          <ExperimentControls.Section label="Field">
+            <SliderRow label="Noise scale" value={scale}     min={0.002} max={0.016} step={0.001} format={v => v.toFixed(3)} onChange={setScale} />
+            <SliderRow label="Flow speed"  value={flowSpeed} min={0}     max={0.012} step={0.001} format={v => v.toFixed(3)} onChange={setFlowSpeed} />
+          </ExperimentControls.Section>
 
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Particles</span></div>
-            <div className="sec-body">
-              <SliderRow label="Count"      value={count}     min={100}  max={2000} step={50}  onChange={setCount} />
-              <SliderRow label="Speed"      value={speed}     min={0.3}  max={4}    step={0.1} format={v => v.toFixed(1)} onChange={setSpeed} />
-              <SliderRow label="Line width" value={lineWidth} min={0.5}  max={4}    step={0.5} format={v => v.toFixed(1)} onChange={setLineWidth} />
-              <SliderRow label="Trails"     value={trail}     min={0.02} max={0.2}  step={0.01} format={v => v.toFixed(2)} onChange={setTrail} />
-            </div>
-          </div>
+          <ExperimentControls.Section label="Particles">
+            <SliderRow label="Count"      value={count}     min={100}  max={2000} step={50}  onChange={setCount} />
+            <SliderRow label="Speed"      value={speed}     min={0.3}  max={4}    step={0.1} format={v => v.toFixed(1)} onChange={setSpeed} />
+            <SliderRow label="Line width" value={lineWidth} min={0.5}  max={4}    step={0.5} format={v => v.toFixed(1)} onChange={setLineWidth} />
+            <SliderRow label="Trails"     value={trail}     min={0.02} max={0.2}  step={0.01} format={v => v.toFixed(2)} onChange={setTrail} />
+          </ExperimentControls.Section>
 
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Color</span></div>
-            <div className="sec-body">
-              <div className="ctrl-row">
-                <span className="ctrl-label">Young</span>
-                <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
-                  <input type="color" value={color} onChange={e => setColor(e.target.value)}
-                    className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
-                  <span className="ctrl-val">{color}</span>
-                </div>
-              </div>
-              <div className="ctrl-row">
-                <span className="ctrl-label">Old</span>
-                <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
-                  <input type="color" value={color2} onChange={e => setColor2(e.target.value)}
-                    className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
-                  <span className="ctrl-val">{color2}</span>
-                </div>
+          <ExperimentControls.Section label="Color">
+            <div className="ctrl-row">
+              <span className="ctrl-label">Young</span>
+              <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
+                <input type="color" value={color} onChange={e => setColor(e.target.value)}
+                  className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
+                <span className="ctrl-val">{color}</span>
               </div>
             </div>
-          </div>
-
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Cursor</span></div>
-            <div className="sec-body">
-              <SliderRow label="Strength" value={cursorStr} min={0}   max={3}   step={0.1} format={v => v.toFixed(1)} onChange={setCursorStr} />
-              <SliderRow label="Radius"   value={cursorRad} min={40}  max={400} step={10}  onChange={setCursorRad} />
+            <div className="ctrl-row">
+              <span className="ctrl-label">Old</span>
+              <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
+                <input type="color" value={color2} onChange={e => setColor2(e.target.value)}
+                  className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
+                <span className="ctrl-val">{color2}</span>
+              </div>
             </div>
-          </div>
+          </ExperimentControls.Section>
 
-          <div className="section">
-            <div className="sec-body" style={{ paddingTop: 10, paddingBottom: 10 }}>
-              <button
-                onClick={reseed}
-                className="w-full font-mono text-[10px] tracking-widest uppercase py-2 rounded-lg transition-colors duration-150"
-                style={{ background: 'var(--color-tool-bg3)', border: '1px solid var(--color-tool-border2)', color: 'var(--color-muted)' }}
-                onMouseEnter={e => e.currentTarget.style.color = 'var(--color-foreground)'}
-                onMouseLeave={e => e.currentTarget.style.color = 'var(--color-muted)'}
-              >
-                ↺ re-seed
-              </button>
-            </div>
-          </div>
-        </aside>
+          <ExperimentControls.Section label="Cursor">
+            <SliderRow label="Strength" value={cursorStr} min={0}   max={3}   step={0.1} format={v => v.toFixed(1)} onChange={setCursorStr} />
+            <SliderRow label="Radius"   value={cursorRad} min={40}  max={400} step={10}  onChange={setCursorRad} />
+          </ExperimentControls.Section>
+
+          <ExperimentControls.Section label="Seed">
+            <button
+              onClick={reseed}
+              className="w-full font-mono text-[10px] tracking-widest uppercase py-2 rounded-lg transition-colors duration-150"
+              style={{ background: 'var(--color-tool-bg3)', border: '1px solid var(--color-tool-border2)', color: 'var(--color-muted)' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--color-foreground)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--color-muted)'}
+            >
+              ↺ re-seed
+            </button>
+          </ExperimentControls.Section>
+        </ExperimentControls>
 
         {/* ── Canvas ─────────────────────────────────────────────────────── */}
-        <div
-          className="relative flex-1 min-w-0 rounded-xl overflow-hidden max-[900px]:w-full cursor-crosshair"
-          style={{ height: 'clamp(420px, 68vh, 780px)' }}
-        >
-          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        </div>
+        <ExperimentStage height="clamp(420px, 68vh, 780px)" noBg center={false}>
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full cursor-crosshair" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+        </ExperimentStage>
 
-      </div>
+      </ExperimentShell>
     </ExperimentLayout>
   )
 }

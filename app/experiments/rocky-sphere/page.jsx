@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import ExperimentLayout from '../../components/layouts/ExperimentLayout'
+import ExperimentShell from '../../components/layouts/experiment/ExperimentShell'
+import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
+import ExperimentStage from '../../components/layouts/experiment/ExperimentStage'
 
 // ─── GLSL injected into MeshStandardMaterial via onBeforeCompile ──────────────
 
@@ -396,88 +399,72 @@ export default function RockySphere() {
       title="Rocky Sphere"
       description="GPU vertex displacement with animated FBM noise. Every parameter updates in real-time on the shader."
     >
-      <div className="flex gap-6 items-start max-[900px]:flex-col">
+      <ExperimentShell>
 
         {/* ── CONTROLS ────────────────────────────────────────────────────── */}
-        <aside
-          className="w-[240px] max-[900px]:w-full shrink-0 rounded-xl overflow-hidden font-mono"
-          style={{ background: 'var(--color-tool-bg1)', border: '1px solid var(--color-tool-border)' }}
-        >
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Geometry</span></div>
-            <div className="sec-body">
-              <SliderRow label="Displacement" value={dispScale} min={0}   max={2} step={0.05} onChange={setDispScale} />
-              <SliderRow label="Noise freq"   value={noiseFreq} min={0.3} max={3} step={0.05} onChange={setNoiseFreq} />
-            </div>
-          </div>
+        <ExperimentControls width={240}>
+          <ExperimentControls.Section label="Geometry">
+            <SliderRow label="Displacement" value={dispScale} min={0}   max={2} step={0.05} onChange={setDispScale} />
+            <SliderRow label="Noise freq"   value={noiseFreq} min={0.3} max={3} step={0.05} onChange={setNoiseFreq} />
+          </ExperimentControls.Section>
 
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Motion</span></div>
-            <div className="sec-body">
-              <SliderRow label="Wave speed" value={waveSpeed} min={0} max={4} step={0.1} onChange={setWaveSpeed} />
-              <SliderRow label="Rotation"   value={speed}     min={0} max={4} step={0.1} onChange={setSpeed}     />
-            </div>
-          </div>
+          <ExperimentControls.Section label="Motion">
+            <SliderRow label="Wave speed" value={waveSpeed} min={0} max={4} step={0.1} onChange={setWaveSpeed} />
+            <SliderRow label="Rotation"   value={speed}     min={0} max={4} step={0.1} onChange={setSpeed}     />
+          </ExperimentControls.Section>
 
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Surface</span></div>
-            <div className="sec-body">
-              <SliderRow label="Roughness" value={roughness} min={0} max={1}  step={0.01} onChange={setRoughness} />
-              <SliderRow label="Metalness" value={metalness} min={0} max={1}  step={0.01} onChange={setMetalness} />
-              <SliderRow label="Light"     value={lightInt}  min={0} max={10} step={0.1}  onChange={setLightInt}  />
-            </div>
-          </div>
+          <ExperimentControls.Section label="Surface">
+            <SliderRow label="Roughness" value={roughness} min={0} max={1}  step={0.01} onChange={setRoughness} />
+            <SliderRow label="Metalness" value={metalness} min={0} max={1}  step={0.01} onChange={setMetalness} />
+            <SliderRow label="Light"     value={lightInt}  min={0} max={10} step={0.1}  onChange={setLightInt}  />
+          </ExperimentControls.Section>
 
-          <div className="section border-b border-tool-border">
-            <div className="sec-hdr"><span>Color</span></div>
-            <div className="sec-body">
-              <div className="grid grid-cols-5 gap-1.5 pt-1 w-full">
-                {COLORS.map(c => (
-                  <button key={c.hex} title={c.label} onClick={() => setColor(c.hex)}
-                    className="w-full aspect-square rounded border transition-all duration-150"
-                    style={{
-                      background:  c.hex,
-                      borderColor: color === c.hex ? 'rgba(124,92,255,0.8)' : 'var(--color-tool-border2)',
-                      boxShadow:   color === c.hex ? '0 0 0 2px rgba(124,92,255,0.3)' : 'none',
-                    }} />
-                ))}
-              </div>
+          <ExperimentControls.Section label="Color">
+            <div className="grid grid-cols-5 gap-1.5 pt-1 w-full">
+              {COLORS.map(c => (
+                <button key={c.hex} title={c.label} onClick={() => setColor(c.hex)}
+                  className="w-full aspect-square rounded border transition-all duration-150"
+                  style={{
+                    background:  c.hex,
+                    borderColor: color === c.hex ? 'rgba(124,92,255,0.8)' : 'var(--color-tool-border2)',
+                    boxShadow:   color === c.hex ? '0 0 0 2px rgba(124,92,255,0.3)' : 'none',
+                  }} />
+              ))}
             </div>
-          </div>
+          </ExperimentControls.Section>
 
-          <div className="section">
-            <div className="sec-hdr"><span>Background</span></div>
-            <div className="sec-body">
-              <div className="grid grid-cols-3 gap-1.5 pt-1">
-                {BACKGROUNDS.map(b => (
-                  <button key={b.hex} onClick={() => setBg(b.hex)}
-                    className="font-mono text-[9px] py-1.5 rounded border transition-colors duration-150"
-                    style={{
-                      background:  b.hex,
-                      borderColor: bg === b.hex ? 'rgba(124,92,255,0.8)' : 'var(--color-tool-border2)',
-                      color:       b.hex === '#0F1115' ? '#E8EAF0' : '#0F1115',
-                      boxShadow:   bg === b.hex ? '0 0 0 2px rgba(124,92,255,0.3)' : 'none',
-                    }}>
-                    {b.label}
-                  </button>
-                ))}
-              </div>
+          <ExperimentControls.Section label="Background">
+            <div className="grid grid-cols-3 gap-1.5 pt-1">
+              {BACKGROUNDS.map(b => (
+                <button key={b.hex} onClick={() => setBg(b.hex)}
+                  className="font-mono text-[9px] py-1.5 rounded border transition-colors duration-150"
+                  style={{
+                    background:  b.hex,
+                    borderColor: bg === b.hex ? 'rgba(124,92,255,0.8)' : 'var(--color-tool-border2)',
+                    color:       b.hex === '#0F1115' ? '#E8EAF0' : '#0F1115',
+                    boxShadow:   bg === b.hex ? '0 0 0 2px rgba(124,92,255,0.3)' : 'none',
+                  }}>
+                  {b.label}
+                </button>
+              ))}
             </div>
-          </div>
-        </aside>
+          </ExperimentControls.Section>
+        </ExperimentControls>
 
         {/* ── CANVAS ──────────────────────────────────────────────────────── */}
-        <div
-          ref={mountRef}
-          className="flex-1 min-w-0 rounded-xl overflow-hidden max-[900px]:w-full"
-          style={{
-            height: 'clamp(420px, 68vh, 780px)',
-            background: bg,
-            transition: 'background 0.4s ease',
-          }}
-        />
+        <ExperimentStage height="clamp(420px, 68vh, 780px)" noBg center={false}>
+          <div
+            ref={mountRef}
+            style={{
+              width: '100%',
+              height: '100%',
+              background: bg,
+              transition: 'background 0.4s ease',
+            }}
+          />
+        </ExperimentStage>
 
-      </div>
+      </ExperimentShell>
 
       {/* ── CODE EXPORT ─────────────────────────────────────────────────────── */}
       <div className="mt-8">

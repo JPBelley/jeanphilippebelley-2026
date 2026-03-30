@@ -2,6 +2,9 @@
 
 import { useEffect } from 'react'
 import ExperimentLayout from '../../components/layouts/ExperimentLayout'
+import ExperimentShell from '../../components/layouts/experiment/ExperimentShell'
+import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
+import ExperimentStage from '../../components/layouts/experiment/ExperimentStage'
 
 export default function MorphingBlob() {
   useEffect(() => {
@@ -9,15 +12,16 @@ export default function MorphingBlob() {
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
     script.onload = () => {
       const wrap = document.getElementById('canvas-wrap')
-      const size = wrap.clientWidth
+      const w = wrap.clientWidth
+      const h = wrap.clientHeight
 
       const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('c'), antialias: true})
       renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
-      renderer.setSize(size, size)
+      renderer.setSize(w, h)
       renderer.shadowMap.enabled = true
 
       const scene = new THREE.Scene()
-      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100)
+      const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100)
       camera.position.set(0, 0, 7)
 
       const bgGeo = new THREE.SphereGeometry(40, 8, 8)
@@ -160,12 +164,14 @@ export default function MorphingBlob() {
       animate()
 
       const handleResize = () => {
-        const s = wrap.clientWidth
-        camera.aspect = 1
+        const w = wrap.clientWidth
+        const h = wrap.clientHeight
+        camera.aspect = w / h
         camera.updateProjectionMatrix()
-        renderer.setSize(s, s)
+        renderer.setSize(w, h)
       }
-      window.addEventListener('resize', handleResize)
+      const ro = new ResizeObserver(handleResize)
+      ro.observe(wrap)
 
       function bindSlider(id, key, valId) {
         const el = document.getElementById(id)
@@ -212,7 +218,7 @@ export default function MorphingBlob() {
 
       script._cleanup = () => {
         cancelAnimationFrame(animRaf)
-        window.removeEventListener('resize', handleResize)
+        ro.disconnect()
       }
     }
     document.body.appendChild(script)
@@ -243,10 +249,10 @@ export default function MorphingBlob() {
       title="Morphing Blob"
       description="Three.js WebGL organic shape deformer with noise-based vertex displacement."
     >
-        <div className="flex gap-6 items-start max-[900px]:flex-col">
+        <ExperimentShell>
           {/* Controls */}
-          <aside className="w-[260px] max-[900px]:w-full shrink-0 rounded-xl border border-ui bg-bg2 overflow-hidden text-[13px]">
-            <div className="px-4 py-3 border-b border-ui">
+          <ExperimentControls width={260}>
+            <div className="px-4 py-3 border-b border-tool-border">
               <h2 className="text-[13px] font-semibold">Controls</h2>
             </div>
 
@@ -311,16 +317,16 @@ export default function MorphingBlob() {
                 </button>
               </div>
             </div>
-          </aside>
+          </ExperimentControls>
 
           {/* Preview */}
-          <div className="flex-1 flex flex-col gap-3 min-w-0 sticky top-[100px] self-start">
-            <div id="canvas-wrap" className="w-full rounded-xl overflow-hidden border border-ui" style={{aspectRatio:'1/1'}}>
-              <canvas id="c" className="block w-full" />
+          <ExperimentStage noBg center={false}>
+            <div id="canvas-wrap" className="absolute inset-0">
+              <canvas id="c" className="block w-full h-full" />
             </div>
-            <p className="text-[11px] text-muted text-center">Drag to orbit · Scroll to zoom</p>
-          </div>
-        </div>
+            <p className="absolute top-3 right-3 text-[11px] text-muted pointer-events-none">Drag to orbit · Scroll to zoom</p>
+          </ExperimentStage>
+        </ExperimentShell>
     </ExperimentLayout>
   )
 }

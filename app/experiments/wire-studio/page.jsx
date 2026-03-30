@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react'
 import ExperimentLayout from '../../components/layouts/ExperimentLayout'
+import ExperimentShell from '../../components/layouts/experiment/ExperimentShell'
+import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
 
 export default function WireStudio() {
   useEffect(() => {
@@ -284,15 +286,15 @@ export default function WireStudio() {
         #controls .wire-swatch input[type=color] { position:absolute; inset:-4px; width:calc(100%+8px); height:calc(100%+8px); opacity:0; cursor:pointer; }
       `}</style>
 
-        <div className="flex gap-6 items-start max-[900px]:flex-col">
+        <ExperimentShell>
           {/* Controls */}
-          <aside className="w-[260px] max-[900px]:w-full shrink-0 rounded-xl border border-ui bg-bg2 overflow-hidden text-[13px]">
-            <div className="px-4 py-3 border-b border-ui">
+          <ExperimentControls width={260}>
+            <div className="px-4 py-3 border-b border-tool-border">
               <h2 className="text-[13px] font-semibold">Controls</h2>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-ui">
+            <div className="flex border-b border-tool-border">
               {[['geo','Geometry'],['color','Color'],['motion','Motion'],['light','Light']].map(([k,l], i) => (
                 <button key={k} data-tab={k} className={`wire-tab flex-1 py-2 text-[11px] font-medium text-muted hover:text-foreground transition-colors border-none bg-transparent cursor-pointer${i===0?' active text-foreground':''}`}>
                   {l}
@@ -302,7 +304,7 @@ export default function WireStudio() {
 
             <div id="controls" className="min-h-[200px]" />
 
-            <div className="p-3 border-t border-ui flex flex-col gap-2">
+            <div className="p-3 border-t border-tool-border flex flex-col gap-2">
               <div className="flex gap-2">
                 <button id="btn-reset"  className="flex-1 py-2 rounded-lg text-[12px] font-medium cursor-pointer bg-bg border border-ui text-muted hover:text-foreground hover:bg-ui transition-colors">Reset</button>
                 <button id="btn-random" className="flex-1 py-2 rounded-lg text-[12px] font-medium cursor-pointer bg-bg border border-ui text-muted hover:text-foreground hover:bg-ui transition-colors">Random</button>
@@ -311,7 +313,7 @@ export default function WireStudio() {
                 Export PNG
               </button>
             </div>
-          </aside>
+          </ExperimentControls>
 
           {/* Preview */}
           <div className="flex-1 flex flex-col gap-3 min-w-0 sticky top-[100px] self-start">
@@ -342,7 +344,7 @@ export default function WireStudio() {
               <span>Mouse: <b className="text-foreground font-medium" id="s-mouse">—</b></span>
             </div>
           </div>
-        </div>
+        </ExperimentShell>
     </ExperimentLayout>
   )
 }

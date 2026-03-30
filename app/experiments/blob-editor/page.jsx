@@ -2,6 +2,9 @@
 
 import { useEffect } from 'react'
 import ExperimentLayout from '../../components/layouts/ExperimentLayout'
+import ExperimentShell from '../../components/layouts/experiment/ExperimentShell'
+import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
+import ExperimentStage from '../../components/layouts/experiment/ExperimentStage'
 
 export default function BlobEditor() {
   useEffect(() => {
@@ -425,10 +428,10 @@ void main(){
       description="2D WebGL blob renderer with real-time SDF morphing, swirl color mixing, halo glow, and PNG export."
       accentColor="#f5a040"
     >
-        <div className="flex gap-6 items-start max-[900px]:flex-col">
+        <ExperimentShell>
 
           {/* ── CONTROLS PANEL ───────────────────────────────────────────────── */}
-          <aside className="w-[260px] max-[900px]:w-full shrink-0 bg-tool-bg1 border border-tool-border rounded-xl overflow-hidden font-mono">
+          <ExperimentControls width={260}>
 
             {/* Panel header */}
             <div className="px-4 py-[14px] border-b border-tool-border flex items-center gap-[10px]">
@@ -466,7 +469,7 @@ void main(){
                 Export PNG
               </button>
             </div>
-          </aside>
+          </ExperimentControls>
 
           {/* ── PREVIEW ──────────────────────────────────────────────────────── */}
           <div className="flex-1 flex flex-col gap-4 min-w-0 sticky top-[100px] self-start">
@@ -508,7 +511,7 @@ void main(){
             </div>
           </div>
 
-        </div>
+        </ExperimentShell>
     </ExperimentLayout>
   )
 }

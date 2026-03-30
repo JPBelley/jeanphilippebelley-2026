@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import ExperimentLayout from '../../components/layouts/ExperimentLayout'
+import ExperimentLayout   from '../../components/layouts/ExperimentLayout'
+import ExperimentShell    from '../../components/layouts/experiment/ExperimentShell'
+import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
+import ExperimentStage    from '../../components/layouts/experiment/ExperimentStage'
 
 // ─── Curve geometry ───────────────────────────────────────────────────────────
 const SVG_SIZE = 300
@@ -217,70 +220,45 @@ export default function BezierEditorPage() {
       title="Bezier Editor"
       description={<>Drag the handles to shape your easing curve.&nbsp;<span className="text-violet">Violet = P1</span><span className="text-muted mx-1">·</span><span className="text-mint">Mint = P2</span></>}
     >
-        <div className="flex gap-5 items-start max-[900px]:flex-col">
+        <ExperimentShell>
 
-          {/* ── Left panel ── */}
-          <aside
-            className="shrink-0 flex flex-col gap-[1px] overflow-hidden rounded-xl border max-[900px]:w-full"
-            style={{
-              width: '200px',
-              background: 'var(--color-tool-bg1)',
-              borderColor: 'var(--color-tool-border)',
-            }}
-          >
-            {/* Presets */}
-            <div>
-              <div className="sec-hdr"><span>Presets</span></div>
-              <div className="sec-body" style={{ padding: '4px 0 6px' }}>
-                {PRESETS.map(({ label, p1: pp1, p2: pp2 }) => (
-                  <button
-                    key={label}
-                    onClick={() => { setP1(pp1); setP2(pp2) }}
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: '6px 14px',
-                      fontSize: '12px',
-                      fontFamily: 'var(--font-mono)',
-                      color: 'var(--color-tool-text2)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      transition: 'color 0.15s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--color-tool-text)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'var(--color-tool-text2)'}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Handles */}
-            <div style={{ borderTop: '1px solid var(--color-tool-border)' }}>
-              <div className="sec-hdr"><span>Handles</span></div>
-              <div className="sec-body">
-                <NumInput label="X1" value={p1[0]} min={0}  max={1} step={0.01} onChange={v => setP1([v, p1[1]])} />
-                <NumInput label="Y1" value={p1[1]} min={-1} max={2} step={0.01} onChange={v => setP1([p1[0], v])} />
-                <NumInput label="X2" value={p2[0]} min={0}  max={1} step={0.01} onChange={v => setP2([v, p2[1]])} />
-                <NumInput label="Y2" value={p2[1]} min={-1} max={2} step={0.01} onChange={v => setP2([p2[0], v])} />
-              </div>
-            </div>
-
-            {/* CSS Output */}
-            <div style={{ borderTop: '1px solid var(--color-tool-border)' }}>
-              <div className="sec-hdr"><span>CSS</span></div>
-              <div className="sec-body flex flex-col gap-2">
-                <p
+          {/* ── Controls ── */}
+          <ExperimentControls width={200}>
+            <ExperimentControls.Section label="Presets" noPad>
+              {PRESETS.map(({ label, p1: pp1, p2: pp2 }) => (
+                <button
+                  key={label}
+                  onClick={() => { setP1(pp1); setP2(pp2) }}
                   style={{
-                    fontSize: '11px',
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '6px 14px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
-                    color: 'var(--color-violet)',
-                    lineHeight: '1.6',
-                    wordBreak: 'break-all',
+                    color: 'var(--color-tool-text2)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'color 0.15s',
                   }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--color-tool-text)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--color-tool-text2)'}
                 >
+                  {label}
+                </button>
+              ))}
+            </ExperimentControls.Section>
+
+            <ExperimentControls.Section label="Handles">
+              <NumInput label="X1" value={p1[0]} min={0}  max={1} step={0.01} onChange={v => setP1([v, p1[1]])} />
+              <NumInput label="Y1" value={p1[1]} min={-1} max={2} step={0.01} onChange={v => setP1([p1[0], v])} />
+              <NumInput label="X2" value={p2[0]} min={0}  max={1} step={0.01} onChange={v => setP2([v, p2[1]])} />
+              <NumInput label="Y2" value={p2[1]} min={-1} max={2} step={0.01} onChange={v => setP2([p2[0], v])} />
+            </ExperimentControls.Section>
+
+            <ExperimentControls.Section label="CSS">
+              <div className="flex flex-col gap-2">
+                <p style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--color-violet)', lineHeight: '1.6', wordBreak: 'break-all' }}>
                   {css}
                 </p>
                 <button
@@ -302,26 +280,16 @@ export default function BezierEditorPage() {
                   {copied ? '✓ Copied' : 'Copy'}
                 </button>
               </div>
-            </div>
-          </aside>
+            </ExperimentControls.Section>
+          </ExperimentControls>
 
-          {/* ── Right: canvas + preview ── */}
+          {/* ── Stage: canvas + preview ── */}
           <div className="flex-1 flex flex-col gap-4 min-w-0">
-
-            {/* Canvas */}
-            <div
-              className="w-full flex items-center justify-center rounded-xl"
-              style={{
-                background: 'var(--color-tool-bg1)',
-                border: '1px solid var(--color-tool-border)',
-                padding: '20px',
-                minHeight: '420px',
-              }}
-            >
-              <div style={{ width: '360px', height: '360px', flexShrink: 0 }}>
+            <ExperimentStage height="auto" center>
+              <div style={{ width: '360px', height: '360px', flexShrink: 0, padding: '20px' }}>
                 <BezierCanvas p1={p1} p2={p2} onP1={setP1} onP2={setP2} />
               </div>
-            </div>
+            </ExperimentStage>
 
             {/* Preview */}
             <div
@@ -333,8 +301,6 @@ export default function BezierEditorPage() {
               }}
             >
               <div className="sec-hdr" style={{ padding: '0 0 8px' }}><span>Preview</span></div>
-
-              {/* Track */}
               <div
                 className="relative h-12 rounded-lg overflow-hidden mb-4"
                 style={{ background: 'var(--color-tool-bg3)', border: '1px solid var(--color-tool-border2)' }}
@@ -353,8 +319,6 @@ export default function BezierEditorPage() {
                   }}
                 />
               </div>
-
-              {/* Controls */}
               <div className="flex items-center gap-4">
                 <button
                   onClick={play}
@@ -379,10 +343,7 @@ export default function BezierEditorPage() {
                   </svg>
                 </button>
                 <div className="flex items-center gap-3 flex-1">
-                  <span
-                    className="tabular-nums"
-                    style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--color-tool-text2)', width: '48px' }}
-                  >
+                  <span className="tabular-nums" style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--color-tool-text2)', width: '48px' }}>
                     {duration}ms
                   </span>
                   <input
@@ -394,7 +355,8 @@ export default function BezierEditorPage() {
               </div>
             </div>
           </div>
-        </div>
+
+        </ExperimentShell>
     </ExperimentLayout>
   )
 }

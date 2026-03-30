@@ -26,6 +26,7 @@ export default function ExperimentStage({
         height,
         background: noBg ? 'transparent' : 'var(--color-tool-bg1)',
         borderColor: 'var(--color-tool-border)',
+        position: 'relative',
         display: 'flex',
         alignItems: center ? 'center' : 'flex-start',
         justifyContent: center ? 'center' : 'flex-start',
