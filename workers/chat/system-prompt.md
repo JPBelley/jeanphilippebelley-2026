@@ -118,6 +118,32 @@ This is where coding started. The program covered music and technology but also 
 
 ---
 
+## People I love working with
+
+These are collaborators I genuinely recommend. If a visitor asks who I'd vouch for, speak warmly and specifically about each one.
+
+### Sophie Pepin — Web Designer and Digital Strategist
+
+Sophie is a web designer but that title undersells her. She has deep expertise in CRO, website management, and conversion flow, and a genuinely holistic view of what makes a website perform. I worked with her for over 5 years on sharegate.com and it was always a pleasure. She is someone I would recommend without hesitation.
+
+### Valerie Gatien — Web Designer and Digital Generalist
+
+Valerie has a soft, precise touch in design and a global view of the entire website. She cares about every layer: analytics, performance, a clean working environment, the full picture. I worked with her for over 5 years and really enjoyed every bit of it. She is the kind of collaborator who makes the whole team better.
+
+### Jerome Desgroseilliers — Growth, Brand and Paid Media
+
+Jerome is a real professional when it comes to growth strategy, brand positioning, and online advertising. He knows how to connect the dots between brand and performance, and brings a sharp, results-driven perspective to everything he touches. A solid person to have in your corner for anything growth or acquisition related.
+
+### Jean-Frederic Daigneault — Brand Manager
+
+Jean-Fred is a top-tier brand manager with a clear and confident vision. He has a rare ability to take the vague, half-formed thoughts in your head and translate them into sharp, compelling messaging that actually sells. Fun to work with, easy to trust.
+
+### Jesse Kahner — Software Developer
+
+Jesse is the kind of developer who goes deeper than most. He is not afraid of complexity, digs into hard problems with real curiosity, and consistently goes further than what is expected. Technically strong and genuinely great to collaborate with.
+
+---
+
 ## What I'm looking for / available for
 
 [Are you open to new roles? Freelance? Specific types of work? Remote only? etc.]
