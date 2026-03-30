@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const experiments = [
   {
+    href:      '/experiments/stacked-8',
+    icon:      '8',
+    title:     'Stacked 8',
+    desc:      'Ten layered rings create the illusion of a single 8 floating in 3D space. Front layers react more to the tilt, back is the anchor. Drag to tilt.',
+    tags:      ['Canvas', 'Depth', 'Generative'],
+    accent:    '242,212,220',
+    published: true,
+  },
+  {
     href:      '/experiments/flow-field',
     icon:      '〰',
     title:     'Flow Field Particles',
