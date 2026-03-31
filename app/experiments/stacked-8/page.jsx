@@ -47,6 +47,7 @@ export default function Stacked8Page() {
   const opacityRef = useRef(0.95)
   const fluidRef   = useRef(0.65)
   const twistRef   = useRef(0)
+  const jitterRef  = useRef(0)
 
   // Per-layer current positions + rotation for lerp — updated every frame
   const layerPos = useRef(Array.from({ length: LAYERS }, () => ({ ox: 0, oy: 0, rot: 0 })))
@@ -60,6 +61,7 @@ export default function Stacked8Page() {
   const [opacity, setOpacity] = useState(0.95)
   const [fluid,   setFluid]   = useState(0.65)
   const [twist,   setTwist]   = useState(0)
+  const [jitter,  setJitter]  = useState(0)
 
   useEffect(() => { tiltXRef.current   = tiltX   }, [tiltX])
   useEffect(() => { tiltYRef.current   = tiltY   }, [tiltY])
@@ -70,6 +72,7 @@ export default function Stacked8Page() {
   useEffect(() => { opacityRef.current = opacity }, [opacity])
   useEffect(() => { fluidRef.current   = fluid   }, [fluid])
   useEffect(() => { twistRef.current   = twist   }, [twist])
+  useEffect(() => { jitterRef.current  = jitter  }, [jitter])
 
   // ── Draw loop ─────────────────────────────────────────────────────────────
   loopRef.current = () => {
@@ -127,8 +130,12 @@ export default function Stacked8Page() {
       ctx.lineCap     = 'round'
 
       // Translate to this layer's position, rotate around its own centre
+      const jAmp = jitterRef.current * t
+      const jx   = (Math.random() * 2 - 1) * jAmp
+      const jy   = (Math.random() * 2 - 1) * jAmp
+
       ctx.save()
-      ctx.translate(cx + pos[i].ox, cy + pos[i].oy)
+      ctx.translate(cx + pos[i].ox + jx, cy + pos[i].oy + jy)
       ctx.rotate(pos[i].rot)
 
       // Top circle of the 8
@@ -239,7 +246,8 @@ export default function Stacked8Page() {
           </ExperimentControls.Section>
 
           <ExperimentControls.Section label="Style">
-            <SliderRow label="Opacity" value={opacity} min={0.3} max={1}  step={0.01} format={v => v.toFixed(2)} onChange={setOpacity} />
+            <SliderRow label="Opacity" value={opacity} min={0.3} max={1}   step={0.01} format={v => v.toFixed(2)} onChange={setOpacity} />
+            <SliderRow label="Jitter"  value={jitter}  min={0}   max={12}  step={0.5}  format={v => v.toFixed(1)} onChange={setJitter} />
             <SliderRow label="Stroke"  value={stroke}  min={2}   max={30} step={1}    onChange={setStroke} />
             <div className="ctrl-row">
               <span className="ctrl-label">Front</span>
