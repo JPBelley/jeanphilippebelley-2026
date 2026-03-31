@@ -36,9 +36,10 @@ export default function Stacked8Page() {
   const colorRef   = useRef('#f2d4dc')
   const opacityRef = useRef(0.95)
   const fluidRef   = useRef(0.65)
+  const twistRef   = useRef(0)
 
-  // Per-layer current positions for the lerp — updated every frame
-  const layerPos = useRef(Array.from({ length: LAYERS }, () => ({ ox: 0, oy: 0 })))
+  // Per-layer current positions + rotation for lerp — updated every frame
+  const layerPos = useRef(Array.from({ length: LAYERS }, () => ({ ox: 0, oy: 0, rot: 0 })))
 
   const [tiltX,   setTiltX]   = useState(1.5)
   const [tiltY,   setTiltY]   = useState(0.8)
@@ -47,6 +48,7 @@ export default function Stacked8Page() {
   const [color,   setColor]   = useState('#f2d4dc')
   const [opacity, setOpacity] = useState(0.95)
   const [fluid,   setFluid]   = useState(0.65)
+  const [twist,   setTwist]   = useState(0)
 
   useEffect(() => { tiltXRef.current   = tiltX   }, [tiltX])
   useEffect(() => { tiltYRef.current   = tiltY   }, [tiltY])
@@ -55,6 +57,7 @@ export default function Stacked8Page() {
   useEffect(() => { colorRef.current   = color   }, [color])
   useEffect(() => { opacityRef.current = opacity }, [opacity])
   useEffect(() => { fluidRef.current   = fluid   }, [fluid])
+  useEffect(() => { twistRef.current   = twist   }, [twist])
 
   // ── Draw loop ─────────────────────────────────────────────────────────────
   loopRef.current = () => {
@@ -75,11 +78,13 @@ export default function Stacked8Page() {
     const col   = colorRef.current
     const base  = opacityRef.current
     const fl    = fluidRef.current
+    const tw    = twistRef.current * Math.PI / 180
     const pos   = layerPos.current
 
     // 8 proportions — two equal circles stacked
     const eightH = Math.min(width, height) * 0.58
     const r      = eightH / 4
+    const ri     = r - sw / 2
 
     // Draw back-to-front so front layer paints on top
     for (let i = LAYERS - 1; i >= 0; i--) {
@@ -87,18 +92,20 @@ export default function Stacked8Page() {
       const t         = i / (LAYERS - 1)
       const frontness = 1 - t
 
-      // Target position: front layers react more to tilt, back is the anchor
-      const targetOx = tX * sp * frontness
-      const targetOy = tY * sp * frontness
+      // Target position — front moves most, back is the anchor
+      const targetOx  = tX * sp * frontness
+      const targetOy  = tY * sp * frontness
+      // Target Z rotation — back layers twist the most
+      const targetRot = tw * t
 
-      // Lerp speed: front = snappy, back = laggy. Both scale toward rigid as fl → 0.
-      // fl=0 → all instant (lerpFactor=1). fl=1 → front=0.35, back=0.04.
+      // Lerp speeds: front = snappy, back = laggy. Collapse to 1 (rigid) as fl → 0.
       const frontSpeed = 1 + (0.35 - 1) * fl
       const backSpeed  = 1 + (0.04 - 1) * fl
       const lerpFactor = frontSpeed + (backSpeed - frontSpeed) * t
 
-      pos[i].ox += (targetOx - pos[i].ox) * lerpFactor
-      pos[i].oy += (targetOy - pos[i].oy) * lerpFactor
+      pos[i].ox  += (targetOx  - pos[i].ox)  * lerpFactor
+      pos[i].oy  += (targetOy  - pos[i].oy)  * lerpFactor
+      pos[i].rot += (targetRot - pos[i].rot) * lerpFactor
 
       // Opacity falls off toward the back with a gentle power curve
       const alpha = base * (0.08 + 0.92 * Math.pow(frontness, 0.75))
@@ -108,19 +115,22 @@ export default function Stacked8Page() {
       ctx.lineWidth   = sw
       ctx.lineCap     = 'round'
 
-      const lx = cx + pos[i].ox
-      const ly = cy + pos[i].oy
-      const ri = r - sw / 2   // shrink arc radius so stroke stays inside r
+      // Translate to this layer's position, rotate around its own centre
+      ctx.save()
+      ctx.translate(cx + pos[i].ox, cy + pos[i].oy)
+      ctx.rotate(pos[i].rot)
 
       // Top circle of the 8
       ctx.beginPath()
-      ctx.arc(lx, ly - r, ri, 0, Math.PI * 2)
+      ctx.arc(0, -r, ri, 0, Math.PI * 2)
       ctx.stroke()
 
       // Bottom circle of the 8
       ctx.beginPath()
-      ctx.arc(lx, ly + r, ri, 0, Math.PI * 2)
+      ctx.arc(0, r, ri, 0, Math.PI * 2)
       ctx.stroke()
+
+      ctx.restore()
     }
 
     ctx.globalAlpha = 1
@@ -136,8 +146,7 @@ export default function Stacked8Page() {
       const rect    = canvas.parentElement.getBoundingClientRect()
       canvas.width  = rect.width
       canvas.height = rect.height
-      // Reset lerp positions so layers don't fly in from the old canvas size
-      layerPos.current.forEach(p => { p.ox = 0; p.oy = 0 })
+      layerPos.current.forEach(p => { p.ox = 0; p.oy = 0; p.rot = 0 })
     }
     const ro = new ResizeObserver(resize)
     ro.observe(canvas.parentElement)
@@ -197,6 +206,7 @@ export default function Stacked8Page() {
   function reset() {
     tiltXRef.current = 0; setTiltX(0)
     tiltYRef.current = 0; setTiltY(0)
+    twistRef.current = 0; setTwist(0)
   }
 
   return (
@@ -210,10 +220,11 @@ export default function Stacked8Page() {
         {/* ── Controls ────────────────────────────────────────────────────── */}
         <ExperimentControls>
           <ExperimentControls.Section label="Perspective">
-            <SliderRow label="Tilt X" value={tiltX}  min={-8} max={8}  step={0.1} format={v => v.toFixed(1)} onChange={setTiltX} />
-            <SliderRow label="Tilt Y" value={tiltY}  min={-8} max={8}  step={0.1} format={v => v.toFixed(1)} onChange={setTiltY} />
-            <SliderRow label="Spread" value={spread} min={0}  max={60} step={1}   onChange={setSpread} />
-            <SliderRow label="Fluid"  value={fluid}  min={0}  max={1}  step={0.01} format={v => v.toFixed(2)} onChange={setFluid} />
+            <SliderRow label="Tilt X" value={tiltX}  min={-8}   max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={setTiltX} />
+            <SliderRow label="Tilt Y" value={tiltY}  min={-8}   max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={setTiltY} />
+            <SliderRow label="Twist"  value={twist}  min={-90}  max={90}  step={1}    format={v => `${v}°`}      onChange={setTwist} />
+            <SliderRow label="Spread" value={spread} min={0}    max={60}  step={1}    onChange={setSpread} />
+            <SliderRow label="Fluid"  value={fluid}  min={0}    max={1}   step={0.01} format={v => v.toFixed(2)} onChange={setFluid} />
           </ExperimentControls.Section>
 
           <ExperimentControls.Section label="Style">
@@ -237,7 +248,7 @@ export default function Stacked8Page() {
               onMouseEnter={e => e.currentTarget.style.color = 'var(--color-foreground)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--color-muted)'}
             >
-              ↺ reset tilt
+              ↺ reset
             </button>
           </ExperimentControls.Section>
         </ExperimentControls>
