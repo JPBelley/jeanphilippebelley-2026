@@ -31,6 +31,78 @@ function SliderRow({ label, value, min, max, step = 0.01, format, onChange }) {
   )
 }
 
+// ── XY Pad ──────────────────────────────────────────────────────────────────
+function XYPad({ x, y, min = -8, max = 8, onChange }) {
+  const padRef    = useRef(null)
+  const dragging  = useRef(false)
+  const handleRef = useRef(null)
+
+  handleRef.current = (e) => {
+    const pad = padRef.current
+    if (!pad) return
+    const rect   = pad.getBoundingClientRect()
+    const clientX = e.clientX ?? e.touches?.[0]?.clientX ?? 0
+    const clientY = e.clientY ?? e.touches?.[0]?.clientY ?? 0
+    const nx = parseFloat(Math.max(min, Math.min(max, min + ((clientX - rect.left) / rect.width)  * (max - min))).toFixed(2))
+    const ny = parseFloat(Math.max(min, Math.min(max, min + ((clientY - rect.top)  / rect.height) * (max - min))).toFixed(2))
+    onChange(nx, ny)
+  }
+
+  useEffect(() => {
+    const onMove = e => { if (dragging.current) handleRef.current(e) }
+    const onUp   = () => { dragging.current = false }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('touchmove', onMove, { passive: true })
+    window.addEventListener('mouseup',   onUp)
+    window.addEventListener('touchend',  onUp)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('touchmove', onMove)
+      window.removeEventListener('mouseup',   onUp)
+      window.removeEventListener('touchend',  onUp)
+    }
+  }, [])
+
+  const dotX = ((x - min) / (max - min)) * 100
+  const dotY = ((y - min) / (max - min)) * 100
+
+  return (
+    <div
+      ref={padRef}
+      onMouseDown={e => { dragging.current = true; handleRef.current(e) }}
+      onTouchStart={e => { dragging.current = true; handleRef.current(e) }}
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '1',
+        background: 'var(--color-tool-bg3)',
+        border: '1px solid var(--color-tool-border)',
+        borderRadius: '8px',
+        cursor: 'crosshair',
+        marginBottom: '6px',
+        userSelect: 'none',
+      }}
+    >
+      {/* centre crosshair */}
+      <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'var(--color-tool-border)', opacity: 0.5, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'var(--color-tool-border)', opacity: 0.5, pointerEvents: 'none' }} />
+      {/* dot */}
+      <div style={{
+        position: 'absolute',
+        left:   `${dotX}%`,
+        top:    `${dotY}%`,
+        width:  10,
+        height: 10,
+        borderRadius: '50%',
+        background: 'var(--color-foreground)',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        boxShadow: '0 0 0 2px var(--color-tool-bg3)',
+      }} />
+    </div>
+  )
+}
+
 // ── Component ───────────────────────────────────────────────────────────────
 export default function Stacked8Page() {
   const canvasRef = useRef(null)
@@ -225,6 +297,13 @@ export default function Stacked8Page() {
     }
   }, [])
 
+  function handleTilt(nx, ny) {
+    tiltXRef.current = nx
+    tiltYRef.current = ny
+    setTiltX(nx)
+    setTiltY(ny)
+  }
+
   function reset() {
     tiltXRef.current = 0; setTiltX(0)
     tiltYRef.current = 0; setTiltY(0)
@@ -242,8 +321,9 @@ export default function Stacked8Page() {
         {/* ── Controls ────────────────────────────────────────────────────── */}
         <ExperimentControls>
           <ExperimentControls.Section label="Perspective">
-            <SliderRow label="Tilt X" value={tiltX}  min={-8}   max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={setTiltX} />
-            <SliderRow label="Tilt Y" value={tiltY}  min={-8}   max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={setTiltY} />
+            <XYPad x={tiltX} y={tiltY} onChange={handleTilt} />
+            <SliderRow label="Tilt X" value={tiltX}  min={-8}   max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={nx => handleTilt(nx, tiltY)} />
+            <SliderRow label="Tilt Y" value={tiltY}  min={-8}   max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={ny => handleTilt(tiltX, ny)} />
             <SliderRow label="Twist"  value={twist}  min={-90}  max={90}  step={1}    format={v => `${v}°`}      onChange={setTwist} />
             <SliderRow label="Spread" value={spread} min={0}    max={60}  step={1}    onChange={setSpread} />
             <SliderRow label="Fluid"  value={fluid}  min={0}    max={1}   step={0.01} format={v => v.toFixed(2)} onChange={setFluid} />
