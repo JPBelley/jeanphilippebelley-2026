@@ -9,6 +9,15 @@ import ExperimentStage from '../../components/layouts/experiment/ExperimentStage
 const LAYERS = 10
 const BG     = '#160a0e'
 
+function lerpColor(hex1, hex2, t) {
+  const a = parseInt(hex1.replace('#', ''), 16)
+  const b = parseInt(hex2.replace('#', ''), 16)
+  const r = Math.round(((a >> 16) & 255) * (1 - t) + ((b >> 16) & 255) * t)
+  const g = Math.round(((a >>  8) & 255) * (1 - t) + ((b >>  8) & 255) * t)
+  const c = Math.round( (a        & 255) * (1 - t) +  (b        & 255) * t)
+  return `rgb(${r},${g},${c})`
+}
+
 function SliderRow({ label, value, min, max, step = 0.01, format, onChange }) {
   return (
     <div className="ctrl-row">
@@ -34,6 +43,7 @@ export default function Stacked8Page() {
   const spreadRef  = useRef(22)
   const strokeRef  = useRef(14)
   const colorRef   = useRef('#f2d4dc')
+  const color2Ref  = useRef('#7C5CFF')
   const opacityRef = useRef(0.95)
   const fluidRef   = useRef(0.65)
   const twistRef   = useRef(0)
@@ -46,6 +56,7 @@ export default function Stacked8Page() {
   const [spread,  setSpread]  = useState(22)
   const [stroke,  setStroke]  = useState(14)
   const [color,   setColor]   = useState('#f2d4dc')
+  const [color2,  setColor2]  = useState('#7C5CFF')
   const [opacity, setOpacity] = useState(0.95)
   const [fluid,   setFluid]   = useState(0.65)
   const [twist,   setTwist]   = useState(0)
@@ -55,6 +66,7 @@ export default function Stacked8Page() {
   useEffect(() => { spreadRef.current  = spread  }, [spread])
   useEffect(() => { strokeRef.current  = stroke  }, [stroke])
   useEffect(() => { colorRef.current   = color   }, [color])
+  useEffect(() => { color2Ref.current  = color2  }, [color2])
   useEffect(() => { opacityRef.current = opacity }, [opacity])
   useEffect(() => { fluidRef.current   = fluid   }, [fluid])
   useEffect(() => { twistRef.current   = twist   }, [twist])
@@ -75,7 +87,6 @@ export default function Stacked8Page() {
     const tY    = tiltYRef.current
     const sp    = spreadRef.current
     const sw    = strokeRef.current
-    const col   = colorRef.current
     const base  = opacityRef.current
     const fl    = fluidRef.current
     const tw    = twistRef.current * Math.PI / 180
@@ -111,7 +122,7 @@ export default function Stacked8Page() {
       const alpha = base * (0.08 + 0.92 * Math.pow(frontness, 0.75))
 
       ctx.globalAlpha = alpha
-      ctx.strokeStyle = col
+      ctx.strokeStyle = lerpColor(colorRef.current, color2Ref.current, t)
       ctx.lineWidth   = sw
       ctx.lineCap     = 'round'
 
@@ -231,11 +242,19 @@ export default function Stacked8Page() {
             <SliderRow label="Opacity" value={opacity} min={0.3} max={1}  step={0.01} format={v => v.toFixed(2)} onChange={setOpacity} />
             <SliderRow label="Stroke"  value={stroke}  min={2}   max={30} step={1}    onChange={setStroke} />
             <div className="ctrl-row">
-              <span className="ctrl-label">Color</span>
+              <span className="ctrl-label">Front</span>
               <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
                 <input type="color" value={color} onChange={e => setColor(e.target.value)}
                   className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
                 <span className="ctrl-val">{color}</span>
+              </div>
+            </div>
+            <div className="ctrl-row">
+              <span className="ctrl-label">Back</span>
+              <div className="ctrl-right" style={{ justifyContent: 'flex-end' }}>
+                <input type="color" value={color2} onChange={e => setColor2(e.target.value)}
+                  className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" />
+                <span className="ctrl-val">{color2}</span>
               </div>
             </div>
           </ExperimentControls.Section>
