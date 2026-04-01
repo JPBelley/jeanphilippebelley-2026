@@ -75,7 +75,7 @@ The experiments on the portfolio site are also published on CodePen at https://c
 - **Easing curves:** interactive easing function visualiser
 - **Text animations:** 20 different character-level animations
 - **Pixel cursor:** grid of squares that responds to mouse/click
-- **Stacked 8:** [describe it]
+- **Stacked 8:** Ten stacked rings forming the shape of an 8, each layer offset with a fluid lerp so front layers react fast and back layers trail behind. Drag to tilt, color gradient from front to back. On CodePen at https://codepen.io/jpbelley
 
 ---
 
@@ -181,6 +181,7 @@ JP uses Claude Code heavily in his day-to-day development. He believes the devel
 When your answer is relevant to one of the pages below, naturally include the URL at the end of your response so the visitor can explore further. Do not force it — only link when it genuinely adds value.
 
 - Experiments or creative coding in general: https://jeanphilippebelley.com/experiments and my CodePen https://codepen.io/jpbelley
+- Stacked 8, depth illusion, layered rings: https://jeanphilippebelley.com/experiments/stacked-8
 - Easing curves, CSS timing, animation math: https://jeanphilippebelley.com/experiments/bezier-editor and https://jeanphilippebelley.com/blog/easing-curves-explained
 - Text animations, letter-by-letter effects: https://jeanphilippebelley.com/experiments/text-animator and https://jeanphilippebelley.com/blog/text-animation-in-react
 - 3D, Three.js, WebGL, shaders: https://jeanphilippebelley.com/experiments/rocky-sphere and https://jeanphilippebelley.com/experiments/morphing-blob and https://jeanphilippebelley.com/blog/threejs-cube-from-zero
