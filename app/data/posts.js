@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const posts = [
   {
+    slug:        'lerp-explained',
+    title:       'What Is Lerp, and Why Should You Care',
+    date:        'March 31, 2026',
+    description: 'Linear interpolation is four tokens of math that powers smooth camera follow, color blending, UI springs, and generative animation. A practical overview of the formula, the running lerp trick, and where you will see it.',
+    tags:        ['Canvas', 'Animation', 'Creative Coding'],
+    readTime:    '6 min read',
+    published:   true,
+  },
+  {
     slug:        'claude-code-gives-me-wings',
     title:       'Claude Code Gives Me Wings',
     date:        'March 28, 2026',
