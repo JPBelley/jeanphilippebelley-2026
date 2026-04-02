@@ -211,7 +211,7 @@ export default function DepthFramesPage() {
     ctx.fillStyle   = grd
     ctx.fillRect(0, 0, width, height)
 
-    // ── Film grain ────────────────────────────────────────────────────────
+    // ── Film grain (clipped to frames only) ──────────────────────────────
     const amp = grainAmpRef.current
     if (amp > 0) {
       const SCALE = 3
@@ -235,8 +235,18 @@ export default function DepthFramesPage() {
         d[i + 3]  = (Math.random() * amp * 90) | 0
       }
       gctx.putImageData(imgData, 0, 0)
+
+      // clip to the union of all frame rects before drawing grain
+      ctx.save()
+      ctx.beginPath()
+      for (let i = 0; i < n; i++) {
+        if (!pos[i]) continue
+        ctx.rect(cx + pos[i].ox - hw, cy + pos[i].oy - hw, size, size)
+      }
+      ctx.clip()
       ctx.globalAlpha = 1
       ctx.drawImage(gc, 0, 0, width, height)
+      ctx.restore()
     }
 
     ctx.globalAlpha = 1
