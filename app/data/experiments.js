@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const experiments = [
   {
+    href:      '/experiments/depth-frames',
+    icon:      '▣',
+    title:     'Depth Frames',
+    desc:      'Stacked semi-transparent rectangles with a front-to-back color gradient and radial glow, creating the illusion of depth through layered light. Drag to tilt.',
+    tags:      ['Canvas', 'Depth', 'Generative'],
+    accent:    '232,112,122',
+    published: true,
+  },
+  {
     href:      '/experiments/stacked-8',
     icon:      '8',
     title:     'Stacked 8',
