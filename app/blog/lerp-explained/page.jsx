@@ -418,9 +418,22 @@ current += (target - current) * factor`}</Code>
         </DemoBox>
 
         <P>
-          One caveat: RGB lerp can produce muddy mid-tones between complementary colors.
-          If that matters, interpolate in OKLab or HSL instead. For most things, RGB is
-          fast and good enough.
+          One real caveat here. sRGB values are gamma-encoded, which means they do not map
+          linearly to how our eyes perceive brightness. Lerping directly in sRGB skips through
+          perceptually dark territory in the middle, which is why gradients between certain
+          colors look muddy or dim at the halfway point. You can see it clearly if you try
+          blending between two complementary hues above.
+        </P>
+        <P>
+          For cleaner results, lerp in linear light instead: square the sRGB values before
+          blending, then square-root the result. That is a rough gamma correction and already
+          much better. For the best gradients, interpolate in OKLab, which is designed to be
+          perceptually uniform. HSL is another common option but has its own quirk: hue lerp
+          can take the long way around the color wheel if you are not careful.
+        </P>
+        <P>
+          For quick creative work, RGB is fine. For anything where color quality matters,
+          it is worth the extra step.
         </P>
 
         <Divider />
