@@ -14,7 +14,7 @@ const posts = [
     slug:        'claude-code-gives-me-wings',
     title:       'Claude Code Gives Me Wings',
     date:        'March 28, 2026',
-    description: 'I spent years meaning to explore coding concepts after work and never getting there. Claude Code changed that — and the developer advantage turns out to be about infrastructure, not shortcuts.',
+    description: 'I spent years meaning to explore coding concepts after work and never getting there. Claude Code changed that, and the developer advantage turns out to be about infrastructure, not shortcuts.',
     tags:        ['Claude Code', 'AI', 'Workflow', 'Developer Tools'],
     readTime:    '5 min read',
     published:   true,
