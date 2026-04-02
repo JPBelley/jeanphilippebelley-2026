@@ -6,7 +6,8 @@ import ExperimentShell from '../../components/layouts/experiment/ExperimentShell
 import ExperimentControls from '../../components/layouts/experiment/ExperimentControls'
 import ExperimentStage from '../../components/layouts/experiment/ExperimentStage'
 
-const BG = '#0d0b0c'
+const BG  = '#0d0b0c'
+const FOV = 800  // perspective focal length
 
 function lerpColor(hex1, hex2, t) {
   const a = parseInt(hex1.replace('#', ''), 16)
@@ -109,7 +110,7 @@ export default function DepthFramesPage() {
 
   const tiltXRef   = useRef(3.5)
   const tiltYRef   = useRef(-2)
-  const spreadRef  = useRef(28)
+  const spreadRef  = useRef(200)
   const fluidRef   = useRef(0.7)
   const opacityRef = useRef(0.9)
   const grainAmpRef = useRef(0.35)
@@ -121,7 +122,7 @@ export default function DepthFramesPage() {
 
   const [tiltX,    setTiltX]    = useState(3.5)
   const [tiltY,    setTiltY]    = useState(-2)
-  const [spread,   setSpread]   = useState(28)
+  const [spread,   setSpread]   = useState(200)
   const [fluid,    setFluid]    = useState(0.7)
   const [opacity,  setOpacity]  = useState(0.9)
   const [grainAmp, setGrainAmp] = useState(0.35)
@@ -143,7 +144,7 @@ export default function DepthFramesPage() {
     layersRef.current = n
     const prev = layerPos.current
     layerPos.current = Array.from({ length: n }, (_, i) =>
-      prev[i] ?? { ox: 0, oy: 0 }
+      prev[i] ?? { ox: 0, oy: 0, os: 1 }
     )
   }, [layers])
 
@@ -159,39 +160,55 @@ export default function DepthFramesPage() {
     ctx.fillStyle = BG
     ctx.fillRect(0, 0, width, height)
 
-    const tX   = tiltXRef.current
-    const tY   = tiltYRef.current
-    const sp   = spreadRef.current
     const fl   = fluidRef.current
     const base = opacityRef.current
     const n    = layersRef.current
     const pos  = layerPos.current
     const size = Math.min(width, height) * 0.48
-    const hw   = size / 2
+
+    // 3D rotation angles from tilt controls (each unit ≈ 0.15 rad → ±8 ≈ ±68°)
+    const rotX = tiltYRef.current * 0.15
+    const rotY = tiltXRef.current * 0.15
+    const depth = spreadRef.current  // Z extent of the stack
+    const cosX = Math.cos(rotX), sinX = Math.sin(rotX)
+    const cosY = Math.cos(rotY), sinY = Math.sin(rotY)
 
     for (let i = n - 1; i >= 0; i--) {
       const t         = i / (n - 1)
       const frontness = 1 - t
 
-      const targetOx = tX * sp * frontness
-      const targetOy = tY * sp * frontness
+      // Layer at z_i along the stack axis (negative = toward viewer)
+      const zi = (t - 0.5) * depth
+
+      // Apply Y rotation then X rotation to point (0, 0, zi)
+      const wx =  zi * sinY
+      const wy = -zi * cosY * sinX
+      const wz =  zi * cosY * cosX
+
+      // Perspective projection
+      const targetScale = FOV / (FOV + wz)
+      const targetOx    = wx * targetScale
+      const targetOy    = wy * targetScale
 
       const frontSpeed = 1 + (0.35 - 1) * fl
       const backSpeed  = 1 + (0.04 - 1) * fl
       const lf         = frontSpeed + (backSpeed - frontSpeed) * t
 
-      if (!pos[i]) pos[i] = { ox: 0, oy: 0 }
+      if (!pos[i]) pos[i] = { ox: 0, oy: 0, os: 1 }
       pos[i].ox += (targetOx - pos[i].ox) * lf
       pos[i].oy += (targetOy - pos[i].oy) * lf
+      pos[i].os += (targetScale - pos[i].os) * lf
 
-      const alpha = base * (0.04 + 0.2 * Math.pow(frontness, 0.55))
+      const layerSize = size * pos[i].os
+      const lh        = layerSize / 2
+      const alpha     = base * (0.04 + 0.2 * Math.pow(frontness, 0.55))
 
       ctx.globalAlpha = alpha
       ctx.fillStyle   = lerpColor(color2Ref.current, colorRef.current, frontness)
 
       ctx.save()
       ctx.translate(cx + pos[i].ox, cy + pos[i].oy)
-      ctx.fillRect(-hw, -hw, size, size)
+      ctx.fillRect(-lh, -lh, layerSize, layerSize)
       ctx.restore()
     }
 
@@ -241,7 +258,9 @@ export default function DepthFramesPage() {
       ctx.beginPath()
       for (let i = 0; i < n; i++) {
         if (!pos[i]) continue
-        ctx.rect(cx + pos[i].ox - hw, cy + pos[i].oy - hw, size, size)
+        const ls = size * (pos[i].os ?? 1)
+        const lh = ls / 2
+        ctx.rect(cx + pos[i].ox - lh, cy + pos[i].oy - lh, ls, ls)
       }
       ctx.clip()
       ctx.globalAlpha = 1
@@ -258,13 +277,13 @@ export default function DepthFramesPage() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    layerPos.current = Array.from({ length: layersRef.current }, () => ({ ox: 0, oy: 0 }))
+    layerPos.current = Array.from({ length: layersRef.current }, () => ({ ox: 0, oy: 0, os: 1 }))
 
     function resize() {
       const rect    = canvas.parentElement.getBoundingClientRect()
       canvas.width  = rect.width
       canvas.height = rect.height
-      layerPos.current.forEach(p => { p.ox = 0; p.oy = 0 })
+      layerPos.current.forEach(p => { p.ox = 0; p.oy = 0; p.os = 1 })
     }
     const ro = new ResizeObserver(resize)
     ro.observe(canvas.parentElement)
@@ -339,7 +358,7 @@ export default function DepthFramesPage() {
             <XYPad x={tiltX} y={tiltY} onChange={handleTilt} />
             <SliderRow label="Tilt X" value={tiltX}  min={-8}  max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={nx => handleTilt(nx, tiltY)} />
             <SliderRow label="Tilt Y" value={tiltY}  min={-8}  max={8}   step={0.1}  format={v => v.toFixed(1)} onChange={ny => handleTilt(tiltX, ny)} />
-            <SliderRow label="Spread" value={spread} min={0}   max={60}  step={1}    onChange={setSpread} />
+            <SliderRow label="Depth"  value={spread} min={50}  max={500} step={10}   onChange={setSpread} />
             <SliderRow label="Fluid"  value={fluid}  min={0}   max={1}   step={0.01} format={v => v.toFixed(2)} onChange={setFluid} />
           </ExperimentControls.Section>
 
