@@ -156,7 +156,7 @@ export default function NewsletterSection() {
     <section className="newsletter-root border-t border-ui">
       <div className="max-w-6xl mx-auto px-[60px] max-[640px]:px-10 py-20 flex flex-col items-center text-center">
 
-        <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">// newsletter</p>
+        <p className="font-mono text-[11px] uppercase tracking-widest text-violet mb-3">newsletter</p>
         <h2 className="text-[clamp(24px,3vw,38px)] font-bold leading-tight tracking-[-0.02em] mb-3">
           Stay in the loop
         </h2>
