@@ -10,7 +10,7 @@ export default function Blog() {
     <PageLayout>
       <Section size="narrow">
         <div className="mb-12">
-          <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">// blog</p>
+          <p className="text-[11px] font-medium text-muted uppercase tracking-widest mb-1">blog</p>
           <h1 className="text-4xl font-bold">Writing</h1>
           <p className="text-muted mt-2 text-sm">Notes on building things for the web.</p>
         </div>

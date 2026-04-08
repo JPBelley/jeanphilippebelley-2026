@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const posts = [
   {
+    slug:        'webgl-triangle',
+    title:       'Draw a Triangle: WebGL From Scratch',
+    date:        'April 7, 2026',
+    description: 'WebGL documentation is a wall of boilerplate before you see a single pixel. This post strips it down to the minimum — one triangle, three interactive demos — and explains what every line actually does.',
+    tags:        ['WebGL', 'Canvas', 'Creative Coding'],
+    readTime:    '8 min read',
+    published:   true,
+  },
+  {
     slug:        'lerp-explained',
     title:       'What Is Lerp, and Why Should You Care',
     date:        'March 31, 2026',

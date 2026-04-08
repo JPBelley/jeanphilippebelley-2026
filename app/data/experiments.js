@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const experiments = [
   {
+    href:      '/experiments/vertex-playground',
+    icon:      '△',
+    title:     'Vertex Playground',
+    desc:      'Place vertices by clicking, drag to reposition, right-click to remove. Switch between WebGL draw modes — Triangles, Triangle Fan, Line Loop, Points — and watch the same vertices render differently.',
+    tags:      ['WebGL', 'GLSL', 'Interactive'],
+    accent:    '124,92,255',
+    published: false,
+  },
+  {
     href:      '/experiments/depth-frames',
     icon:      '▣',
     title:     'Depth Frames',
