@@ -280,7 +280,6 @@ export default function Home() {
           {/* 001 — Design System — featured, unchanged */}
           <Link href="/design-system" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
             <div>
-              <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">001 · Featured</div>
               <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Design System &amp; Token Architecture</h3>
               <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">
                 I don't just know design systems, I build with them. This very site runs on a handcrafted token architecture: a unified palette, type scale, motion system, and component set, all documented and explorable.
@@ -324,7 +323,7 @@ export default function Home() {
               delay: 'reveal-delay-1',
             },
             {
-              num: '003',
+              num: '004',
               title: 'Tradeoffs, not opinions',
               desc: "Every architectural decision is a set of tradeoffs with a context. I don't push for the elegant solution when the pragmatic one ships and holds. What I do insist on is naming the tradeoff out loud: 'here's what we gain, here's what we give up, here's when we'd revisit it.' Pragmatism beats purity. Good enough is right more often than engineers admit, as long as everyone knows what good enough means.",
               tags: ['Architecture Decisions', 'Pragmatism', 'Communication'],
@@ -332,7 +331,6 @@ export default function Home() {
             },
           ].filter(p => !p.hidden).map(p => (
             <div key={p.num} className={`project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal ${p.delay}`}>
-              <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">{p.num}</div>
               <h3 className="text-[22px] font-semibold tracking-[-0.02em] mb-3">{p.title}</h3>
               <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">{p.desc}</p>
               <div className="flex flex-wrap gap-2">
@@ -344,7 +342,6 @@ export default function Home() {
           {/* 004 — Architecture — featured link */}
           <Link href="/architecture" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal reveal-delay-1 max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
             <div>
-              <div className="font-mono text-[11px] text-violet tracking-[0.1em] mb-5">004</div>
               <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Structure is not an afterthought</h3>
               <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">
                 Every component is written once and reused everywhere. Data lives in a single source of truth. Pages follow predictable patterns. The folder structure mirrors the mental model, so any new contributor can navigate the codebase in minutes, not days. Scalability is built in from the first commit, not retrofitted when it hurts.
