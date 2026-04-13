@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 const URL_REGEX = /(https?:\/\/[^\s]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g
 
@@ -25,12 +26,15 @@ const SUGGESTIONS = [
 
 export default function HeadChat({ visible }) {
   // messages follow the Claude API shape: { role: 'user'|'assistant', content: string }
+  const [mounted,   setMounted]   = useState(false)
   const [input,     setInput]     = useState('')
   const [messages,  setMessages]  = useState([])
   const [streaming, setStreaming] = useState(false)
   const inputRef  = useRef(null)
   const bottomRef = useRef(null)
   const abortRef  = useRef(null)
+
+  useEffect(() => { setMounted(true) }, [])
 
   // Focus when chat opens; reset when it closes
   useEffect(() => {
@@ -134,7 +138,9 @@ export default function HeadChat({ visible }) {
 
   const showSuggestions = messages.length === 0 && !streaming
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <div
       className="fixed left-1/2 z-[60] flex flex-col gap-3"
       onClick={e => e.stopPropagation()}
@@ -244,6 +250,7 @@ export default function HeadChat({ visible }) {
           ↵
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

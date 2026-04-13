@@ -48,7 +48,7 @@ export default function MemojiHead({ size = 2.8, className = '', style = {}, onL
       obj.position.sub(center)
       const sz = new THREE.Vector3()
       box.getSize(sz)
-      const effectiveSize = window.innerWidth < 768 ? size * 2.8 : size
+      const effectiveSize = size
       targetScale = effectiveSize / Math.max(sz.x, sz.y, sz.z)
       obj.scale.setScalar(0)
       faceGroup.add(obj)

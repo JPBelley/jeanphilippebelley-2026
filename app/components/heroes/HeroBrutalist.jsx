@@ -174,35 +174,6 @@ export default function HeroBrutalist({ introComplete }) {
               ))}
             </ul>
           </div>
-
-          {/* CTA */}
-          <a
-            href="#projects"
-            style={{
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'space-between',
-              gap:            16,
-              background:     'var(--color-violet)',
-              padding:        '20px 24px',
-              textDecoration: 'none',
-              cursor:         'pointer',
-              transition:     'transform 0.2s cubic-bezier(0.2,0,0,1)',
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = 'skewX(-6deg)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'skewX(0deg)'}
-          >
-            <span style={{
-              fontFamily:    'var(--font-head)',
-              fontWeight:    900,
-              fontSize:      'clamp(16px, 1.6vw, 20px)',
-              letterSpacing: '-0.01em',
-              textTransform: 'uppercase',
-              color:         '#fff',
-            }}>View my work</span>
-            <span style={{ color: '#fff', fontSize: 22 }}>→</span>
-          </a>
-
         </div>
       </div>
 

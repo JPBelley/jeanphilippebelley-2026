@@ -22,9 +22,9 @@ export default function Home() {
   const [headLoaded, setHeadLoaded] = useState(false)
   const [expanded,   setExpanded]   = useState(false)
 
-  const CONTAINER = 580
-  const SCALE_MAX = 1.6
-  const SCALE_MIN = 0.52
+  const CONTAINER = 300
+  const SCALE_MAX = 1.15
+  const SCALE_MIN = 0.37
 
   function handleHeadClick() {
     const el = headContainerRef.current
@@ -35,8 +35,12 @@ export default function Home() {
 
     const EXPAND_SCALE = 2.0
     if (next) {
-      const tx = CONTAINER * EXPAND_SCALE / 2 - window.innerWidth  / 2
-      const ty = window.innerHeight / 2       - CONTAINER * EXPAND_SCALE / 2
+      const isMobile   = window.innerWidth < 768
+      const RIGHT_GAP  = 20
+      const actualSize = isMobile ? 100 : CONTAINER
+      const elementTop = isMobile ? 80  : 0
+      const tx = -(window.innerWidth / 2) + RIGHT_GAP + (actualSize * EXPAND_SCALE) / 2
+      const ty = window.innerHeight / 2 - elementTop - (actualSize * EXPAND_SCALE) / 2
       el.style.transition      = 'transform 0.5s cubic-bezier(0.34,1.2,0.64,1)'
       el.style.transformOrigin = 'top right'
       el.style.transform       = `translateX(${tx}px) translateY(${ty}px) scale(${EXPAND_SCALE})`
@@ -44,15 +48,19 @@ export default function Home() {
       el.style.cursor          = 'zoom-out'
       el.style.pointerEvents   = 'auto'
     } else {
-      const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
-      const scale    = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
-      const ty       = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
-      const tx       = (1 - progress) * -140
-      el.style.transition      = 'transform 0.4s ease'
-      el.style.transformOrigin = 'top right'
-      el.style.transform       = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
-      el.style.zIndex          = '10'
-      el.style.cursor          = 'zoom-in'
+      el.style.transition = 'transform 0.4s ease'
+      el.style.zIndex     = '10'
+      el.style.cursor     = 'zoom-in'
+      if (window.innerWidth < 768) {
+        el.style.transform = 'none'
+      } else {
+        const NAV_HEIGHT = 72
+        const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
+        const scale    = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
+        const ty       = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2) + progress * NAV_HEIGHT
+        const tx       = (1 - progress) * -(window.innerWidth / 2 - (CONTAINER * SCALE_MAX) / 2 - 20)
+        el.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
+      }
       setTimeout(() => { if (!expandedRef.current) el.style.transition = 'none' }, 400)
     }
   }
@@ -80,10 +88,11 @@ export default function Home() {
       el.style.top    = '0px'
       el.style.width  = `${CONTAINER}px`
       el.style.height = `${CONTAINER}px`
+      const NAV_HEIGHT = 72
       const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
       const scale = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
-      const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
-      const tx = (1 - progress) * -140
+      const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2) + progress * NAV_HEIGHT
+      const tx = (1 - progress) * -(window.innerWidth / 2 - (CONTAINER * SCALE_MAX) / 2 - 20)
       el.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
       el.style.pointerEvents = 'auto'
       el.style.cursor = 'pointer'
@@ -130,11 +139,11 @@ export default function Home() {
       {/* Fixed memoji head */}
       <div
         ref={headContainerRef}
-        className="fixed top-0 right-0 z-10"
-        style={{ width: 580, height: 580, pointerEvents: 'auto', cursor: 'pointer', transformOrigin: 'top right' }}
+        className="fixed top-0 right-5 z-10"
+        style={{ width: 300, height: 300, pointerEvents: 'auto', cursor: 'pointer', transformOrigin: 'top right' }}
         onClick={handleHeadClick}
       >
-        <MemojiHead size={2.8} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
+        <MemojiHead size={7.5} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
       </div>
 
       {/* Speech bubble */}
