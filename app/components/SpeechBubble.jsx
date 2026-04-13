@@ -47,8 +47,11 @@ export default function SpeechBubble({ headRef }) {
       if (!el || !head) return
       const rect = head.getBoundingClientRect()
       // Mirror the original absolute placement: right: 60%, bottom: 44% of the head rect
-      const right  = window.innerWidth - (rect.right - rect.width * 0.72)
-      const bottom = window.innerHeight - (rect.bottom - rect.height * 0.44)
+      const ARROW_FROM_BOTTOM = 12 // px — arrow sits 12px from bubble bottom edge
+      const MOUTH_FROM_TOP    = 0.64 // fraction — mouth is ~64% down the canvas
+      const mouthY  = rect.top + rect.height * MOUTH_FROM_TOP
+      const right   = window.innerWidth - (rect.right - rect.width * 0.72)
+      const bottom  = window.innerHeight - mouthY - ARROW_FROM_BOTTOM
       el.style.right  = right  + 'px'
       el.style.bottom = bottom + 'px'
     }
