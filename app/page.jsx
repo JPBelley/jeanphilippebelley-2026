@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Button from './components/Button'
 import Section from './components/Section'
+import HeroBrutalist from './components/heroes/HeroBrutalist'
 import dynamic from 'next/dynamic'
-
 import SpeechBubble from './components/SpeechBubble'
 import HeadChat from './components/HeadChat'
 
@@ -13,6 +13,7 @@ const MemojiHead = dynamic(() => import('./components/MemojiHead'), {
   ssr: false,
   loading: () => null,
 })
+
 import experiments from './data/experiments'
 
 export default function Home() {
@@ -32,10 +33,6 @@ export default function Home() {
     expandedRef.current = next
     setExpanded(next)
 
-    // top/right stay 0 always — all positioning via transform (transformOrigin: top right)
-    // With that origin, to visually centre the element:
-    //   tx = CONTAINER * s / 2 - W / 2
-    //   ty = H / 2 - CONTAINER * s / 2
     const EXPAND_SCALE = 2.0
     if (next) {
       const tx = CONTAINER * EXPAND_SCALE / 2 - window.innerWidth  / 2
@@ -67,6 +64,40 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    const el = headContainerRef.current
+    function onScroll() {
+      if (!el) return
+      if (expandedRef.current) return
+      if (window.innerWidth < 768) {
+        el.style.width  = '100px'
+        el.style.height = '100px'
+        el.style.top    = '80px'
+        el.style.transform = 'none'
+        el.style.pointerEvents = 'auto'
+        el.style.cursor = 'pointer'
+        return
+      }
+      el.style.top    = '0px'
+      el.style.width  = `${CONTAINER}px`
+      el.style.height = `${CONTAINER}px`
+      const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
+      const scale = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
+      const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
+      const tx = (1 - progress) * -140
+      el.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
+      el.style.pointerEvents = 'auto'
+      el.style.cursor = 'pointer'
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
+
+  useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -82,44 +113,7 @@ export default function Home() {
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
     document.querySelectorAll('.skill-group').forEach(el => observer.observe(el))
 
-    // Big + centered in hero, shrinks to top-right on scroll
-    const CONTAINER = 580
-    const SCALE_MAX  = 1.6
-    const SCALE_MIN  = 0.52
-    function onScroll() {
-      if (!headContainerRef.current) return
-      if (expandedRef.current) return
-      // On mobile: 150×150 below the nav, fixed top-right, no scroll animation
-      if (window.innerWidth < 768) {
-        headContainerRef.current.style.width  = '100px'
-        headContainerRef.current.style.height = '100px'
-        headContainerRef.current.style.top    = '80px'
-        headContainerRef.current.style.transform = 'none'
-        headContainerRef.current.style.pointerEvents = 'auto'
-        headContainerRef.current.style.cursor = 'pointer'
-        return
-      }
-      headContainerRef.current.style.top    = '0px'
-      headContainerRef.current.style.width  = `${CONTAINER}px`
-      headContainerRef.current.style.height = `${CONTAINER}px`
-      const progress = Math.min(window.scrollY / (window.innerHeight * 0.6), 1)
-      const scale = SCALE_MAX - (SCALE_MAX - SCALE_MIN) * progress
-      const ty = (1 - progress) * (window.innerHeight / 2 - (CONTAINER * SCALE_MAX) / 2)
-      const tx = (1 - progress) * -140
-      headContainerRef.current.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(${scale})`
-      // Always clickable — zoom-in cursor in hero, zoom-out hint when small
-      headContainerRef.current.style.pointerEvents = 'auto'
-      headContainerRef.current.style.cursor = 'pointer'
-    }
-    onScroll() // set initial state
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-    }
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -143,63 +137,14 @@ export default function Home() {
         <MemojiHead size={2.8} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
       </div>
 
-      {/* Speech bubble — outside head container, tracks head via getBoundingClientRect */}
+      {/* Speech bubble */}
       {headLoaded && <SpeechBubble headRef={headContainerRef} />}
 
-      {/* Chat prompt — after head in DOM so z-[60] reliably sits on top */}
+      {/* Chat prompt */}
       <HeadChat visible={expanded} />
 
       {/* HERO */}
-      <Section
-        className="relative overflow-hidden"
-        id="home"
-        containerClassName="min-h-screen flex items-center max-[900px]:flex-col max-[900px]:justify-center"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_50%,rgba(124,92,255,0.08)_0%,transparent_70%),radial-gradient(ellipse_40%_40%_at_20%_80%,rgba(46,230,166,0.05)_0%,transparent_60%)]" />
-        <div className="hero-grid" />
-
-        <div className="relative z-[2] flex-1 max-w-[780px] max-[900px]:pt-32 max-[900px]:w-full">
-          <div className="hero-tag font-mono text-[12px] text-mint tracking-[0.15em] uppercase mb-7 flex items-center gap-[10px] opacity-0 animate-fade-up-1">
-            Always cooking something
-          </div>
-          <h1 className="text-[clamp(40px,7vw,86px)] font-bold leading-[1.05] tracking-[-0.03em] opacity-0 animate-fade-up-2">
-            Full Stack<br />
-            <span className="text-violet">Developer</span><br />
-            <span className="text-muted">&amp; UI Craftsman</span>
-          </h1>
-          <p className="font-mono text-[15px] text-muted leading-[1.7] mt-7 max-w-[500px] opacity-0 animate-fade-up-3">
-            I build fast, beautiful interfaces and robust backends.<br />
-            React, Vue, WordPress, Drupal, Webflow and whatever it takes.
-          </p>
-          <div className="flex max-[640px]:flex-col gap-4 mt-11 opacity-0 animate-fade-up-4">
-            <Button href="#projects" variant="primary">View How I Work</Button>
-            <Button href="#contact" variant="secondary">Get In Touch</Button>
-          </div>
-
-          {/* Tech tags — inline on mobile */}
-          <div className="hidden max-[900px]:flex flex-wrap gap-2 mt-10 opacity-0 animate-fade-up-5">
-            {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
-              <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] relative${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
-                {t}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tech tags — flex sibling on desktop */}
-        <div className="relative z-[2] flex flex-col gap-3 opacity-0 animate-fade-left max-[900px]:hidden ml-auto">
-          {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
-            <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] transition-all duration-200 relative hover:border-violet hover:text-violet${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
-              {t}
-            </div>
-          ))}
-        </div>
-
-        <div className="absolute bottom-10 left-[60px] max-[640px]:left-6 flex items-center gap-3 opacity-0 animate-fade-up-5 max-[900px]:hidden">
-          <div className="scroll-line w-px h-12 bg-gradient-to-b from-transparent to-ui relative overflow-hidden" />
-          <span className="font-mono text-[11px] text-muted tracking-[0.1em] [writing-mode:vertical-lr]">Scroll</span>
-        </div>
-      </Section>
+      <HeroBrutalist introComplete={true} />
 
       {/* ABOUT */}
       <Section className="bg-bg relative" id="about">
