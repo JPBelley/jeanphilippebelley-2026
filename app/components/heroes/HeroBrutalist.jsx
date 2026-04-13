@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Button from '../Button'
 
 const STACK = ['REACT', 'NEXT.JS', 'WEBGL', 'NODE.JS']
 
@@ -24,6 +23,7 @@ export default function HeroBrutalist({ introComplete }) {
       position:      'relative',
       overflow:      'hidden',
       padding:       'clamp(80px, 10vh, 140px) clamp(24px, 5vw, 72px) clamp(48px, 6vh, 80px)',
+      boxSizing:     'border-box',
     }}>
 
       {/* ── Glow blobs ── */}
@@ -47,48 +47,45 @@ export default function HeroBrutalist({ introComplete }) {
       }} />
 
       {/* ── Row 1: Frame + Headline ── */}
-      <div style={{
-        display:       'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap:           '0',
-        alignItems:    'flex-end',
-        marginBottom:  'clamp(32px, 5vh, 56px)',
-        opacity:       visible ? 1 : 0,
-        transform:     visible ? 'translateY(0)' : 'translateY(32px)',
-        transition:    'opacity 0.7s ease, transform 0.7s cubic-bezier(0.2,0,0,1)',
-      }}>
+      <div
+        className="flex flex-col-reverse items-start gap-6 sm:grid sm:grid-cols-2 sm:gap-0 sm:items-end"
+        style={{
+          marginBottom:  'clamp(32px, 5vh, 56px)',
+          opacity:       visible ? 1 : 0,
+          transform:     visible ? 'translateY(0)' : 'translateY(32px)',
+          transition:    'opacity 0.7s ease, transform 0.7s cubic-bezier(0.2,0,0,1)',
+        }}
+      >
 
         {/* Left: thick-bordered frame */}
         <div style={{
-          width:    'min(260px, 28vw)',
+          width:       'clamp(80px, 22vw, 260px)',
           aspectRatio: '1',
-          border:   '8px solid var(--color-violet)',
-          background: 'var(--color-bg2)',
-          position: 'relative',
-          display:  'flex',
-          alignItems:'center',
-          justifyContent:'center',
-          flexShrink: 0,
+          border:      '8px solid var(--color-violet)',
+          background:  'var(--color-bg2)',
+          position:    'relative',
+          display:     'flex',
+          alignItems:  'center',
+          justifyContent: 'center',
+          flexShrink:  0,
         }}>
-          {/* monogram */}
           <span style={{
             fontFamily:    'var(--font-head)',
             fontWeight:    900,
-            fontSize:      'clamp(48px, 7vw, 96px)',
+            fontSize:      'clamp(28px, 6vw, 96px)',
             color:         'var(--color-violet)',
             letterSpacing: '-0.06em',
             lineHeight:    1,
             userSelect:    'none',
           }}>JP</span>
-
         </div>
 
         {/* Right: massive headline */}
-        <div style={{ textAlign: 'right' }}>
+        <div className="sm:text-right">
           <h1 style={{
             fontFamily:    'var(--font-head)',
             fontWeight:    900,
-            fontSize:      'clamp(64px, 11vw, 160px)',
+            fontSize:      'clamp(52px, 11vw, 160px)',
             lineHeight:    0.85,
             letterSpacing: '-0.06em',
             textTransform: 'uppercase',
@@ -108,31 +105,29 @@ export default function HeroBrutalist({ introComplete }) {
         background: 'var(--color-ui)',
         opacity:    visible ? 1 : 0,
         transition: 'opacity 0.5s ease 0.2s',
+        flexShrink: 0,
       }} />
 
       {/* ── Row 2: Big subtext + Stack card + CTA ── */}
-      <div style={{
-        display:        'flex',
-        justifyContent: 'space-between',
-        alignItems:     'flex-start',
-        gap:            'clamp(32px, 5vw, 64px)',
-        marginTop:      'clamp(28px, 4vh, 48px)',
-        flexWrap:       'wrap',
-        opacity:        visible ? 1 : 0,
-        transform:      visible ? 'translateY(0)' : 'translateY(24px)',
-        transition:     'opacity 0.7s ease 0.25s, transform 0.7s cubic-bezier(0.2,0,0,1) 0.25s',
-      }}>
+      <div
+        className="flex flex-col gap-8 sm:flex-row sm:justify-between sm:items-start"
+        style={{
+          marginTop:  'clamp(28px, 4vh, 48px)',
+          opacity:    visible ? 1 : 0,
+          transform:  visible ? 'translateY(0)' : 'translateY(24px)',
+          transition: 'opacity 0.7s ease 0.25s, transform 0.7s cubic-bezier(0.2,0,0,1) 0.25s',
+        }}
+      >
 
         {/* Big manifesto text */}
         <p style={{
           fontFamily:    'var(--font-head)',
           fontWeight:    900,
-          fontSize:      'clamp(24px, 3.5vw, 48px)',
+          fontSize:      'clamp(20px, 3.5vw, 48px)',
           lineHeight:    1.05,
           letterSpacing: '-0.03em',
           textTransform: 'uppercase',
           color:         'var(--color-foreground)',
-          maxWidth:      560,
           margin:        0,
         }}>
           I build fast,<br />
@@ -142,7 +137,7 @@ export default function HeroBrutalist({ introComplete }) {
         </p>
 
         {/* Right column: stack + CTA */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 260 }}>
+        <div className="flex flex-col gap-4 w-full sm:w-auto sm:min-w-[260px] sm:max-w-[320px]">
 
           {/* Stack card */}
           <div style={{
@@ -180,19 +175,19 @@ export default function HeroBrutalist({ introComplete }) {
             </ul>
           </div>
 
-          {/* CTA — skews on hover */}
+          {/* CTA */}
           <a
             href="#projects"
             style={{
-              display:         'flex',
-              alignItems:      'center',
-              justifyContent:  'space-between',
-              gap:             16,
-              background:      'var(--color-violet)',
-              padding:         '20px 24px',
-              textDecoration:  'none',
-              cursor:          'pointer',
-              transition:      'transform 0.2s cubic-bezier(0.2,0,0,1)',
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'space-between',
+              gap:            16,
+              background:     'var(--color-violet)',
+              padding:        '20px 24px',
+              textDecoration: 'none',
+              cursor:         'pointer',
+              transition:     'transform 0.2s cubic-bezier(0.2,0,0,1)',
             }}
             onMouseEnter={e => e.currentTarget.style.transform = 'skewX(-6deg)'}
             onMouseLeave={e => e.currentTarget.style.transform = 'skewX(0deg)'}
