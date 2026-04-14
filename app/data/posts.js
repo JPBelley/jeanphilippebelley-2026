@@ -2,6 +2,24 @@
 // Set published: false to hide from listings without deleting the page.
 const posts = [
   {
+    slug:        'webgl-fragment-shaders',
+    title:       'Fragment Shaders: Programming Every Pixel',
+    date:        'April 13, 2026',
+    description: 'The fragment shader runs once per pixel and can produce anything from a solid color to complex animated patterns — no geometry required. UV coordinates, distance functions, shape composition, and ripple interference with interactive demos throughout.',
+    tags:        ['WebGL', 'GLSL', 'Creative Coding'],
+    readTime:    '9 min read',
+    published:   false,
+  },
+  {
+    slug:        'webgl-vertex-shaders',
+    title:       'Vertex Shaders: Giving the GPU Your Geometry',
+    date:        'April 13, 2026',
+    description: 'Going deeper into the vertex stage: varyings to pass interpolated data to the fragment shader, interleaved attribute buffers, deforming geometry on the GPU with sine waves, and drawing the same buffer many times with different uniforms.',
+    tags:        ['WebGL', 'GLSL', 'Creative Coding'],
+    readTime:    '9 min read',
+    published:   true,
+  },
+  {
     slug:        'webgl-triangle',
     title:       'Draw a Triangle: WebGL From Scratch',
     date:        'April 7, 2026',
