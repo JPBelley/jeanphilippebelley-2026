@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const experiments = [
   {
+    href:      '/experiments/particle-dissolve',
+    icon:      '◉',
+    title:     'Particle Dissolve',
+    desc:      '80,000 WebGL points form a solid disk that drips and disperses downward. Organic animation with cursor repulsion.',
+    tags:      ['WebGL', 'Particle System', 'Generative Art', 'GLSL', 'Interactive'],
+    accent:    '230,15,96',
+    published: false,
+  },
+  {
     href:      '/experiments/vertex-playground',
     icon:      '△',
     title:     'Vertex Playground',

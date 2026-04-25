@@ -3,57 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Section from '../../components/Section'
-
-// ─── Prose components ─────────────────────────────────────────────────────────
-
-function P({ children }) {
-  return <p className="text-[15px] leading-[1.85] text-foreground mb-5">{children}</p>
-}
-function H2({ id, children }) {
-  return <h2 id={id} className="text-[22px] font-bold mt-12 mb-4 scroll-mt-24">{children}</h2>
-}
-function IC({ children }) {
-  return (
-    <code className="font-mono text-[12.5px] text-violet bg-bg2 border border-ui rounded px-[5px] py-[2px]">
-      {children}
-    </code>
-  )
-}
-function Code({ children, lang }) {
-  return (
-    <div className="relative my-6 rounded-xl overflow-hidden border border-ui">
-      {lang && (
-        <div className="absolute top-0 right-0 px-3 py-2 text-[10px] font-mono text-muted uppercase tracking-wider">
-          {lang}
-        </div>
-      )}
-      <pre className="bg-bg2 p-5 overflow-x-auto text-[13px] font-mono leading-[1.75] text-foreground m-0 [tab-size:2]">
-        <code>{children}</code>
-      </pre>
-    </div>
-  )
-}
-function Callout({ children }) {
-  return (
-    <div className="my-6 px-5 py-4 rounded-xl border border-[rgba(107,78,230,0.3)] bg-[rgba(107,78,230,0.06)] text-[14px] leading-relaxed text-foreground">
-      {children}
-    </div>
-  )
-}
-function Divider() {
-  return <hr className="border-none border-t border-ui my-12" />
-}
-function DemoBox({ label, children }) {
-  return (
-    <div className="my-8 rounded-xl border border-ui bg-bg2 overflow-hidden">
-      <div className="px-5 py-2.5 border-b border-ui flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-violet shrink-0" />
-        <span className="text-[10px] font-mono text-muted uppercase tracking-widest">{label}</span>
-      </div>
-      <div className="p-6 flex flex-col gap-5">{children}</div>
-    </div>
-  )
-}
+import { P, H2, IC, Code, Callout, Divider, DemoBox } from '../../components/blog/prose'
 
 // ─── Shared WebGL helpers ─────────────────────────────────────────────────────
 
@@ -452,7 +402,7 @@ function RippleDemo() {
         onChange={v => { setWaves(v);  wavesRef.current  = v }} />
       <p className="text-[12px] font-mono text-muted">
         Two interference patterns: <IC>sin(dist × waves - time)</IC> from different origins.
-        No geometry, no textures — every pixel is computed from its UV coordinate and the time uniform.
+        No geometry, no textures: every pixel is computed from its UV coordinate and the time uniform.
       </p>
     </>
   )
@@ -492,7 +442,7 @@ export default function FragmentShaderPost() {
           what color each pixel of that geometry should be. That description undersells it.
         </P>
         <P>
-          Once you have a full-screen quad — two triangles covering the entire canvas — the
+          Once you have a full-screen quad (two triangles covering the entire canvas), the
           fragment shader is effectively a function that runs once per pixel and can produce
           anything: gradients, shapes, textures, animations, noise. No additional geometry
           required. This is how most of what you see on{' '}
@@ -560,12 +510,12 @@ void main() {
 }`}</Code>
 
         <P>
-          Switch to the grid mode below to see <IC>fract</IC> in action — it takes the
+          Switch to the grid mode below to see <IC>fract</IC> in action: it takes the
           fractional part of a number, which repeats the 0..1 range. Multiplying UV by a
           constant sets the grid density.
         </P>
 
-        <DemoBox label="Interactive · UV coordinate space — three views">
+        <DemoBox label="Interactive · UV coordinate space, three views">
           <UVDemo />
         </DemoBox>
 
@@ -614,10 +564,10 @@ void main() {
 
         <P>
           Drag the softness slider all the way down and the edge becomes a hard one-pixel line.
-          Increase it and you get a glow. The math is the same — only the transition width changes.
+          Increase it and you get a glow. The math is the same; only the transition width changes.
         </P>
 
-        <DemoBox label="Interactive · SDF ring — radius + edge softness">
+        <DemoBox label="Interactive · SDF ring, radius + edge softness">
           <SDFDemo />
         </DemoBox>
 
@@ -653,14 +603,14 @@ float shape = smoothstep(0.01, -0.01, united);`}</Code>
 
         <P>
           The values returned here are signed distance fields (SDFs): negative inside the shape,
-          positive outside, zero exactly on the edge. Signed distances compose perfectly — you
+          positive outside, zero exactly on the edge. Signed distances compose perfectly: you
           can add them, blend between them, and animate them smoothly. This is the foundation of
           2D shape rendering in fragment shaders.
         </P>
 
         <Callout>
           <strong>Signed vs unsigned distance.</strong> The circle demos above use
-          <IC>length(p)</IC> (unsigned — always positive) combined with <IC>smoothstep</IC>
+          <IC>length(p)</IC> (unsigned, always positive) combined with <IC>smoothstep</IC>
           directly. Signed distances subtract the radius: <IC>length(p) - r</IC>. Negative
           means inside, positive means outside, zero is the exact edge. The signed form is
           more composable for set operations.
@@ -677,7 +627,7 @@ float shape = smoothstep(0.01, -0.01, united);`}</Code>
         <P>
           A classic technique: use <IC>sin(distance - time)</IC> to create expanding rings.
           As time increases, the argument to sine shifts, which moves the peaks and troughs
-          outward — like dropping a stone in water.
+          outward, like dropping a stone in water.
         </P>
 
         <Code lang="glsl">{`precision mediump float;
@@ -703,10 +653,10 @@ void main() {
         <P>
           The demo below adds a second source at a slight offset, creating interference where the
           two wave systems overlap. The interference emerges from two independent <IC>sin</IC>
-          expressions being averaged — no special handling required.
+          expressions being averaged, no special handling required.
         </P>
 
-        <DemoBox label="Interactive · ripple interference — two wave sources, composited">
+        <DemoBox label="Interactive · ripple interference, two wave sources, composited">
           <RippleDemo />
         </DemoBox>
 
@@ -721,7 +671,7 @@ void main() {
         <H2 id="what-comes-next">What comes next</H2>
         <P>
           Fragment shaders are where WebGL gets generative. The vertex shader handles where things
-          are. The fragment shader handles what they look like — and with only UV coordinates
+          are. The fragment shader handles what they look like, and with only UV coordinates
           and time as inputs, the range of possible outputs is enormous.
         </P>
 

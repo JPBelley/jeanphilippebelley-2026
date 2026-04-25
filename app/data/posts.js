@@ -4,11 +4,11 @@ const posts = [
   {
     slug:        'webgl-fragment-shaders',
     title:       'Fragment Shaders: Programming Every Pixel',
-    date:        'April 13, 2026',
-    description: 'The fragment shader runs once per pixel and can produce anything from a solid color to complex animated patterns — no geometry required. UV coordinates, distance functions, shape composition, and ripple interference with interactive demos throughout.',
+    date:        'April 24, 2026',
+    description: 'The fragment shader runs once per pixel and can produce anything from a solid color to complex animated patterns, no geometry required. UV coordinates, distance functions, shape composition, and ripple interference with interactive demos throughout.',
     tags:        ['WebGL', 'GLSL', 'Creative Coding'],
     readTime:    '9 min read',
-    published:   false,
+    published:   true,
   },
   {
     slug:        'webgl-vertex-shaders',

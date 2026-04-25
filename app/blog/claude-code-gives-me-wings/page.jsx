@@ -2,39 +2,7 @@
 
 import Link from 'next/link'
 import Section from '../../components/Section'
-
-// ─── Prose components ─────────────────────────────────────────────────────────
-
-function P({ children }) {
-  return <p className="text-[15px] leading-[1.85] text-foreground mb-5">{children}</p>
-}
-function H2({ id, children }) {
-  return <h2 id={id} className="text-[22px] font-bold mt-12 mb-4 scroll-mt-24">{children}</h2>
-}
-function IC({ children }) {
-  return (
-    <code className="font-mono text-[12.5px] text-violet bg-bg2 border border-ui rounded px-[5px] py-[2px]">
-      {children}
-    </code>
-  )
-}
-function Callout({ children }) {
-  return (
-    <div className="my-6 px-5 py-4 rounded-xl border border-[rgba(107,78,230,0.3)] bg-[rgba(107,78,230,0.06)] text-[14px] leading-relaxed text-foreground">
-      {children}
-    </div>
-  )
-}
-function MintCallout({ children }) {
-  return (
-    <div className="my-6 px-5 py-4 rounded-xl border border-[rgba(46,230,166,0.25)] bg-[rgba(46,230,166,0.04)] text-[14px] leading-relaxed text-foreground">
-      {children}
-    </div>
-  )
-}
-function Divider() {
-  return <hr className="border-none border-t border-ui my-12" />
-}
+import { P, H2, Callout, MintCallout, Divider } from '../../components/blog/prose'
 
 // ─── The Post ─────────────────────────────────────────────────────────────────
 

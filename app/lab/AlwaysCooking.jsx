@@ -5,34 +5,60 @@ import { useEffect, useRef } from 'react'
 export default function AlwaysCooking() {
   const canvasRef = useRef(null)
 
-  // Generate a grayscale marble-like texture via canvas noise
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
-    const W = 800
-    const H = 600
-    canvas.width  = W
-    canvas.height = H
+    let raf
+    let t = 0
 
-    // Layered noise — approximates a marble texture
-    const img = ctx.createImageData(W, H)
-    for (let i = 0; i < W * H; i++) {
-      const x = i % W
-      const y = Math.floor(i / W)
-      // Multiple sine waves at different angles = marble-ish streaks
-      const v =
-        Math.sin(x * 0.012 + y * 0.004 + Math.sin(x * 0.006) * 6) * 0.5 +
-        Math.sin(y * 0.015 + x * 0.003 + Math.sin(y * 0.008) * 5) * 0.3 +
-        Math.sin((x + y) * 0.009 + Math.sin(x * 0.004 - y * 0.006) * 8) * 0.2
-      const b = Math.floor(((v + 1) / 2) * 255 * 0.55) // dark, high contrast
-      const idx = i * 4
-      img.data[idx]     = b
-      img.data[idx + 1] = b
-      img.data[idx + 2] = b
-      img.data[idx + 3] = 255
+    function resize() {
+      canvas.width  = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
     }
-    ctx.putImageData(img, 0, 0)
+    resize()
+    window.addEventListener('resize', resize)
+
+    function draw() {
+      const W = canvas.width
+      const H = canvas.height
+      ctx.clearRect(0, 0, W, H)
+
+      const LINE_COUNT = 22
+
+      for (let i = 0; i < LINE_COUNT; i++) {
+        const yBase   = (H / LINE_COUNT) * i + H / LINE_COUNT / 2
+        // Lines near the center pulse slightly brighter
+        const center  = Math.abs(i / LINE_COUNT - 0.5) * 2        // 0 at center, 1 at edges
+        const opacity = 0.04 + (1 - center) * 0.10 + Math.sin(i * 0.7 + t * 0.4) * 0.03
+
+        ctx.beginPath()
+        ctx.strokeStyle = i % 5 === 0
+          ? `rgba(46, 230, 166, ${opacity * 0.7})`   // occasional mint accent line
+          : `rgba(124, 92, 255, ${opacity})`          // violet for the rest
+        ctx.lineWidth = i % 5 === 0 ? 1.5 : 1
+
+        for (let x = 0; x <= W; x += 3) {
+          const y = yBase
+            + Math.sin(x * 0.007  + t        + i * 0.55) * 20
+            + Math.sin(x * 0.014  - t * 0.6  + i * 0.3)  * 10
+            + Math.sin(x * 0.003  + t * 0.25 + i * 0.9)  * 8
+
+          if (x === 0) ctx.moveTo(x, y)
+          else         ctx.lineTo(x, y)
+        }
+        ctx.stroke()
+      }
+
+      t  += 0.006
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', resize)
+    }
   }, [])
 
   return (
@@ -43,38 +69,26 @@ export default function AlwaysCooking() {
       alignItems:     'center',
       justifyContent: 'center',
       overflow:       'hidden',
+      background:     'var(--color-bg)',
     }}>
 
-      {/* Marble texture — grayscale, low opacity */}
+      {/* Animated contour lines */}
       <canvas
         ref={canvasRef}
         style={{
-          position:   'absolute',
-          inset:      0,
-          width:      '100%',
-          height:     '100%',
-          objectFit:  'cover',
-          opacity:    0.28,
-          filter:     'grayscale(1)',
+          position: 'absolute',
+          inset:    0,
+          width:    '100%',
+          height:   '100%',
         }}
       />
 
-      {/* Violet overlay — mix-blend-overlay */}
+      {/* Soft vignette so edges fade into the page */}
       <div style={{
-        position:   'absolute',
-        inset:      0,
-        background: 'var(--color-violet)',
-        opacity:    0.10,
-        mixBlendMode:'overlay',
-        pointerEvents:'none',
-      }} />
-
-      {/* Dark vignette edges */}
-      <div style={{
-        position:     'absolute',
-        inset:        0,
-        background:   'radial-gradient(ellipse 90% 80% at 50% 50%, transparent 30%, rgba(15,17,21,0.75) 100%)',
-        pointerEvents:'none',
+        position:      'absolute',
+        inset:         0,
+        background:    'radial-gradient(ellipse 85% 70% at 50% 50%, transparent 20%, var(--color-bg) 100%)',
+        pointerEvents: 'none',
       }} />
 
       {/* Text */}
