@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const posts = [
   {
+    slug:        'spring-physics-text-animation',
+    title:       'Spring Physics for Text Animation',
+    date:        'May 3, 2026',
+    description: 'Three lines of math that make text feel alive: how a spring engine works, what stiffness and damping actually do, and how to wire it to letter-by-letter DOM animation with interactive demos for each concept.',
+    tags:        ['Canvas', 'Animation', 'Creative Coding'],
+    readTime:    '7 min read',
+    published:   true,
+  },
+  {
     slug:        'webgl-fragment-shaders',
     title:       'Fragment Shaders: Programming Every Pixel',
     date:        'April 24, 2026',
