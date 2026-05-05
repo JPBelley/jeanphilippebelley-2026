@@ -573,16 +573,23 @@ function anim_14() {
 function anim_15() {
   const chars = split(TEXT)
   const st = chars.map((_, i) => ({
-    pos: (i % 2 === 0 ? 1 : -1) * (25 + Math.random() * 25),
+    pos: (i % 2 === 0 ? 1 : -1) * (14 + i * 1.8),
     vel: 0,
   }))
-  chars.forEach(ch => { ch.style.transformOrigin = '50% 0%' })
-  loop(() => chars.every((ch, i) => {
-    // Loose spring = pendulum-like damping (low k, high d)
-    const done = spring(st[i], 0, 0.025, 0.94)
-    ch.style.transform = `rotateZ(${st[i].pos}deg)`
-    return done
-  }))
+  // Pivot above the character — feels like hanging from a string
+  chars.forEach(ch => { ch.style.transformOrigin = '50% -16px' })
+  let f = 0
+  loop(() => {
+    f++
+    let allDone = true
+    chars.forEach((ch, i) => {
+      if (f < i * 6) { allDone = false; return }
+      const done = spring(st[i], 0, 0.016, 0.986)
+      ch.style.transform = `rotateZ(${st[i].pos}deg)`
+      if (!done) allDone = false
+    })
+    return allDone
+  })
 }
 
 
