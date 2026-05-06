@@ -200,7 +200,7 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-3 gap-[2px] max-[900px]:grid-cols-1">
           {[
-            { icon: '⚛️', title: 'Frontend Frameworks', skills: [['React',95],['Vue.js',90],['Next.js',85],['TypeScript',88]], delay: '' },
+            { icon: '⚛️', title: 'Frontend Frameworks', skills: [['React',95],['Gatsby',90],['Next.js',85],['TypeScript',85]], delay: '' },
             { icon: '🧱', title: 'CMS Platforms',       skills: [['WordPress',95],['Drupal',85],['Webflow',88],['Headless CMS',80]], delay: 'reveal-delay-1' },
             { icon: '⚙️', title: 'Backend & Tooling',   skills: [['Node.js',82],['REST / GraphQL',85],['PHP',75],['Git / CI/CD',90]], delay: 'reveal-delay-2' },
           ].map(group => (

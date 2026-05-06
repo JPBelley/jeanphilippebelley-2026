@@ -34,7 +34,7 @@ export default function HeroOriginal() {
         </div>
 
         <div className="hidden max-[900px]:flex flex-wrap gap-2 mt-10 opacity-0 animate-fade-up-5">
-          {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
+          {['React','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
             <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] relative${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
               {t}
             </div>
@@ -43,7 +43,7 @@ export default function HeroOriginal() {
       </div>
 
       <div className="relative z-[2] flex flex-col gap-3 opacity-0 animate-fade-left max-[900px]:hidden ml-auto">
-        {['React','Vue.js','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
+        {['React','WordPress','Drupal','Webflow','Node.js','PHP'].map((t, i) => (
           <div key={t} className={`tech-tag font-mono text-[11px] text-muted px-[14px] py-2 bg-bg2 border border-ui rounded-[4px] tracking-[0.08em] transition-all duration-200 relative hover:border-violet hover:text-violet${i === 0 ? ' !border-violet !text-violet !bg-[rgba(124,92,255,0.08)]' : ''}`}>
             {t}
           </div>
