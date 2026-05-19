@@ -30,18 +30,21 @@ export default function HeadChat({ visible }) {
   const [input,     setInput]     = useState('')
   const [messages,  setMessages]  = useState([])
   const [streaming, setStreaming] = useState(false)
-  const inputRef  = useRef(null)
-  const bottomRef = useRef(null)
-  const abortRef  = useRef(null)
+  const inputRef     = useRef(null)
+  const bottomRef    = useRef(null)
+  const abortRef     = useRef(null)
+  const sessionIdRef = useRef(null)
 
   useEffect(() => { setMounted(true) }, [])
 
   // Focus when chat opens; reset when it closes
   useEffect(() => {
     if (visible) {
+      sessionIdRef.current = crypto.randomUUID()
       setTimeout(() => inputRef.current?.focus(), 350)
     } else {
       abortRef.current?.abort()
+      sessionIdRef.current = null
       setInput('')
       setMessages([])
       setStreaming(false)
@@ -71,7 +74,10 @@ export default function HeadChat({ visible }) {
       const endpoint = 'https://claude-api.belleyjeanphilippe.workers.dev/'
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-Id': sessionIdRef.current,
+        },
         body: JSON.stringify({ messages: next }),
         signal: abortRef.current.signal,
       })
