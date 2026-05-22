@@ -2,6 +2,15 @@
 // Set published: false to hide from listings without deleting the page.
 const posts = [
   {
+    slug:        'timeline-text-animation',
+    title:       'A Minimal Timeline for Looping Text Animation',
+    date:        'May 18, 2026',
+    description: 'One function replaces all the scattered frame-counter guards in a looping animation. Four numbers (enter, hold, exit, pause) describe a full cycle. Map the resulting 0–1 progress value to any CSS property, add a stagger offset per letter, and the word animates itself.',
+    tags:        ['Canvas', 'Animation', 'Creative Coding'],
+    readTime:    '6 min read',
+    published:   true,
+  },
+  {
     slug:        'spring-physics-text-animation',
     title:       'Spring Physics for Text Animation',
     date:        'May 3, 2026',
