@@ -271,22 +271,22 @@ const lerp = (a, b, t) => a + (b - a) * t
 //        away forward to +90°, as if the word is a sequence of cards being
 //        turned over one by one.
 // tags:  text-animation, 3d, rotateX, flip, perspective
-function anim_05() {
-  const chars = split()
-  const STAGGER = 8, ENTER = 40, HOLD = 52, EXIT = 32, PAUSE = 34
-  let f = 0
-  loop(() => {
-    f++
-    chars.forEach((ch, i) => {
-      const p = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE)
-      // p: 0→1 (enter from -90°) then 1→0 (exit toward +90°)
-      // Map p to angle: 0→-90° at rest, 1→0° at target, exit mirrors entry
-      const angle = (1 - p) * -90
-      ch.style.opacity   = p < 0.15 ? p / 0.15 : p > 0.85 ? (1 - p) / 0.15 : 1
-      ch.style.transform = `perspective(600px) rotateX(${angle}deg)`
-    })
-  })
-}
+// function anim_05() {
+//   const chars = split()
+//   const STAGGER = 8, ENTER = 40, HOLD = 52, EXIT = 32, PAUSE = 34
+//   let f = 0
+//   loop(() => {
+//     f++
+//     chars.forEach((ch, i) => {
+//       const p = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE)
+//       // p: 0→1 (enter from -90°) then 1→0 (exit toward +90°)
+//       // Map p to angle: 0→-90° at rest, 1→0° at target, exit mirrors entry
+//       const angle = (1 - p) * -90
+//       ch.style.opacity   = p < 0.15 ? p / 0.15 : p > 0.85 ? (1 - p) / 0.15 : 1
+//       ch.style.transform = `perspective(600px) rotateX(${angle}deg)`
+//     })
+//   })
+// }
 
 
 // ── 06  Weight Bloom ──────────────────────────────────────────────────────────
