@@ -13,6 +13,7 @@ const SIZE               = 1
 const HALF               = ((GRID - 1) * CELL) / 2
 const INTRO_DURATION     = 3.2
 const INTRO_DELAY        = 0.3
+const INTRO_START        = 0.35  // initial scatter (0 = assembled, 1 = fully exploded)
 const REPULSION_RADIUS   = 2.2
 const REPULSION_STRENGTH = 0.7
 
@@ -33,8 +34,8 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
   const { camera }   = useThree()
   const groupRef     = useRef(null)
   const meshRefs     = useRef([])
-  const smoothScroll = useRef(1.0)
-  const introContrib = useRef(1.0)
+  const smoothScroll = useRef(INTRO_START)
+  const introContrib = useRef(INTRO_START)
   const startTime    = useRef(null)
   const firedRef     = useRef(false)
 
@@ -63,7 +64,7 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
             (Math.random() - 0.5) * 2,
             (Math.random() - 0.5) * 2,
             (Math.random() - 0.5) * 2,
-          ).normalize().multiplyScalar(4.5 + Math.random() * 5)
+          ).normalize().multiplyScalar(18 + Math.random() * 14)
 
           const rotAxis = new THREE.Vector3(
             Math.random() - 0.5,
@@ -94,7 +95,7 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
 
     if (elapsed > INTRO_DELAY) {
       const introT = Math.min(1, (elapsed - INTRO_DELAY) / INTRO_DURATION)
-      introContrib.current = Math.pow(1 - introT, 2.5)
+      introContrib.current = INTRO_START * Math.pow(1 - introT, 2.5)
     }
 
     const effectiveScroll = Math.min(1, scrollRef.current + introContrib.current)

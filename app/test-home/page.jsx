@@ -181,7 +181,7 @@ export default function TestHome() {
         overflow:      'hidden',
         padding:       'clamp(80px, 10vh, 140px) clamp(24px, 5vw, 72px) clamp(48px, 6vh, 80px)',
         boxSizing:     'border-box',
-        background:    '#09090b',
+        background:    'var(--color-bg)',
       }}>
         <HeroCubeExplosion onAssembled={() => setHeroReady(true)} scrollBuffer={BUFFER_HEIGHT} />
 
