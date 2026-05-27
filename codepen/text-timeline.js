@@ -203,19 +203,19 @@ const lerp = (a, b, t) => a + (b - a) * t
 //        place. After the hold they contract back to nothing. The stagger
 //        creates a blooming wave from left to right.
 // tags:  text-animation, scale, overshoot, bloom, loop
-function anim_02() {
-  const chars = split()
-  const STAGGER = 9, ENTER = 42, HOLD = 52, EXIT = 30, PAUSE = 32
-  let f = 0
-  loop(() => {
-    f++
-    chars.forEach((ch, i) => {
-      const p = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE, ease.outBack, ease.in)
-      ch.style.opacity   = Math.min(1, p * 2.5)   // fade in quickly at start of scale
-      ch.style.transform = `scale(${Math.max(0, p)})`
-    })
-  })
-}
+// function anim_02() {
+//   const chars = split()
+//   const STAGGER = 9, ENTER = 42, HOLD = 52, EXIT = 30, PAUSE = 32
+//   let f = 0
+//   loop(() => {
+//     f++
+//     chars.forEach((ch, i) => {
+//       const p = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE, ease.outBack, ease.in)
+//       ch.style.opacity   = Math.min(1, p * 2.5)   // fade in quickly at start of scale
+//       ch.style.transform = `scale(${Math.max(0, p)})`
+//     })
+//   })
+// }
 
 
 // ── 03  Tilt Wave ─────────────────────────────────────────────────────────────
@@ -225,20 +225,20 @@ function anim_02() {
 //        visible wave — like a row of dominoes slowly standing up and lying
 //        back down in sequence.
 // tags:  text-animation, rotate, wave, stagger, loop
-function anim_03() {
-  const chars = split()
-  const STAGGER = 8, ENTER = 38, HOLD = 50, EXIT = 32, PAUSE = 36
-  let f = 0
-  loop(() => {
-    f++
-    chars.forEach((ch, i) => {
-      ch.style.transformOrigin = '50% 100%'
-      const p = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE)
-      ch.style.opacity   = 0.15 + p * 0.85
-      ch.style.transform = `rotateZ(${(1 - p) * 15}deg)`
-    })
-  })
-}
+// function anim_03() {
+  // const chars = split()
+  // const STAGGER = 18, ENTER = 88, HOLD = 100, EXIT = 82, PAUSE = 56
+  // let f = 0
+  // loop(() => {
+  //   f++
+  //   chars.forEach((ch, i) => {
+  //     ch.style.transformOrigin = '50% 100%'
+  //     const p = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE)
+  //     ch.style.opacity   = 0.15 + p * 0.85
+  //     ch.style.transform = `rotateZ(${(1 - p) * 15}deg)`
+  //   })
+  // })
+// }
 
 
 // ── 04  Blur Emerge ───────────────────────────────────────────────────────────
@@ -248,20 +248,20 @@ function anim_03() {
 //        focus. The staggered timing means the word sharpens and blurs like
 //        a slow wave of focus sweeping across the text.
 // tags:  text-animation, blur, filter, emerge, loop
-function anim_04() {
-  const chars = split()
-  const STAGGER = 9, ENTER = 44, HOLD = 55, EXIT = 34, PAUSE = 34
-  let f = 0
-  loop(() => {
-    f++
-    chars.forEach((ch, i) => {
-      const p  = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE)
-      const bl = (1 - p) * 12
-      ch.style.opacity = p
-      ch.style.filter  = `blur(${bl.toFixed(2)}px)`
-    })
-  })
-}
+// function anim_04() {
+//   const chars = split()
+//   const STAGGER = 9, ENTER = 44, HOLD = 55, EXIT = 34, PAUSE = 34
+//   let f = 0
+//   loop(() => {
+//     f++
+//     chars.forEach((ch, i) => {
+//       const p  = cyc(f, i * STAGGER, ENTER, HOLD, EXIT, PAUSE)
+//       const bl = (1 - p) * 12
+//       ch.style.opacity = p
+//       ch.style.filter  = `blur(${bl.toFixed(2)}px)`
+//     })
+//   })
+// }
 
 
 // ── 05  Flip Through ──────────────────────────────────────────────────────────

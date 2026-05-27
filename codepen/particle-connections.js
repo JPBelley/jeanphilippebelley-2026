@@ -167,89 +167,89 @@ function drawLines(P, maxDist, maxLinks, colorFn) {
 //       living constellation map. Each particle breathes with a subtle sine
 //       oscillation while violet lines trace the network between near neighbors.
 // tags: constellation, spring-physics, connections, breathing, particle-text
-function anim_01() {
-  const pts = sampleText(WORD, 6)
-  const P = pts.map((o, i) => ({
-    x: Math.random() * cv.width,
-    y: Math.random() * cv.height,
-    vx: 0, vy: 0,
-    ox: o.x, oy: o.y,
-    phase: i * 0.3,
-  }))
-  let t = 0
-  loop(() => {
-    t += 0.016
-    ctx.fillStyle = 'rgba(8,10,15,0.18)'
-    ctx.fillRect(0, 0, cv.width, cv.height)
-    P.forEach(p => {
-      const breathe = Math.sin(t * 0.8 + p.phase) * 4
-      const dx = p.ox - cv.width / 2, dy = p.oy - cv.height / 2
-      const dist = Math.hypot(dx, dy) || 1
-      spring2D(p, p.ox + (dx / dist) * breathe, p.oy + (dy / dist) * breathe, 0.055, 0.80)
-    })
-    drawLines(P, 55, 4, null)
-    ctx.fillStyle = 'rgba(124,92,255,0.82)'
-    P.forEach(p => {
-      ctx.beginPath()
-      ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2)
-      ctx.fill()
-    })
-  })
-}
+// function anim_01() {
+//   const pts = sampleText(WORD, 6)
+//   const P = pts.map((o, i) => ({
+//     x: Math.random() * cv.width,
+//     y: Math.random() * cv.height,
+//     vx: 0, vy: 0,
+//     ox: o.x, oy: o.y,
+//     phase: i * 0.3,
+//   }))
+//   let t = 0
+//   loop(() => {
+//     t += 0.016
+//     ctx.fillStyle = 'rgba(8,10,15,0.18)'
+//     ctx.fillRect(0, 0, cv.width, cv.height)
+//     P.forEach(p => {
+//       const breathe = Math.sin(t * 0.8 + p.phase) * 4
+//       const dx = p.ox - cv.width / 2, dy = p.oy - cv.height / 2
+//       const dist = Math.hypot(dx, dy) || 1
+//       spring2D(p, p.ox + (dx / dist) * breathe, p.oy + (dy / dist) * breathe, 0.055, 0.80)
+//     })
+//     drawLines(P, 55, 4, null)
+//     ctx.fillStyle = 'rgba(124,92,255,0.82)'
+//     P.forEach(p => {
+//       ctx.beginPath()
+//       ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2)
+//       ctx.fill()
+//     })
+//   })
+// }
 
-// ── 02  Web Build ─────────────────────────────────────────────────────────────
-// title: Web Build
-// desc: Particles scatter then assemble into letter positions. Connections
-//       appear only between particles that have already arrived, fading in as
-//       each endpoint settles — the web knits itself together progressively.
-// tags: assembly, connections, spring-physics, reveal, particle-text
-function anim_02() {
-  const pts = sampleText(WORD, 6)
-  const P = pts.map(o => ({
-    x: Math.random() * cv.width,
-    y: Math.random() * cv.height,
-    vx: 0, vy: 0,
-    ox: o.x, oy: o.y,
-    arrived: false,
-  }))
-  loop(() => {
-    ctx.fillStyle = 'rgba(8,10,15,0.20)'
-    ctx.fillRect(0, 0, cv.width, cv.height)
-    P.forEach(p => {
-      spring2D(p, p.ox, p.oy, 0.055, 0.80)
-      p.arrived = Math.hypot(p.x - p.ox, p.y - p.oy) < 8
-    })
-    // Draw connections only between arrived particles
-    ctx.lineWidth = 0.6
-    for (let i = 0; i < P.length; i++) {
-      if (!P[i].arrived) continue
-      let links = 0
-      for (let j = i + 1; j < P.length; j++) {
-        if (links >= 4) break
-        if (!P[j].arrived) continue
-        const dx = P[i].x - P[j].x
-        const dy = P[i].y - P[j].y
-        const dist = Math.hypot(dx, dy)
-        if (dist < 55) {
-          links++
-          const alpha = (1 - dist / 55) * 0.45
-          ctx.strokeStyle = `rgba(124,92,255,${alpha})`
-          ctx.beginPath()
-          ctx.moveTo(P[i].x, P[i].y)
-          ctx.lineTo(P[j].x, P[j].y)
-          ctx.stroke()
-        }
-      }
-    }
-    P.forEach(p => {
-      const alpha = p.arrived ? 0.85 : 0.3 + Math.random() * 0.2
-      ctx.fillStyle = `rgba(124,92,255,${alpha})`
-      ctx.beginPath()
-      ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2)
-      ctx.fill()
-    })
-  })
-}
+// // ── 02  Web Build ─────────────────────────────────────────────────────────────
+// // title: Web Build
+// // desc: Particles scatter then assemble into letter positions. Connections
+// //       appear only between particles that have already arrived, fading in as
+// //       each endpoint settles — the web knits itself together progressively.
+// // tags: assembly, connections, spring-physics, reveal, particle-text
+// function anim_02() {
+//   const pts = sampleText(WORD, 6)
+//   const P = pts.map(o => ({
+//     x: Math.random() * cv.width,
+//     y: Math.random() * cv.height,
+//     vx: 0, vy: 0,
+//     ox: o.x, oy: o.y,
+//     arrived: false,
+//   }))
+//   loop(() => {
+//     ctx.fillStyle = 'rgba(8,10,15,0.20)'
+//     ctx.fillRect(0, 0, cv.width, cv.height)
+//     P.forEach(p => {
+//       spring2D(p, p.ox, p.oy, 0.055, 0.80)
+//       p.arrived = Math.hypot(p.x - p.ox, p.y - p.oy) < 8
+//     })
+//     // Draw connections only between arrived particles
+//     ctx.lineWidth = 0.6
+//     for (let i = 0; i < P.length; i++) {
+//       if (!P[i].arrived) continue
+//       let links = 0
+//       for (let j = i + 1; j < P.length; j++) {
+//         if (links >= 4) break
+//         if (!P[j].arrived) continue
+//         const dx = P[i].x - P[j].x
+//         const dy = P[i].y - P[j].y
+//         const dist = Math.hypot(dx, dy)
+//         if (dist < 55) {
+//           links++
+//           const alpha = (1 - dist / 55) * 0.45
+//           ctx.strokeStyle = `rgba(124,92,255,${alpha})`
+//           ctx.beginPath()
+//           ctx.moveTo(P[i].x, P[i].y)
+//           ctx.lineTo(P[j].x, P[j].y)
+//           ctx.stroke()
+//         }
+//       }
+//     }
+//     P.forEach(p => {
+//       const alpha = p.arrived ? 0.85 : 0.3 + Math.random() * 0.2
+//       ctx.fillStyle = `rgba(124,92,255,${alpha})`
+//       ctx.beginPath()
+//       ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2)
+//       ctx.fill()
+//     })
+//   })
+// }
 
 // ── 03  Pulse Network ─────────────────────────────────────────────────────────
 // title: Pulse Network
