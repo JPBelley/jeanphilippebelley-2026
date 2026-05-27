@@ -1,28 +1,40 @@
 'use client'
 
-import { useRef, useMemo, useEffect, useState } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
 import * as THREE from 'three'
-import { createCinematicMaterial, applyUV2 } from './cinematicMaterial'
 
 const GRID               = 4
 const CELL               = 1
 const SIZE               = 1
 const HALF               = ((GRID - 1) * CELL) / 2
-const INTRO_DURATION     = 3.2   // total seconds for explode → hold → assemble
-const INTRO_DELAY        = 0.3   // brief pause before the explosion fires
+const INTRO_DURATION     = 3.2
+const INTRO_DELAY        = 0.3
 const REPULSION_RADIUS   = 2.2
 const REPULSION_STRENGTH = 0.7
+
+const MATERIAL_PARAMS = {
+  roughness:          0.41,
+  metalness:          0.00,
+  clearcoat:          0.98,
+  clearcoatRoughness: 0.12,
+  envMapIntensity:    1.35,
+  transmission:       0.81,
+  ior:                2.25,
+  reflectivity:       0.75,
+  sheen:              1.00,
+  iridescence:        0.51,
+}
 
 function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
   const { camera }   = useThree()
   const groupRef     = useRef(null)
   const meshRefs     = useRef([])
-  const smoothScroll = useRef(1.0)   // start scattered
-  const introContrib = useRef(1.0)   // decays 1 → 0, driving assembly
+  const smoothScroll = useRef(1.0)
+  const introContrib = useRef(1.0)
   const startTime    = useRef(null)
   const firedRef     = useRef(false)
 
@@ -32,21 +44,10 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
   const _mw   = useMemo(() => new THREE.Vector3(), [])
   const _diff = useMemo(() => new THREE.Vector3(), [])
 
-  // Start with a bare material so the canvas renders immediately,
-  // then swap in the full cinematic material (3× procedural textures)
-  // after the WebGL context is stable.
-  const [material, setMaterial] = useState(() => new THREE.MeshPhysicalMaterial({
-    color:              new THREE.Color('#121212'),
-    roughness:          0.88,
-    metalness:          0.12,
-    clearcoat:          0.12,
-    clearcoatRoughness: 0.90,
-  }))
-
-  useEffect(() => {
-    const tid = setTimeout(() => setMaterial(createCinematicMaterial()), 150)
-    return () => clearTimeout(tid)
-  }, [])
+  const material = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#121212'),
+    ...MATERIAL_PARAMS,
+  }), [])
 
   const data = useMemo(() => {
     const result = []
@@ -80,7 +81,6 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
         }
       }
     }
-
     repulsions.current = result.map(() => new THREE.Vector3())
     return result
   }, [])
@@ -94,7 +94,6 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
 
     if (elapsed > INTRO_DELAY) {
       const introT = Math.min(1, (elapsed - INTRO_DELAY) / INTRO_DURATION)
-      // One-way decay: scattered → assembled
       introContrib.current = Math.pow(1 - introT, 2.5)
     }
 
@@ -132,7 +131,6 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
       if (repulsionWeight > 0.05) {
         _diff.set(px - _mw.x, py - _mw.y, pz - _mw.z)
         const dist = _diff.length()
-
         if (dist < REPULSION_RADIUS) {
           const strength = (1 - dist / REPULSION_RADIUS) * REPULSION_STRENGTH * repulsionWeight
           rep.lerp(_diff.normalize().multiplyScalar(strength), 0.12)
@@ -158,7 +156,7 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
       {data.map(({ base }, i) => (
         <mesh
           key={i}
-          ref={(el) => { meshRefs.current[i] = el; if (el) applyUV2(el.geometry) }}
+          ref={(el) => { meshRefs.current[i] = el }}
           position={base}
           castShadow
           receiveShadow
@@ -172,12 +170,11 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
 }
 
 export default function HeroCubeExplosion({ onAssembled, scrollBuffer = 600 }) {
-  const scrollRef = useRef(0)   // 0 = assembled, 1 = fully exploded
+  const scrollRef = useRef(0)
   const mouseRef  = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
     const onScroll = () => {
-      // Scroll down → explode
       scrollRef.current = Math.min(1, window.scrollY / scrollBuffer)
     }
     const onMouseMove = (e) => {
