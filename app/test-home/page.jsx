@@ -8,6 +8,7 @@ import SpeechBubble from '../components/SpeechBubble'
 import HeadChat from '../components/HeadChat'
 import AlwaysCooking from '../lab/AlwaysCooking'
 import ExperimentSection from '../components/sections/ExperimentSection'
+import RevealText from '../components/RevealText'
 
 const MemojiHead = dynamic(() => import('../components/MemojiHead'), {
   ssr: false,
@@ -22,13 +23,15 @@ const HeroCubeExplosion = dynamic(() => import('../components/heroes/HeroCubeExp
 export default function TestHome() {
   const headContainerRef = useRef(null)
   const expandedRef      = useRef(false)
-  const [headLoaded,   setHeadLoaded]   = useState(false)
-  const [expanded,     setExpanded]     = useState(false)
-  const [heroReady,    setHeroReady]    = useState(false)
+  const [headLoaded,     setHeadLoaded]     = useState(false)
+  const [expanded,       setExpanded]       = useState(false)
+  const [heroReady,        setHeroReady]        = useState(false)
+  const [headlineReady,    setHeadlineReady]    = useState(false)
+  const [hoveredPrinciple, setHoveredPrinciple] = useState(null)
   const BUFFER_HEIGHT = 600
 
   const CONTAINER = 300
-  const SCALE_MAX = 1.15
+  const SCALE_MAX = 0.8
   const SCALE_MIN = 0.37
 
   function handleHeadClick() {
@@ -74,6 +77,18 @@ export default function TestHome() {
     // Prevent browser scroll restoration from starting mid-hero
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
+  }, [])
+
+  // Fallback: if user scrolls past the sticky zone before the cube assembles, unlock everything
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY >= BUFFER_HEIGHT) {
+        setHeadlineReady(true)
+        setHeroReady(true)
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
@@ -183,7 +198,11 @@ export default function TestHome() {
         boxSizing:     'border-box',
         background:    'var(--color-bg)',
       }}>
-        <HeroCubeExplosion onAssembled={() => setHeroReady(true)} scrollBuffer={BUFFER_HEIGHT} />
+        <HeroCubeExplosion
+          onAssembled={() => setHeroReady(true)}
+          onNearlyAssembled={() => setHeadlineReady(true)}
+          scrollBuffer={BUFFER_HEIGHT}
+        />
 
         {/* Hero content — same layout as HeroBrutalist, revealed when cube assembles */}
         <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
@@ -191,17 +210,14 @@ export default function TestHome() {
           {/* Row 1: JP frame + headline */}
           <div
             className="flex flex-col-reverse items-start gap-6 sm:grid sm:grid-cols-2 sm:gap-0 sm:items-end"
-            style={{
-              marginBottom: 'clamp(32px, 5vh, 56px)',
-              opacity:      heroReady ? 1 : 0,
-              transform:    heroReady ? 'translateY(0)' : 'translateY(32px)',
-              transition:   'opacity 0.7s ease, transform 0.7s cubic-bezier(0.2,0,0,1)',
-            }}
+            style={{ marginBottom: 'clamp(32px, 5vh, 56px)' }}
           >
             <div style={{
               width: 'clamp(80px, 22vw, 260px)', aspectRatio: '1',
               border: '8px solid var(--color-violet)', background: 'var(--color-bg2)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              opacity: headlineReady ? 1 : 0,
+              transition: 'opacity 0.6s ease',
             }}>
               <span style={{
                 fontFamily: 'var(--font-head)', fontWeight: 900,
@@ -210,47 +226,55 @@ export default function TestHome() {
               }}>JP</span>
             </div>
             <div className="sm:text-right">
-              <h1 style={{
-                fontFamily: 'var(--font-head)', fontWeight: 900,
-                fontSize: 'clamp(52px, 11vw, 160px)', lineHeight: 0.85,
-                letterSpacing: '-0.06em', textTransform: 'uppercase',
-                color: 'var(--color-foreground)', margin: 0,
-              }}>
+              <RevealText
+                as="h1"
+                triggered={headlineReady}
+                stagger={40}
+                style={{
+                  fontFamily: 'var(--font-head)', fontWeight: 900,
+                  fontSize: 'clamp(52px, 11vw, 160px)', lineHeight: 0.85,
+                  letterSpacing: '-0.06em', textTransform: 'uppercase',
+                  color: 'var(--color-foreground)', margin: 0,
+                }}
+              >
                 DIGITAL<br />
                 <span style={{ color: 'var(--color-violet)' }}>BUILDER</span>
-              </h1>
+              </RevealText>
             </div>
           </div>
 
           {/* Divider */}
-          <div style={{
+          {/* <div style={{
             width: '100%', height: 2, background: 'var(--color-ui)',
-            opacity: heroReady ? 1 : 0, transition: 'opacity 0.5s ease 0.2s', flexShrink: 0,
-          }} />
+            opacity: headlineReady ? 1 : 0, transition: 'opacity 0.5s ease 0.2s', flexShrink: 0,
+          }} /> */}
 
           {/* Row 2: manifesto + stack card */}
           <div
             className="flex flex-col gap-8 sm:flex-row sm:justify-between sm:items-start"
-            style={{
-              marginTop: 'clamp(28px, 4vh, 48px)',
-              opacity:   heroReady ? 1 : 0,
-              transform: heroReady ? 'translateY(0)' : 'translateY(24px)',
-              transition: 'opacity 0.7s ease 0.25s, transform 0.7s cubic-bezier(0.2,0,0,1) 0.25s',
-            }}
+            style={{ marginTop: 'clamp(28px, 4vh, 48px)' }}
           >
-            <p style={{
-              fontFamily: 'var(--font-head)', fontWeight: 900,
-              fontSize: 'clamp(20px, 3.5vw, 48px)', lineHeight: 1.05,
-              letterSpacing: '-0.03em', textTransform: 'uppercase',
-              color: 'var(--color-foreground)', margin: 0,
-            }}>
+            <RevealText
+              as="p"
+              triggered={headlineReady}
+              stagger={10}
+              style={{
+                fontFamily: 'var(--font-head)', fontWeight: 900,
+                fontSize: 'clamp(20px, 3.5vw, 48px)', lineHeight: 1.05,
+                letterSpacing: '-0.03em', textTransform: 'uppercase',
+                color: 'var(--color-foreground)', margin: 0,
+              }}
+            >
               I build fast,<br />
               <span style={{ color: 'var(--color-violet)' }}>beautiful</span> interfaces<br />
               and robust backends.<br />
               <span style={{ color: 'var(--color-muted)', fontSize: '0.75em' }}>React, Vue, WordPress, Drupal,<br />Webflow and whatever it takes.</span>
-            </p>
+            </RevealText>
 
-            <div className="flex flex-col gap-4 w-full sm:w-auto sm:min-w-[260px] sm:max-w-[320px]">
+            <div
+              className="flex flex-col gap-4 w-full sm:w-auto sm:min-w-[260px] sm:max-w-[320px]"
+              style={{ opacity: headlineReady ? 1 : 0, transition: 'opacity 0.6s ease 0.4s' }}
+            >
               <div style={{ background: 'var(--color-bg2)', border: '1px solid var(--color-ui)', padding: '28px 28px 24px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: 'var(--color-violet)', letterSpacing: '0.18em', textTransform: 'uppercase' }}>CORE_STACK</span>
@@ -286,9 +310,9 @@ export default function TestHome() {
         <div className="grid grid-cols-2 gap-[80px] items-center max-[900px]:grid-cols-1 max-[900px]:gap-12">
           <div>
             <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">About</div>
-            <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
+            <RevealText className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px]">
               Building on the<br /><span className="text-violet">front lines</span> of the web
-            </div>
+            </RevealText>
             <p className="font-mono text-[15px] text-muted leading-[1.8] mb-5 reveal reveal-delay-2">
               I&apos;m a full stack developer with a frontend focus, the kind of engineer who obsesses over render performance just as much as pixel precision.
             </p>
@@ -320,9 +344,9 @@ export default function TestHome() {
       {/* SKILLS */}
       <Section className="bg-bg2 relative" id="skills">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Skills</div>
-        <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
+        <RevealText className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px]">
           What I work<br />with <span className="text-mint">every day</span>
-        </div>
+        </RevealText>
         <div className="grid grid-cols-3 gap-[2px] max-[900px]:grid-cols-1">
           {[
             { icon: '⚛️', title: 'Frontend Frameworks', skills: [['React',95],['Gatsby',90],['Next.js',85],['TypeScript',85]], delay: '' },
@@ -349,114 +373,90 @@ export default function TestHome() {
 
       <AlwaysCooking />
 
-      {/* PHILOSOPHY */}
-      <Section className="bg-bg relative" id="projects">
+
+      {/* PHILOSOPHY — list variant */}
+      <Section className="bg-bg relative" id="philosophy-list">
+
+        {/* Header */}
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Philosophy</div>
-        <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
+        <RevealText className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px]">
           The principles<br />I build <span className="text-violet">with</span>
-        </div>
-        <div className="grid grid-cols-2 gap-[2px] max-[900px]:grid-cols-1">
+        </RevealText>
 
-          <Link href="/design-system" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
-            <div>
-              <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Design System &amp; Token Architecture</h3>
-              <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">
-                I don't just know design systems, I build with them. This very site runs on a handcrafted token architecture: a unified palette, type scale, motion system, and component set, all documented and explorable.
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="flex flex-wrap gap-2">
-                  {['CSS Custom Properties','Tailwind v4','Token Architecture','Next.js'].map(t => (
-                    <span key={t} className="font-mono text-[10px] tracking-[0.08em] px-[10px] py-1 bg-[rgba(124,92,255,0.1)] text-violet rounded-[3px]">{t}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-6 font-mono text-[12px] text-mint flex items-center gap-2">
-                Explore the design system <span className="text-[16px]">→</span>
-              </div>
-            </div>
-            <div className="project-visual bg-gradient-to-br from-[rgba(124,92,255,0.15)] to-[rgba(46,230,166,0.1)] border border-ui rounded-lg h-[220px] flex flex-col items-center justify-center relative overflow-hidden gap-3 px-6">
-              <div className="flex gap-2">
-                {['#0F1115','#7C5CFF','#2EE6A6','#E8EAF0'].map(c => (
-                  <div key={c} className="w-8 h-8 rounded-full border border-ui/50" style={{ background: c }} />
-                ))}
-              </div>
-              <div className="font-mono text-[11px] text-muted tracking-widest uppercase">Aa Bb 01 · tokens</div>
-              <div className="h-[2px] w-24 rounded" style={{ background: 'linear-gradient(90deg,#7C5CFF,#2EE6A6)' }} />
-            </div>
-          </Link>
-
+        {/* List — expanding row on hover */}
+        <div style={{ borderTop: '1px solid var(--color-ui)' }}>
           {[
-            {
-              num: '002',
-              title: 'Complexity is managed, not avoided',
-              desc: "I don't treat technical debt as failure; I treat it as a ledger. Sometimes the right call is to incur it deliberately and move fast. But it gets logged, prioritised, and paid. Refactoring isn't a project you pitch to a product manager; it's a discipline baked into every PR. A codebase should be easier to navigate on day 300 than it was on day 30.",
-              tags: ['Refactoring', 'Architecture', 'Technical Debt'],
-              delay: '',
-            },
-            {
-              num: '003',
-              hidden: true,
-              title: "Quality ships, it doesn't slow things down",
-              desc: "I test what actually breaks in production. Integration tests over unit tests where behaviour is what matters, e2e for the paths users care about, and just enough coverage to sleep at night. Code review isn't a gate; it's the mechanism that keeps the team's mental model aligned. My definition of done includes 'legible to whoever is next in the file.'",
-              tags: ['Testing Strategy', 'Code Review', 'CI/CD'],
-              delay: 'reveal-delay-1',
-            },
-            {
-              num: '004',
-              title: 'Tradeoffs, not opinions',
-              desc: "Every architectural decision is a set of tradeoffs with a context. I don't push for the elegant solution when the pragmatic one ships and holds. What I do insist on is naming the tradeoff out loud: 'here's what we gain, here's what we give up, here's when we'd revisit it.' Pragmatism beats purity. Good enough is right more often than engineers admit, as long as everyone knows what good enough means.",
-              tags: ['Architecture Decisions', 'Pragmatism', 'Communication'],
-              delay: 'reveal-delay-2',
-            },
-          ].filter(p => !p.hidden).map(p => (
-            <div key={p.num} className={`project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal ${p.delay}`}>
-              <h3 className="text-[22px] font-semibold tracking-[-0.02em] mb-3">{p.title}</h3>
-              <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">{p.desc}</p>
-              <div className="flex flex-wrap gap-2">
-                {p.tags.map(t => <span key={t} className="font-mono text-[10px] tracking-[0.08em] px-[10px] py-1 bg-[rgba(124,92,255,0.1)] text-violet rounded-[3px]">{t}</span>)}
-              </div>
-            </div>
-          ))}
-
-          <Link href="/architecture" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal reveal-delay-1 max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
-            <div>
-              <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Structure is not an afterthought</h3>
-              <p className="font-mono text-[13px] text-muted leading-[1.7] mb-7">
-                Every component is written once and reused everywhere. Data lives in a single source of truth. Pages follow predictable patterns. The folder structure mirrors the mental model, so any new contributor can navigate the codebase in minutes, not days. Scalability is built in from the first commit, not retrofitted when it hurts.
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="flex flex-wrap gap-2">
-                  {['Component Architecture', 'DRY', 'Scalability', 'File Structure'].map(t => (
-                    <span key={t} className="font-mono text-[10px] tracking-[0.08em] px-[10px] py-1 bg-[rgba(124,92,255,0.1)] text-violet rounded-[3px]">{t}</span>
-                  ))}
+            { num: '001', title: 'Design System & Token Architecture', href: '/design-system', desc: "I don't just know design systems, I build with them. This site runs on a handcrafted token architecture — a unified palette, type scale, motion system, and component set, all documented and explorable." },
+            { num: '002', title: 'Complexity is managed, not avoided',  href: null,              desc: "I don't treat technical debt as failure; I treat it as a ledger. Sometimes the right call is to incur it deliberately and move fast. But it gets logged, prioritised, and paid. A codebase should be easier to navigate on day 300 than on day 30." },
+            { num: '003', title: 'Tradeoffs, not opinions',             href: null,              desc: "Every architectural decision is a set of tradeoffs with a context. I don't push for the elegant solution when the pragmatic one ships and holds. Pragmatism beats purity — as long as everyone knows what good enough means." },
+            { num: '004', title: 'Structure is not an afterthought',    href: '/architecture',   desc: "Every component is written once and reused everywhere. The folder structure mirrors the mental model, so any new contributor can navigate the codebase in minutes, not days." },
+          ].map(p => {
+            const El = p.href ? Link : 'div'
+            const isHovered = hoveredPrinciple?.num === p.num
+            return (
+              <El
+                key={p.num}
+                {...(p.href ? { href: p.href } : {})}
+                className="no-underline"
+                onMouseEnter={() => setHoveredPrinciple(p)}
+                onMouseLeave={() => setHoveredPrinciple(null)}
+                style={{
+                  display: 'block',
+                  borderBottom: '1px solid var(--color-ui)',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s ease',
+                  opacity: hoveredPrinciple && !isHovered ? 0.35 : 1,
+                  padding: '24px 0',
+                }}
+              >
+                {/* Title row */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 16,
+                  transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
+                  transition: 'transform 0.35s cubic-bezier(0.2, 0, 0, 1)',
+                }}>
+                  <h3 style={{
+                    fontFamily: 'var(--font-head)', fontWeight: 900,
+                    fontSize: 'clamp(20px, 2.8vw, 40px)', letterSpacing: '-0.03em',
+                    textTransform: 'uppercase',
+                    color: isHovered ? 'var(--color-violet)' : 'var(--color-foreground)',
+                    margin: 0, flexGrow: 1, lineHeight: 1.05,
+                    transition: 'color 0.2s ease',
+                  }}>
+                    {p.title}
+                  </h3>
+                  {p.href && (
+                    <span style={{
+                      fontSize: 26, flexShrink: 0,
+                      color: 'var(--color-foreground)',
+                      opacity: isHovered ? 1 : 0,
+                      transform: isHovered ? 'translateX(8px)' : 'translateX(0)',
+                      transition: 'transform 0.25s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s ease',
+                    }}>➜</span>
+                  )}
                 </div>
-              </div>
-              <div className="mt-6 font-mono text-[12px] text-mint flex items-center gap-2">
-                See how this site is built <span className="text-[16px]">→</span>
-              </div>
-            </div>
-            <div className="project-visual bg-gradient-to-br from-[rgba(124,92,255,0.1)] to-[rgba(46,230,166,0.08)] border border-ui rounded-lg h-[220px] flex flex-col justify-center px-8 gap-[6px] font-mono text-[11px] overflow-hidden relative max-[900px]:hidden">
-              {[
-                { indent: 0, text: 'app/',          color: 'text-foreground', bold: true },
-                { indent: 1, text: 'components/',   color: 'text-violet' },
-                { indent: 2, text: 'Button.jsx',    color: 'text-muted' },
-                { indent: 2, text: 'Nav.jsx',       color: 'text-muted' },
-                { indent: 2, text: 'Section.jsx',   color: 'text-muted' },
-                { indent: 1, text: 'data/',         color: 'text-mint' },
-                { indent: 2, text: 'experiments.js',color: 'text-muted' },
-                { indent: 2, text: 'posts.js',      color: 'text-muted' },
-                { indent: 1, text: 'experiments/',  color: 'text-violet' },
-                { indent: 1, text: 'blog/',         color: 'text-violet' },
-              ].map((row, i) => (
-                <div key={i} className={`flex items-center gap-1 ${row.color} ${row.bold ? 'font-bold' : ''}`} style={{ paddingLeft: `${row.indent * 16}px` }}>
-                  {row.indent > 0 && <span className="text-ui select-none">{'─ '}</span>}
-                  {row.text}
-                </div>
-              ))}
-            </div>
-          </Link>
 
+                {/* Description — slides in below */}
+                <div style={{
+                  overflow: 'hidden',
+                  maxHeight: isHovered ? 120 : 0,
+                  opacity: isHovered ? 1 : 0,
+                  transition: 'max-height 0.4s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease',
+                }}>
+                  <p style={{
+                    fontFamily: 'var(--font-mono)', fontSize: 13,
+                    color: 'var(--color-muted)', lineHeight: 1.8,
+                    margin: '12px 0 0',
+                    paddingRight: 40,
+                  }}>
+                    {p.desc}
+                  </p>
+                </div>
+              </El>
+            )
+          })}
         </div>
+
       </Section>
 
       <ExperimentSection />
