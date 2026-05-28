@@ -30,14 +30,15 @@ const MATERIAL_PARAMS = {
   iridescence:        0.51,
 }
 
-function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
+function CubeGrid({ scrollRef, mouseRef, onAssembled, onNearlyAssembled }) {
   const { camera }   = useThree()
   const groupRef     = useRef(null)
   const meshRefs     = useRef([])
   const smoothScroll = useRef(INTRO_START)
   const introContrib = useRef(INTRO_START)
   const startTime    = useRef(null)
-  const firedRef     = useRef(false)
+  const firedRef         = useRef(false)
+  const nearlyFiredRef   = useRef(false)
 
   const repulsions = useRef([])
   const _ndc  = useMemo(() => new THREE.Vector3(), [])
@@ -101,6 +102,11 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
     const effectiveScroll = Math.min(1, scrollRef.current + introContrib.current)
     smoothScroll.current += (effectiveScroll - smoothScroll.current) * 0.06
     const s = smoothScroll.current
+
+    if (!nearlyFiredRef.current && smoothScroll.current < 0.15) {
+      nearlyFiredRef.current = true
+      onNearlyAssembled?.()
+    }
 
     if (!firedRef.current && smoothScroll.current < 0.05) {
       firedRef.current = true
@@ -170,7 +176,7 @@ function CubeGrid({ scrollRef, mouseRef, onAssembled }) {
   )
 }
 
-export default function HeroCubeExplosion({ onAssembled, scrollBuffer = 600 }) {
+export default function HeroCubeExplosion({ onAssembled, onNearlyAssembled, scrollBuffer = 600 }) {
   const scrollRef = useRef(0)
   const mouseRef  = useRef({ x: 0, y: 0 })
 
@@ -208,7 +214,7 @@ export default function HeroCubeExplosion({ onAssembled, scrollBuffer = 600 }) {
         <directionalLight position={[-5, 4, 4]} intensity={5.00} color="#dde0e8" />
         <directionalLight position={[0, 10, 2]}  intensity={2.15} color="#ffffff" />
 
-        <CubeGrid scrollRef={scrollRef} mouseRef={mouseRef} onAssembled={onAssembled} />
+        <CubeGrid scrollRef={scrollRef} mouseRef={mouseRef} onAssembled={onAssembled} onNearlyAssembled={onNearlyAssembled} />
 
         <EffectComposer>
           <Bloom intensity={1.4} luminanceThreshold={0.25} luminanceSmoothing={0.85} mipmapBlur />

@@ -3,14 +3,19 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Section from './components/Section'
-import HeroBrutalist from './components/heroes/HeroBrutalist'
 import dynamic from 'next/dynamic'
 import SpeechBubble from './components/SpeechBubble'
 import HeadChat from './components/HeadChat'
 import AlwaysCooking from './lab/AlwaysCooking'
 import ExperimentSection from './components/sections/ExperimentSection'
+import RevealText from './components/RevealText'
 
 const MemojiHead = dynamic(() => import('./components/MemojiHead'), {
+  ssr: false,
+  loading: () => null,
+})
+
+const HeroCubeExplosion = dynamic(() => import('./components/heroes/HeroCubeExplosion'), {
   ssr: false,
   loading: () => null,
 })
@@ -18,11 +23,14 @@ const MemojiHead = dynamic(() => import('./components/MemojiHead'), {
 export default function Home() {
   const headContainerRef = useRef(null)
   const expandedRef      = useRef(false)
-  const [headLoaded, setHeadLoaded] = useState(false)
-  const [expanded,   setExpanded]   = useState(false)
+  const [headLoaded,     setHeadLoaded]     = useState(false)
+  const [expanded,       setExpanded]       = useState(false)
+  const [heroReady,      setHeroReady]      = useState(false)
+  const [headlineReady,  setHeadlineReady]  = useState(false)
+  const BUFFER_HEIGHT = 600
 
   const CONTAINER = 300
-  const SCALE_MAX = 1.15
+  const SCALE_MAX = 0.8
   const SCALE_MIN = 0.37
 
   function handleHeadClick() {
@@ -63,6 +71,12 @@ export default function Home() {
       setTimeout(() => { if (!expandedRef.current) el.style.transition = 'none' }, 400)
     }
   }
+
+  useEffect(() => {
+    // Prevent browser scroll restoration from starting mid-hero
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }, [])
 
   useEffect(() => {
     function onKey(e) { if (e.key === 'Escape' && expandedRef.current) handleHeadClick() }
@@ -126,7 +140,6 @@ export default function Home() {
 
   return (
     <>
-
       {/* Backdrop when head is expanded */}
       {expanded && (
         <div
@@ -135,24 +148,140 @@ export default function Home() {
         />
       )}
 
-      {/* Fixed memoji head */}
+      {/* Fixed memoji head — appears once cube is assembled */}
       <div
         ref={headContainerRef}
         className="fixed top-0 right-5 z-10"
-        style={{ width: 300, height: 300, pointerEvents: 'auto', cursor: 'pointer', transformOrigin: 'top right' }}
+        style={{
+          width: 300, height: 300, transformOrigin: 'top right',
+          opacity: heroReady ? 1 : 0,
+          pointerEvents: heroReady ? 'auto' : 'none',
+          cursor: 'pointer',
+          transition: 'opacity 0.6s ease',
+        }}
         onClick={handleHeadClick}
       >
         <MemojiHead size={7.5} className="w-full h-full" onLoad={() => setTimeout(() => setHeadLoaded(true), 700)} />
       </div>
 
       {/* Speech bubble */}
-      {headLoaded && <SpeechBubble headRef={headContainerRef} />}
+      {headLoaded && heroReady && <SpeechBubble headRef={headContainerRef} />}
 
       {/* Chat prompt */}
       <HeadChat visible={expanded} />
 
-      {/* HERO */}
-      <HeroBrutalist introComplete={true} />
+      {/* HERO — sticky wrapper acts as scroll buffer; hero stays pinned until cube assembles */}
+      <div style={{ position: 'relative', height: `calc(100vh + ${BUFFER_HEIGHT}px)` }}>
+      <section style={{
+        position:      'sticky',
+        top:           0,
+        height:        '100vh',
+        display:       'flex',
+        flexDirection: 'column',
+        justifyContent:'center',
+        overflow:      'hidden',
+        padding:       'clamp(80px, 10vh, 140px) clamp(24px, 5vw, 72px) clamp(48px, 6vh, 80px)',
+        boxSizing:     'border-box',
+        background:    'var(--color-bg)',
+      }}>
+        <HeroCubeExplosion
+          onAssembled={() => setHeroReady(true)}
+          onNearlyAssembled={() => setHeadlineReady(true)}
+          scrollBuffer={BUFFER_HEIGHT}
+        />
+
+        {/* Hero content */}
+        <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
+
+          {/* Row 1: JP frame + headline */}
+          <div
+            className="flex flex-col-reverse items-start gap-6 sm:grid sm:grid-cols-2 sm:gap-0 sm:items-end"
+            style={{ marginBottom: 'clamp(32px, 5vh, 56px)' }}
+          >
+            <div style={{
+              width: 'clamp(80px, 22vw, 260px)', aspectRatio: '1',
+              border: '8px solid var(--color-violet)', background: 'var(--color-bg2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              opacity: headlineReady ? 1 : 0,
+              transition: 'opacity 0.6s ease',
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-head)', fontWeight: 900,
+                fontSize: 'clamp(28px, 6vw, 96px)', color: 'var(--color-violet)',
+                letterSpacing: '-0.06em', lineHeight: 1, userSelect: 'none',
+              }}>JP</span>
+            </div>
+            <div className="sm:text-right">
+              <RevealText
+                as="h1"
+                triggered={headlineReady}
+                stagger={40}
+                style={{
+                  fontFamily: 'var(--font-head)', fontWeight: 900,
+                  fontSize: 'clamp(52px, 11vw, 160px)', lineHeight: 0.85,
+                  letterSpacing: '-0.06em', textTransform: 'uppercase',
+                  color: 'var(--color-foreground)', margin: 0,
+                }}
+              >
+                DIGITAL<br />
+                <span style={{ color: 'var(--color-violet)' }}>BUILDER</span>
+              </RevealText>
+            </div>
+          </div>
+
+          {/* Row 2: manifesto + stack card */}
+          <div
+            className="flex flex-col gap-8 sm:flex-row sm:justify-between sm:items-start"
+            style={{ marginTop: 'clamp(28px, 4vh, 48px)' }}
+          >
+            <RevealText
+              as="p"
+              triggered={headlineReady}
+              stagger={10}
+              style={{
+                fontFamily: 'var(--font-head)', fontWeight: 900,
+                fontSize: 'clamp(20px, 3.5vw, 48px)', lineHeight: 1.05,
+                letterSpacing: '-0.03em', textTransform: 'uppercase',
+                color: 'var(--color-foreground)', margin: 0,
+              }}
+            >
+              I build fast,<br />
+              <span style={{ color: 'var(--color-violet)' }}>beautiful</span> interfaces<br />
+              and robust backends.<br />
+              <span style={{ color: 'var(--color-muted)', fontSize: '0.75em' }}>React, Vue, WordPress, Drupal,<br />Webflow and whatever it takes.</span>
+            </RevealText>
+
+            <div
+              className="flex flex-col gap-4 w-full sm:w-auto sm:min-w-[260px] sm:max-w-[320px]"
+              style={{ opacity: headlineReady ? 1 : 0, transition: 'opacity 0.6s ease 0.4s' }}
+            >
+              <div style={{ background: 'var(--color-bg2)', border: '1px solid var(--color-ui)', padding: '28px 28px 24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: 'var(--color-violet)', letterSpacing: '0.18em', textTransform: 'uppercase' }}>CORE_STACK</span>
+                  <span style={{ color: 'var(--color-violet)', fontSize: 18 }}>◫</span>
+                </div>
+                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {['REACT', 'NEXT.JS', 'WEBGL', 'NODE.JS'].map(item => (
+                    <li key={item} style={{ fontFamily: 'var(--font-head)', fontWeight: 700, fontSize: 'clamp(16px, 1.8vw, 22px)', letterSpacing: '-0.02em', color: 'var(--color-foreground)', textTransform: 'uppercase' }}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+      </div>{/* end sticky wrapper */}
+
+      {/* Sections below — fade in once cube is assembled */}
+      <div
+        style={{
+          opacity:        heroReady ? 1 : 0,
+          transform:      heroReady ? 'translateY(0)' : 'translateY(24px)',
+          transition:     'opacity 0.9s ease, transform 0.9s ease',
+          pointerEvents:  heroReady ? 'auto' : 'none',
+        }}
+      >
 
       {/* ABOUT */}
       <Section className="bg-bg relative" id="about">
@@ -161,9 +290,9 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-[80px] items-center max-[900px]:grid-cols-1 max-[900px]:gap-12">
           <div>
             <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">About</div>
-            <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
+            <RevealText className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px]">
               Building on the<br /><span className="text-violet">front lines</span> of the web
-            </div>
+            </RevealText>
             <p className="font-mono text-[15px] text-muted leading-[1.8] mb-5 reveal reveal-delay-2">
               I&apos;m a full stack developer with a frontend focus, the kind of engineer who obsesses over render performance just as much as pixel precision.
             </p>
@@ -195,9 +324,9 @@ export default function Home() {
       {/* SKILLS */}
       <Section className="bg-bg2 relative" id="skills">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Skills</div>
-        <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
+        <RevealText className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px]">
           What I work<br />with <span className="text-mint">every day</span>
-        </div>
+        </RevealText>
         <div className="grid grid-cols-3 gap-[2px] max-[900px]:grid-cols-1">
           {[
             { icon: '⚛️', title: 'Frontend Frameworks', skills: [['React',95],['Gatsby',90],['Next.js',85],['TypeScript',85]], delay: '' },
@@ -227,12 +356,11 @@ export default function Home() {
       {/* PHILOSOPHY */}
       <Section className="bg-bg relative" id="projects">
         <div className="section-label reveal font-mono text-[11px] text-violet tracking-[0.2em] uppercase mb-4 flex items-center gap-[10px]">Philosophy</div>
-        <div className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px] reveal reveal-delay-1">
+        <RevealText className="text-[clamp(32px,4vw,52px)] font-bold tracking-[-0.02em] leading-[1.1] mb-[60px]">
           The principles<br />I build <span className="text-violet">with</span>
-        </div>
+        </RevealText>
         <div className="grid grid-cols-2 gap-[2px] max-[900px]:grid-cols-1">
 
-          {/* 001 — Design System — featured, unchanged */}
           <Link href="/design-system" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
             <div>
               <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Design System &amp; Token Architecture</h3>
@@ -294,7 +422,6 @@ export default function Home() {
             </div>
           ))}
 
-          {/* 004 — Architecture — featured link */}
           <Link href="/architecture" className="project-card bg-bg2 border border-ui p-[40px] transition-all duration-[250ms] relative overflow-hidden col-span-2 grid grid-cols-2 gap-[40px] items-center hover:border-[rgba(124,92,255,0.4)] hover:-translate-y-[3px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] reveal reveal-delay-1 max-[900px]:col-span-1 max-[900px]:grid-cols-1 no-underline">
             <div>
               <h3 className="text-[32px] font-semibold tracking-[-0.02em] mb-3 text-foreground">Structure is not an afterthought</h3>
@@ -337,6 +464,8 @@ export default function Home() {
       </Section>
 
       <ExperimentSection />
+
+      </div>
     </>
   )
 }
